@@ -9,8 +9,8 @@ export default function Layout({
 			<header className="w-full">
 				<nav className="flex items-center justify-between py-7 px-8 sm:px-12">
 					<div className="flex items-center gap-2">
-						<Image src="/logo.png" alt="Logo" width={17} height={27} />
-						<span className="text-2xl font-semibold text-white">Pryzm</span>
+						<Image src="/logo.png" alt="Logo" width={24} height={24} />
+						<span className="text-2xl font-semibold text-white">Oxcel</span>
 					</div>
 					<Link
 						href="/auth/login"

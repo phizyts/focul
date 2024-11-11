@@ -31,73 +31,112 @@ enum linkedAccounts {
 }
 
 model User {
-  id                   String           @id @default(cuid())
-  name                 String?
-  email                String           @unique
-  emailVerified        DateTime?
-  image                String?
-  role                 Role             @default(user)
-  password             String?
-  passwordResetToken   String?
-  passwordResetExpires DateTime?
-  VerificationToken    String?
-  VerificationExpires  DateTime?
-  linkedAccounts       linkedAccounts[]
+  id             String           @id
+  name           String
+  email          String
+  emailVerified  Boolean
+  role           Role             @default(user)
+  image          String?
+  onboarded      Boolean          @default(false)
+  createdAt      DateTime
+  updatedAt      DateTime
+  linkedAccounts linkedAccounts[]
+  Session        Session[]
+  Account        Account[]
+  Todos          Reminder[]
+  Notes          Notes[]
+  Courses        Courses[]
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Todos     Reminder[]
-  Notes     Notes[]
-  Courses   Courses[]
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id           String    @id
+  accountId    String
+  providerId   String
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+  expiresAt    DateTime?
+  password     String?
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  @@map("verification")
 }
 
 model Courses {
-  id    String @id @default(cuid())
-  name  String
-  grade String
-
+  id          String        @id @default(cuid())
+  name        String
+  grade       String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   Assignments Assignments[]
   User        User?         @relation(fields: [userId], references: [id])
   userId      String?
+
+  @@map("courses")
 }
 
 model Assignments {
-  id       String         @id @default(cuid())
-  name     String
-  courseId String         @map("course_id")
-  course   Courses        @relation(fields: [courseId], references: [id])
-  grade    Float
-  maxGrade Float
-  dueDate  DateTime
-  status   Status         @default(pending)
-  type     AssignmentType
+  id        String         @id @default(cuid())
+  name      String
+  courseId  String         @map("course_id")
+  course    Courses        @relation(fields: [courseId], references: [id])
+  grade     Float
+  maxGrade  Float
+  dueDate   DateTime
+  status    Status         @default(pending)
+  type      AssignmentType
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("assignments")
 }
 
 model Reminder {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   title      String
   desciption String?
-  status     Status  @default(pending)
-  userId     String  @map("user_id")
-  user       User    @relation(fields: [userId], references: [id])
+  status     Status   @default(pending)
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("reminder")
 }
 
 model Notes {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   title      String
   desciption String?
   note       String
-  userId     String  @map("user_id")
-  user       User    @relation(fields: [userId], references: [id])
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("notes")
 }

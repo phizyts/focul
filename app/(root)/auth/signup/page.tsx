@@ -1,11 +1,76 @@
+'use client'
+import {
+	checkAndRedirectOnBoarded,
+	isAuthenticated,
+	onBoarded,
+} from '@/lib/authHelpers'
+import { Loading } from '@/components/Loading'
+import { authClient } from '@/lib/auth-client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { set, z } from 'zod'
+
+const formSchema = z.object({
+	name: z.string().min(2).max(50),
+	email: z.string().email().min(2).max(50),
+	password: z.string().min(8).max(50),
+})
 
 export default function SignUp() {
+	const [isLoading, setIsLoading] = useState(true)
+
+	useEffect(() => {
+		const checkAuth = async () => {
+			const isLoggedIn = await isAuthenticated()
+			if (isLoggedIn) {
+				checkAndRedirectOnBoarded(false)
+			} else {
+				setIsLoading(false)
+			}
+		}
+		checkAuth()
+	}, [])
+
+	const signUp = async (formData: FormData) => {
+		const name = formData.get('name') as string
+		const email = formData.get('email') as string
+		const password = formData.get('password') as string
+		const { data, error } = await authClient.signUp.email(
+			{
+				email,
+				password,
+				name,
+			},
+			{
+				onRequest: ctx => {
+					setIsLoading(true)
+				},
+				onSuccess: ctx => {
+					setIsLoading(false)
+					checkAndRedirectOnBoarded(false)
+				},
+				onError: ctx => {
+					setIsLoading(false)
+					toast.error(ctx.error.message)
+				},
+			},
+		)
+	}
+
+	if (isLoading) return <Loading />
+
 	return (
 		<div className="flex flex-col h-[90vh] justify-center items-center">
-			<div className="flex flex-col items-center w-[316px]">
-				<h1 className="font-medium text-2xl">Pryzm Sign Up</h1>
+			<form
+				className="flex flex-col items-center w-[316px]"
+				action={async formData => {
+					await signUp(formData)
+				}}
+			>
+				<h1 className="font-medium text-2xl">Oxcel Sign Up</h1>
 				<div className="flex gap-4 mt-6 w-full">
 					<button className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200">
 						<Image src="/google.svg" alt="Google" width={18} height={18} />
@@ -23,7 +88,7 @@ export default function SignUp() {
 					</span>
 					<div className="flex-grow border-t border-muted"></div>
 				</div>
-				<form className="flex flex-col gap-4 w-full">
+				<div className="flex flex-col gap-4 w-full">
 					<div className="w-full flex flex-col gap-2">
 						<label htmlFor="email">Name</label>
 						<input
@@ -50,24 +115,21 @@ export default function SignUp() {
 							type="password"
 							name="password"
 							id="password"
-							placeholder="Password123"
+							placeholder="Enter Your Password"
 							className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
 						/>
 					</div>
-					<button
-						type="submit"
-						className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
-					>
+					<button className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2">
 						Sign Up
 					</button>
-				</form>
+				</div>
 				<span className="text-sm text-center text-muted mt-3">
 					Already have an account?{' '}
 					<Link href="/auth/login" className="text-primary hover:underline">
 						Login
 					</Link>
 				</span>
-			</div>
+			</form>
 		</div>
 	)
 }

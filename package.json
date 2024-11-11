@@ -11,11 +11,15 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.3",
     "@prisma/client": "^5.22.0",
+    "better-auth": "^0.8.1-beta.4",
     "next": "15.0.2",
     "next-auth": "^5.0.0-beta.25",
     "prettier": "^3.3.3",
     "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028"
+    "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react-hook-form": "^7.53.2",
+    "react-hot-toast": "^2.4.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
