@@ -1,16 +1,10 @@
 'use client'
-import {
-	checkAndRedirectOnBoarded,
-	isAuthenticated,
-	onBoarded,
-} from '@/lib/authHelpers'
+import { checkAndRedirectOnBoarded, isAuthenticated } from '@/lib/authHelpers'
 import { Loading } from '@/components/Loading'
 import { authClient } from '@/lib/auth-client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 import { signInWithGithub, signInWithGoogle } from '@/lib/client'
 
 export default function Login() {
@@ -46,7 +40,6 @@ export default function Login() {
 				},
 				onError: ctx => {
 					setIsLoading(false)
-					toast.error(ctx.error.message)
 				},
 			},
 		)

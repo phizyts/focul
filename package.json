@@ -3,9 +3,8 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"postinstall": "prisma generate",
 		"dev": "next dev --turbopack",
-		"build": "next build",
+		"build": "prisma generate && next build",
 		"start": "next start",
 		"lint": "next lint"
 	},
@@ -18,8 +17,6 @@
 		"prettier": "^3.3.3",
 		"react": "19.0.0-rc-02c0e824-20241028",
 		"react-dom": "19.0.0-rc-02c0e824-20241028",
-		"react-hook-form": "^7.53.2",
-		"react-hot-toast": "^2.4.1",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {

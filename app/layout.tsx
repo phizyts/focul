@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
 const poppins = localFont({
@@ -66,7 +65,6 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${poppins.className} antialiased bg-background`}>
-				<Toaster position="top-center" />
 				{children}
 			</body>
 		</html>
