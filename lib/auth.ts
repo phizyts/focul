@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { PrismaClient } from '@prisma/client'
+import argon2 from 'argon2'
 
 const prisma = new PrismaClient()
 export const auth = betterAuth({
@@ -10,6 +11,14 @@ export const auth = betterAuth({
 	}),
 	emailAndPassword: {
 		enabled: true,
+		password: {
+			hash: async password => {
+				return await argon2.hash(password)
+			},
+			verify: async (hash, password) => {
+				return await argon2.verify(hash, password)
+			},
+		},
 	},
 	socialProviders: {
 		google: {
