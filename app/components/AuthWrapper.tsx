@@ -2,7 +2,7 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { createContext, useEffect, useState } from 'react'
 import { Loading } from '../../components/ui/Loading'
-import { isAuthenticated, onBoarded } from '@/lib/authHelpers'
+import { authClient } from '@/lib/auth-client'
 
 interface Props {
 	children: React.ReactNode
@@ -24,10 +24,10 @@ export default function AuthWrapper({ children }: Props) {
 		if (typeof window === 'undefined') return
 
 		const checkAuth = async () => {
-			const isLoggedIn = await isAuthenticated()
-			const isOnBoarded = await onBoarded()
+			const session = await authClient.getSession()
+			const isOnBoarded = session.data?.user?.onboarded
 
-			if (isLoggedIn) {
+			if (session) {
 				if (!isOnBoarded && pathname !== '/onboarding') {
 					router.push('/onboarding')
 					return

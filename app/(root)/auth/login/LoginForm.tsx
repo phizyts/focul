@@ -1,7 +1,10 @@
 'use client'
 import { useAuth } from '@/hooks/useAuth'
-import { authClient } from '@/lib/auth-client'
-import { signInWithGithub, signInWithGoogle } from '@/lib/client'
+import {
+	authClient,
+	signInWithGithub,
+	signInWithGoogle,
+} from '@/lib/auth-client'
 import Image from 'next/image'
 import Link from 'next/link'
 
