@@ -1,5 +1,4 @@
 'use client'
-import { useAuth } from '@/hooks/useAuth'
 import {
 	authClient,
 	signInWithGithub,
@@ -8,26 +7,19 @@ import {
 import Image from 'next/image'
 
 const SignUpForm = () => {
-	const { isAuthing, setIsAuthing } = useAuth()
-
-	const setLoading = (toggle: boolean) => {
-		setIsAuthing?.(toggle)
-	}
 	const signUp = async (formData: FormData) => {
 		const name = formData.get('name') as string
 		const email = formData.get('email') as string
 		const password = formData.get('password') as string
-		setLoading(true)
 		try {
 			const { data, error } = await authClient.signUp.email({
 				email,
 				password,
 				name,
+				callbackURL: '/dashboard',
 			})
 		} catch (error) {
 			console.error('Sign-up error', error)
-		} finally {
-			setLoading(false)
 		}
 	}
 	return (
@@ -35,14 +27,10 @@ const SignUpForm = () => {
 			<div className="flex gap-4 mt-6 w-full">
 				<button
 					onClick={async () => {
-						setLoading(true)
 						try {
 							await signInWithGoogle()
 						} catch (error) {
 							console.error('Sign-in error', error)
-							setLoading(false)
-						} finally {
-							setLoading(false)
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
@@ -52,14 +40,10 @@ const SignUpForm = () => {
 				</button>
 				<button
 					onClick={async () => {
-						setLoading(true)
 						try {
 							await signInWithGithub()
 						} catch (error) {
 							console.error('Sign-in error', error)
-							setLoading(false)
-						} finally {
-							setLoading(false)
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
