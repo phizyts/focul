@@ -1,12 +1,16 @@
 'use client'
+import { Loading } from '@/components/ui/Loading'
 import {
 	authClient,
 	signInWithGithub,
 	signInWithGoogle,
 } from '@/lib/auth-client'
 import Image from 'next/image'
+import { useState } from 'react'
 
 const SignUpForm = () => {
+	const [isLoading, setIsLoading] = useState(false)
+
 	const signUp = async (formData: FormData) => {
 		const name = formData.get('name') as string
 		const email = formData.get('email') as string
@@ -20,6 +24,8 @@ const SignUpForm = () => {
 			})
 		} catch (error) {
 			console.error('Sign-up error', error)
+		} finally {
+			setIsLoading(false)
 		}
 	}
 	return (
@@ -95,8 +101,13 @@ const SignUpForm = () => {
 						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
 					/>
 				</div>
-				<button className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2">
-					Sign Up
+				<button
+					className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
+					onClick={() => {
+						setIsLoading(true)
+					}}
+				>
+					{isLoading ? <Loading isWhite /> : 'Sign Up'}
 				</button>
 			</form>
 		</>

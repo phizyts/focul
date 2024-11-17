@@ -1,4 +1,5 @@
 'use client'
+import { Loading } from '@/components/ui/Loading'
 import {
 	authClient,
 	signInWithGithub,
@@ -6,8 +7,11 @@ import {
 } from '@/lib/auth-client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 
 const LoginForm = () => {
+	const [isLoading, setIsLoading] = useState(false)
+
 	const signIn = async (formData: FormData) => {
 		const email = formData.get('email') as string
 		const password = formData.get('password') as string
@@ -19,6 +23,8 @@ const LoginForm = () => {
 			})
 		} catch (error) {
 			console.error('Sign-in error', error)
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -79,7 +85,7 @@ const LoginForm = () => {
 					<div className="flex w-full justify-between items-center">
 						<label htmlFor="password">Password</label>
 						<Link
-							href="/forgot-password"
+							href="/auth/forgot-password"
 							className="text-sm text-primary hover:underline"
 						>
 							Forgot Password?
@@ -93,8 +99,13 @@ const LoginForm = () => {
 						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
 					/>
 				</div>
-				<button className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2">
-					Login
+				<button
+					className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
+					onClick={() => {
+						setIsLoading(true)
+					}}
+				>
+					{isLoading ? <Loading isWhite /> : 'Login'}
 				</button>
 			</form>
 		</>
