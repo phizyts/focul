@@ -8,3 +8,4 @@ Tech Stack:
 - PostgreSQL
 - Prisma
 - Cloudinary
+- SocketIO
