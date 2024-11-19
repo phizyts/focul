@@ -24,10 +24,24 @@ enum AssignmentType {
   assessment
 }
 
+enum CourseType {
+  AP
+  IB
+  Honors
+  Regular
+}
+
 enum linkedAccounts {
   google
   github
   discord
+}
+
+enum Lang {
+  english
+  chinese
+  spanish
+  french
 }
 
 model User {
@@ -38,6 +52,7 @@ model User {
   role           Role             @default(user)
   image          String?
   onboarded      Boolean          @default(false)
+  language       Lang             @default(english)
   createdAt      DateTime
   updatedAt      DateTime
   linkedAccounts linkedAccounts[]
@@ -89,12 +104,13 @@ model Verification {
 model Courses {
   id          String        @id @default(cuid())
   name        String
-  grade       String
+  grade       String?
+  type        CourseType    @default(Regular)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  Assignments Assignments[]
-  User        User?         @relation(fields: [userId], references: [id])
-  userId      String?
+  assignments Assignments[]
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
 
   @@map("courses")
 }
@@ -102,8 +118,8 @@ model Courses {
 model Assignments {
   id        String         @id @default(cuid())
   name      String
-  courseId  String         @map("course_id")
-  course    Courses        @relation(fields: [courseId], references: [id])
+  courseId  String
+  course    Courses        @relation(fields: [courseId], references: [id], onDelete: Cascade)
   grade     Float
   maxGrade  Float
   dueDate   DateTime
@@ -120,8 +136,8 @@ model Reminder {
   title      String
   desciption String?
   status     Status   @default(pending)
-  userId     String   @map("user_id")
-  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -133,8 +149,8 @@ model Notes {
   title      String
   desciption String?
   note       String
-  userId     String   @map("user_id")
-  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+	images: {
+		domains: [
+			'lh3.googleusercontent.com',
+			'copper-obvious-ptarmigan-243.mypinata.cloud',
+			'res.cloudinary.com',
+		],
+	},
+}
 
-export default nextConfig;
+export default nextConfig

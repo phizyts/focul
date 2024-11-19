@@ -22,6 +22,9 @@ export default async function middleware(request: NextRequest) {
 			if (!session.user.onboarded && path !== '/onboarding') {
 				return NextResponse.redirect(new URL('/onboarding', request.url))
 			}
+			if (session.user.onboarded && path === '/onboarding') {
+				return NextResponse.redirect(new URL('/dashboard', request.url))
+			}
 			if (AUTH_ROUTES.includes(path)) {
 				return NextResponse.redirect(new URL('/dashboard', request.url))
 			}
