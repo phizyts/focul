@@ -3,9 +3,10 @@
 Ultimate Solution to Your Sudent Life
 
 Tech Stack:
-- NextJS
-- TypeScript
-- PostgreSQL
-- Prisma
-- Cloudinary
-- SocketIO
+- NextJS (Main Framework)
+- TypeScript (Type Checking)
+- PostgreSQL (Database)
+- Prisma (ORM)
+- Cloudinary (Image Storage)
+- SocketIO (Realtime Communication)
+- TailwindCSS (CSS Styling)
