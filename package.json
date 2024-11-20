@@ -1,5 +1,5 @@
 {
-	"name": "pryzm",
+	"name": "oxcel",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -20,6 +20,7 @@
 		"prettier": "^3.3.3",
 		"react": "19.0.0-rc-02c0e824-20241028",
 		"react-dom": "19.0.0-rc-02c0e824-20241028",
+		"socket.io": "^4.8.1",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
