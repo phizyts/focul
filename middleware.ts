@@ -1,10 +1,18 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
-export const PRIVATE_ROUTES = ['/dashboard', '/onboarding']
+export const PRIVATE_ROUTES = [
+	'/dashboard',
+	'/dashboard/overview',
+	'/onboarding',
+]
 export const AUTH_ROUTES = ['/auth/login', '/auth/signup']
 
 export default async function middleware(request: NextRequest) {
 	const path = request.nextUrl.pathname
+
+	if (path === '/dashboard') {
+		return NextResponse.redirect(new URL('/dashboard/overview', request.url))
+	}
 
 	if (PRIVATE_ROUTES.includes(path) || AUTH_ROUTES.includes(path)) {
 		const req = await fetch(
@@ -23,10 +31,14 @@ export default async function middleware(request: NextRequest) {
 				return NextResponse.redirect(new URL('/onboarding', request.url))
 			}
 			if (session.user.onboarded && path === '/onboarding') {
-				return NextResponse.redirect(new URL('/dashboard', request.url))
+				return NextResponse.redirect(
+					new URL('/dashboard/overview', request.url),
+				)
 			}
 			if (AUTH_ROUTES.includes(path)) {
-				return NextResponse.redirect(new URL('/dashboard', request.url))
+				return NextResponse.redirect(
+					new URL('/dashboard/overview', request.url),
+				)
 			}
 		} else {
 			if (PRIVATE_ROUTES.includes(path)) {

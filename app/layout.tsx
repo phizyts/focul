@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
+import 'remixicon/fonts/remixicon.css'
 
 const poppins = localFont({
 	src: [
