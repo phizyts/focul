@@ -1,3 +1,4 @@
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -74,7 +75,12 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+
   @@map("session")
+  @@unique([token])
 }
 
 model Account {
@@ -89,6 +95,12 @@ model Account {
   expiresAt    DateTime?
   password     String?
 
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
   @@map("account")
 }
 
@@ -97,6 +109,9 @@ model Verification {
   identifier String
   value      String
   expiresAt  DateTime
+
+  createdAt DateTime?
+  updatedAt DateTime?
 
   @@map("verification")
 }

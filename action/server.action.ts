@@ -1,4 +1,4 @@
-const serverUrl = 'http://localhost:3000'
+const serverUrl = process.env.BETTER_AUTH_URL
 
 export const uploadImage = async (file: File | string) => {
 	try {

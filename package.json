@@ -12,7 +12,7 @@
 		"@auth/prisma-adapter": "^2.7.3",
 		"@prisma/client": "^5.22.0",
 		"argon2": "^0.41.1",
-		"better-auth": "^0.8.1-beta.4",
+		"better-auth": "^1.0.2",
 		"better-fetch": "^1.1.2",
 		"cloudinary": "^2.5.1",
 		"next": "^15.0.3",

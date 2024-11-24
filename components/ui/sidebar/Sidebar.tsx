@@ -5,15 +5,28 @@ import {
 	SidebarNavigationBottom,
 } from './SidebarNavigation'
 import { authClient } from '@/lib/auth-client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const Sidebar = () => {
 	const { data: session, isPending } = authClient.useSession()
-	const [isCollapsed, setIsCollapsed] = useState(false)
+	const [isCollapsed, setIsCollapsed] = useState(true)
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const handleResize = () => {
+				setIsCollapsed(window.innerWidth < 960)
+			}
+
+			handleResize()
+			window.addEventListener('resize', handleResize)
+
+			return () => window.removeEventListener('resize', handleResize)
+		}
+	}, [])
 
 	return (
 		<nav
-			className={`flex flex-col h-full border-r border-gray-600 transition-all duration-300 ${isCollapsed ? 'w-[80px]' : 'w-[300px] mr-8'}`}
+			className={`hidden flex-col h-full border-r border-gray-600 transition-all duration-300 ${isCollapsed ? 'w-[80px]' : 'w-[300px] mr-8'} xs:flex`}
 		>
 			<div className="pt-8 pb-12 px-8 w-full">
 				<div
