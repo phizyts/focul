@@ -1,0 +1,256 @@
+'use client'
+import { useState, useRef, useEffect } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { sidebarRoutes } from '@/constants/constants'
+import UserMultiple4 from '@/components/icons/UserMultiple'
+import Bell1 from '@/components/icons/Bell'
+import Gear1 from '@/components/icons/Gear'
+import Image from 'next/image'
+import { authClient } from '@/lib/auth-client'
+import {
+	SidebarNavigationTop,
+	SidebarNavigationBottom,
+} from '../sidebar/SidebarNavigation'
+
+const Navbar = ({
+	session,
+	isPending,
+}: {
+	session: any
+	isPending: boolean
+}) => {
+	const [isOpen, setIsOpen] = useState(false)
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+	const [isSearchFocused, setIsSearchFocused] = useState(false)
+	const searchInputRef = useRef<HTMLInputElement>(null)
+	const dropdownRef = useRef<HTMLDivElement>(null)
+	const currentPath = usePathname()
+
+	const getCurrentCategory = () => {
+		for (const category of sidebarRoutes) {
+			const route = category.routes.find(route => route.href === currentPath)
+			if (route) {
+				return {
+					categoryName: category.name,
+					currentRoute: route,
+					allRoutes: category.routes,
+				}
+			}
+		}
+		return {
+			categoryName: 'Dashboard',
+			currentRoute: sidebarRoutes[0].routes[0],
+			allRoutes: sidebarRoutes[0].routes,
+		}
+	}
+
+	const { currentRoute, allRoutes } = getCurrentCategory()
+
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === 'k') {
+				e.preventDefault()
+				searchInputRef.current?.focus()
+			}
+		}
+
+		document.addEventListener('keydown', handleKeyPress)
+		return () => document.removeEventListener('keydown', handleKeyPress)
+	}, [])
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setIsOpen(false)
+			}
+		}
+
+		document.addEventListener('mousedown', handleClickOutside)
+		return () => document.removeEventListener('mousedown', handleClickOutside)
+	}, [])
+
+	return (
+		<>
+			<div className="flex items-center justify-between w-full pt-7 pb-10 gap-5">
+				<div className="flex items-center gap-4 md:w-full xl:w-full h-[40px]">
+					<div className="flex items-center gap-4">
+						<i
+							onClick={() => setIsMobileMenuOpen(true)}
+							className={`ri-menu-line ri-xl h-[32px] flex justify-center items-center text-muted cursor-pointer hover:text-white duration-200 md:hidden`}
+						></i>
+						<div
+							className="relative hidden xs:inline-flex"
+							ref={dropdownRef}
+							onMouseEnter={() => setIsOpen(true)}
+							onMouseLeave={() => setIsOpen(false)}
+						>
+							<Link
+								href="#"
+								onClick={e => {
+									e.preventDefault()
+									setIsOpen(!isOpen)
+								}}
+								className="group hover:text-white text-muted flex justify-center gap-1 items-center h-8 text-[20px] font-medium rounded-lg focus:outline-none disabled:opacity-50 disabled:pointer-events-none transition-colors"
+								aria-haspopup="menu"
+								aria-expanded={isOpen}
+								aria-label="Dropdown"
+							>
+								{currentRoute.name}
+								<i className="ri-arrow-drop-down-line ri-lg text-muted group-hover:text-white"></i>
+							</Link>
+
+							<div
+								className={`absolute left-0 top-full transition-all duration-200 min-w-60 bg-[#2A2D2F] shadow-lg rounded-lg mt-2 ${
+									isOpen
+										? 'opacity-100 visible translate-y-0'
+										: 'opacity-0 invisible -translate-y-2'
+								}`}
+								role="menu"
+								aria-orientation="vertical"
+							>
+								<div className="p-1 space-y-0.5">
+									{allRoutes.map(route => (
+										<Link
+											key={route.href}
+											className={`flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm ${
+												currentPath === route.href
+													? 'text-white bg-[#3B4245]'
+													: 'text-white hover:bg-[#3B4245]'
+											} focus:outline-none focus:bg-[#3B4245] transition-colors`}
+											href={route.href}
+											onClick={() => setIsOpen(false)}
+										>
+											<i className={`${route.icon} ri-lg`}></i>
+											{route.name}
+										</Link>
+									))}
+								</div>
+							</div>
+						</div>
+						<i className="ri-search-line text-muted ri-lg block xl:hidden md:hidden lg:block cursor-pointer hover:text-white duration-200"></i>
+					</div>
+					<div className="flex-1 relative w-full hidden md:block lg:hidden xl:block">
+						<input
+							ref={searchInputRef}
+							type="text"
+							placeholder="Type a command or search..."
+							className="w-full h-[44px] pl-11 pr-16 bg-transparent text-white rounded-[10px] border border-[#3B4245] focus:outline-none focus:border-gray-500 transition-colors"
+							onFocus={() => setIsSearchFocused(true)}
+							onBlur={() => setIsSearchFocused(false)}
+						/>
+						<i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 ri-lg"></i>
+						{!isSearchFocused && (
+							<div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+								<span className="text-sm text-muted bg-[#212426] px-1.5 py-0.5 rounded">
+									⌘ K
+								</span>
+							</div>
+						)}
+					</div>
+				</div>
+				<div className="flex gap-4 items-center xl:w-fit xl:justify-end min-w-max">
+					<div className="w-7 h-7 flex items-center justify-center">
+						<UserMultiple4 />
+					</div>
+					<div className="w-7 h-7 flex items-center justify-center">
+						<Bell1 />
+					</div>
+					<div className="w-7 h-7 flex items-center justify-center">
+						<Gear1 />
+					</div>
+					{isPending || !session ? (
+						<div className="w-10 h-10 rounded-full bg-gray-700 animate-pulse"></div>
+					) : (
+						<Image
+							src={session?.user?.image as string}
+							alt="Profile"
+							width={40}
+							height={40}
+							className="rounded-full cursor-pointer"
+						/>
+					)}
+				</div>
+			</div>
+			<div
+				className={`fixed inset-0 bg-black/50 z-50 transition-[opacity] duration-300 md:hidden ${
+					isMobileMenuOpen
+						? 'opacity-100 pointer-events-auto'
+						: 'opacity-0 pointer-events-none'
+				}`}
+				onClick={() => setIsMobileMenuOpen(false)}
+				style={{ transitionDuration: isMobileMenuOpen ? '200ms' : '200ms' }}
+			>
+				<div
+					className={`absolute left-0 top-0 h-full w-[300px] bg-background transform transition-transform duration-300 ${
+						isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+					}`}
+					onClick={e => e.stopPropagation()}
+					style={{ transitionDuration: isMobileMenuOpen ? '200ms' : '200ms' }}
+				>
+					<div className="flex flex-col h-full">
+						<div className="pt-8 pb-12 px-8 w-full">
+							<div className="flex justify-between items-center">
+								<div className="flex items-center gap-2">
+									<Image src="/logo.png" alt="Logo" width={24} height={24} />
+									<span className="text-2xl font-semibold text-white">
+										Oxcel
+									</span>
+								</div>
+								<i
+									onClick={() => setIsMobileMenuOpen(false)}
+									className="ri-close-line ri-xl h-[32px] flex justify-center items-center text-muted cursor-pointer hover:text-white duration-200"
+								></i>
+							</div>
+						</div>
+						<div className="flex flex-col flex-1 overflow-y-auto justify-between">
+							<SidebarNavigationTop isCollapsed={false} />
+							<div className="pt-3">
+								<SidebarNavigationBottom isCollapsed={false} />
+								{isPending || !session ? (
+									<div
+										className={`flex items-center cursor-pointer py-3 hover:bg-[#1F2324] mt-4 p-2 mb-5 rounded-lg px-4 mx-4 justify-between`}
+									>
+										<div className="w-10 h-10 rounded-full bg-gray-700 animate-pulse"></div>
+										<div className={`flex flex-col gap-2`}>
+											<span className="h-[20px] w-24 bg-gray-700 rounded animate-pulse"></span>
+											<span className="h-[16px] w-[150px] bg-gray-700 rounded animate-pulse"></span>
+										</div>
+										<i
+											className={`ri-expand-up-down-line text-muted ri-lg`}
+										></i>
+									</div>
+								) : (
+									<div
+										className={`flex items-center cursor-pointer py-3 hover:bg-[#1F2324] mt-4 p-2 mb-5 rounded-lg px-4 mx-4 justify-between`}
+									>
+										<Image
+											src={session?.user?.image as string}
+											alt="Profile"
+											width={40}
+											height={40}
+											className="rounded-full"
+										/>
+										<div className={`flex flex-col`}>
+											<span className="text-white">{session?.user?.name}</span>
+											<span className="text-muted text-sm w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
+												{session?.user?.email}
+											</span>
+										</div>
+										<i
+											className={`ri-expand-up-down-line text-muted ri-lg`}
+										></i>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</>
+	)
+}
+export default Navbar

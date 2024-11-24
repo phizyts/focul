@@ -15,6 +15,7 @@
 		"better-auth": "^1.0.2",
 		"better-fetch": "^1.1.2",
 		"cloudinary": "^2.5.1",
+		"lineicons-react": "^2.0.0",
 		"next": "^15.0.3",
 		"next-auth": "^5.0.0-beta.25",
 		"prettier": "^3.3.3",

@@ -60,16 +60,6 @@ body {
 		@apply relative;
 	}
 	
-	.tooltip {
-		@apply invisible absolute left-full ml-2 px-2 py-1 bg-[#2A2D2F] text-white text-sm rounded-md whitespace-nowrap opacity-0 transition-all duration-200;
-		transform: translateY(-50%);
-		top: 50%;
-	}
-	
-	.tooltip-container:hover .tooltip {
-		@apply visible opacity-100;
-	}
-
 	.fade-blur-top {
 		position: relative;
 	}
