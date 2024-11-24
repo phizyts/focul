@@ -12,10 +12,11 @@ body {
 	}
 	.activeLink:after {
 		position: absolute;
-		left: -2;
+		left: 0; /* Aligns to the left edge */
+		transform: translateX(-50%); /* Adjusts based on the element's size */
 		content: '';
 		@apply bg-primary w-2 h-7 rounded-full;
-	}
+	  }
 	.hoverActive:hover {
 		@apply text-white;
 	}
