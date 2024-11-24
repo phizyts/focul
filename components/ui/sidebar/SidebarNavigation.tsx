@@ -69,6 +69,7 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 												{route.name}
 											</span>
 										)}
+										{isCollapsed && <div className="tooltip">{route.name}</div>}
 									</Link>
 								</li>
 							))}

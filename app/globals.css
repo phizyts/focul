@@ -12,8 +12,8 @@ body {
 	}
 	.activeLink:after {
 		position: absolute;
-		left: 0; /* Aligns to the left edge */
-		transform: translateX(-50%); /* Adjusts based on the element's size */
+		left: 0;
+		transform: translateX(-50%);
 		content: '';
 		@apply bg-primary w-2 h-7 rounded-full;
 	  }
@@ -22,13 +22,15 @@ body {
 	}
 	.hoverActive:after {
 		position: absolute;
-		left: -5;
+		left: 0;
+		transform: translateX(-50%);
 		content: '';
 		@apply bg-primary w-2 h-0 rounded-full duration-200 ease-in-out;
 	}
 	.hoverActive:hover:after {
 		position: absolute;
-		left: -2;
+		left: 0;
+		transform: translateX(-50%);
 		content: '';
 		@apply bg-primary w-2 h-7 rounded-full;
 	}
@@ -38,5 +40,19 @@ body {
 	.hide-scrollbar {
 		-ms-overflow-style: none;
 		scrollbar-width: none;
+	}
+
+	.tooltip-container {
+		@apply relative;
+	}
+	
+	.tooltip {
+		@apply invisible absolute left-full ml-2 px-2 py-1 bg-[#2A2D2F] text-white text-sm rounded-md whitespace-nowrap opacity-0 transition-all duration-200;
+		transform: translateY(-50%);
+		top: 50%;
+	}
+	
+	.tooltip-container:hover .tooltip {
+		@apply visible opacity-100;
 	}
 }
