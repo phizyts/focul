@@ -6,6 +6,11 @@ body {
 	@apply text-text;
 }
 
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
 @layer utilities {
 	.activeLink {
 		@apply text-white;
@@ -37,11 +42,20 @@ body {
 	.hide-scrollbar::-webkit-scrollbar {
 		display: none;
 	}
+	
 	.hide-scrollbar {
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 	}
 
+	.hide-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	
+	.hide-scrollbar:hover {
+		scrollbar-width: none !important; /* Prevent scrollbar appearance during hover */
+	}
+	
 	.tooltip-container {
 		@apply relative;
 	}
@@ -54,5 +68,32 @@ body {
 	
 	.tooltip-container:hover .tooltip {
 		@apply visible opacity-100;
+	}
+
+	.fade-blur-top {
+		position: relative;
+	}
+
+	.fade-blur-top::before {
+		content: '';
+		position: absolute;
+		top: -30px;
+		left: 0;
+		right: 0;
+		height: 30px;
+		background: linear-gradient(to top, 
+			rgba(26, 29, 31, 0.95),
+			rgba(26, 29, 31, 0.8) 30%,
+			rgba(26, 29, 31, 0.4) 60%,
+			transparent
+		);
+		backdrop-filter: blur(12px);
+		mask-image: linear-gradient(to top,
+			rgba(0, 0, 0, 1),
+			rgba(0, 0, 0, 0.6) 50%,
+			rgba(0, 0, 0, 0)
+		);
+		pointer-events: none;
+		z-index: 10;
 	}
 }

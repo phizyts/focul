@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react'
 
 const Sidebar = () => {
 	const { data: session, isPending } = authClient.useSession()
-	const [isCollapsed, setIsCollapsed] = useState(true)
+	const [isCollapsed, setIsCollapsed] = useState(false)
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -46,7 +46,9 @@ const Sidebar = () => {
 					></i>
 				</div>
 			</div>
-			<div className={`flex-1 overflow-y-auto ${isCollapsed ? '' : 'pr-4'}`}>
+			<div
+				className={`flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar ${isCollapsed ? '' : 'pr-4'}`}
+			>
 				<SidebarNavigationTop isCollapsed={isCollapsed} />
 			</div>
 			<div className={`flex flex-col ${isCollapsed ? 'px-2' : 'px-4 pt-4'}`}>

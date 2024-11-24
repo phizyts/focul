@@ -23,7 +23,7 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 
 	return (
 		<div
-			className={`flex flex-col gap-5 overflow-y-auto relative ${isCollapsed ? 'items-center' : ''} hide-scrollbar`}
+			className={`flex flex-col gap-5 overflow-y-auto overflow-x-hidden relative ${isCollapsed ? 'items-center' : ''}`}
 		>
 			{sidebarRoutes.map(category => {
 				const isMenuCollapsed = collapsedCategories.includes(category.name)
@@ -59,7 +59,7 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 											currentPath === route.href && !isMenuCollapsed
 												? 'activeLink'
 												: 'text-muted hoverActive'
-										} duration-200`}
+										} duration-200 overflow-hidden`}
 									>
 										<i
 											className={`${route.icon} ri-xl group-hover:text-white`}
@@ -69,7 +69,6 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 												{route.name}
 											</span>
 										)}
-										{isCollapsed && <div className="tooltip">{route.name}</div>}
 									</Link>
 								</li>
 							))}
@@ -86,7 +85,7 @@ export const SidebarNavigationBottom = ({ isCollapsed }: NavigationProps) => {
 
 	return (
 		<ul
-			className={`flex flex-col gap-5 w-full ${isCollapsed ? 'items-center px-2' : 'px-4'}`}
+			className={`fade-blur-top flex flex-col gap-5 w-full ${isCollapsed ? 'items-center px-2' : 'px-4'}`}
 		>
 			{bottomRoutes.map(route => (
 				<li key={route.href}>
