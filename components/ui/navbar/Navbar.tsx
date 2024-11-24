@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { sidebarRoutes } from '@/constants/constants'
+import { sidebarRoutes, bottomRoutes } from '@/constants/constants'
 import UserMultiple4 from '@/components/icons/UserMultiple'
 import Bell1 from '@/components/icons/Bell'
 import Gear1 from '@/components/icons/Gear'
@@ -38,6 +38,18 @@ const Navbar = ({
 				}
 			}
 		}
+
+		for (const category of bottomRoutes) {
+			const route = category.routes.find(route => route.href === currentPath)
+			if (route) {
+				return {
+					categoryName: category.name,
+					currentRoute: route,
+					allRoutes: category.routes,
+				}
+			}
+		}
+
 		return {
 			categoryName: 'Dashboard',
 			currentRoute: sidebarRoutes[0].routes[0],

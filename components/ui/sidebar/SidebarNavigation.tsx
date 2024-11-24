@@ -87,28 +87,37 @@ export const SidebarNavigationBottom = ({ isCollapsed }: NavigationProps) => {
 		<div
 			className={`flex flex-col gap-5 overflow-y-auto overflow-x-hidden relative ${isCollapsed ? 'items-center' : ''}`}
 		>
-			<ul
-				className={`${isCollapsed ? 'flex flex-col items-center gap-5 w-full' : 'pl-8 flex flex-col gap-5'}`}
-			>
-				{bottomRoutes.map(route => (
-					<li key={route.href}>
-						<Link
-							href={route.href}
-							title={isCollapsed ? route.name : undefined}
-							className={`group flex gap-2 items-center ${isCollapsed ? 'justify-center w-fit py-2' : 'w-fit'} ${
-								currentPath === route.href
-									? 'activeLink'
-									: 'text-muted hoverActive'
-							} duration-200 overflow-hidden`}
-						>
-							<i className={`${route.icon} ri-xl group-hover:text-white`}></i>
-							{!isCollapsed && (
-								<span className="group-hover:text-white">{route.name}</span>
-							)}
-						</Link>
-					</li>
-				))}
-			</ul>
+			{bottomRoutes.map(category => (
+				<div
+					key={category.name}
+					className={`relative ${isCollapsed ? 'w-full flex flex-col items-center' : ''}`}
+				>
+					<ul
+						className={`${isCollapsed ? 'flex flex-col items-center gap-5 w-full px-2' : 'pl-8 flex flex-col gap-5'} mt-3`}
+					>
+						{category.routes.map(route => (
+							<li key={route.href}>
+								<Link
+									href={route.href}
+									title={isCollapsed ? route.name : undefined}
+									className={`group flex gap-2 items-center ${isCollapsed ? 'justify-center w-fit py-2' : 'w-fit'} ${
+										currentPath === route.href
+											? 'activeLink'
+											: 'text-muted hoverActive'
+									} duration-200 overflow-hidden`}
+								>
+									<i
+										className={`${route.icon} ri-xl group-hover:text-white`}
+									></i>
+									{!isCollapsed && (
+										<span className="group-hover:text-white">{route.name}</span>
+									)}
+								</Link>
+							</li>
+						))}
+					</ul>
+				</div>
+			))}
 		</div>
 	)
 }

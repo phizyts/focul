@@ -35,7 +35,7 @@ export const sidebarRoutes: NavCategory[] = [
 		routes: [
 			{
 				name: 'My Courses',
-				href: '/dashboard/courses',
+				href: '/dashboard/courses/my',
 				icon: 'ri-book-fill',
 			},
 			{
@@ -82,15 +82,20 @@ export const sidebarRoutes: NavCategory[] = [
 	},
 ]
 
-export const bottomRoutes: NavRoute[] = [
+export const bottomRoutes: NavCategory[] = [
 	{
-		name: 'Inbox',
-		href: '/dashboard/inbox',
-		icon: 'ri-inbox-2-fill',
-	},
-	{
-		name: 'Settings',
-		href: '/dashboard/account/settings',
-		icon: 'ri-settings-4-fill',
+		name: 'Others',
+		routes: [
+			{
+				name: 'Inbox',
+				href: '/dashboard/inbox',
+				icon: 'ri-inbox-2-fill',
+			},
+			{
+				name: 'Settings',
+				href: '/dashboard/account/settings',
+				icon: 'ri-settings-4-fill',
+			},
+		],
 	},
 ]
