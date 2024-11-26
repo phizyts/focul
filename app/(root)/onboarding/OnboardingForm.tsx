@@ -1,12 +1,12 @@
-'use client';
-import { authClient } from '@/lib/auth-client';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import CourseModal from './_components/CourseModal';
-import { AddCourseForm } from './_components/AddCourseForm';
-import { EditCourseForm } from './_components/EditCourseForm';
-import { uploadImage } from '@/action/server.action';
-import { useRouter } from 'next/navigation';
+"use client";
+import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import CourseModal from "./_components/CourseModal";
+import { AddCourseForm } from "./_components/AddCourseForm";
+import { EditCourseForm } from "./_components/EditCourseForm";
+import { uploadImage } from "@/action/server.action";
+import { useRouter } from "next/navigation";
 
 interface Course {
 	name: string;
@@ -20,8 +20,8 @@ interface Props {
 const OnboardingForm = ({ setParentLoading }: Props) => {
 	const router = useRouter();
 	const [courses, setCourses] = useState<Course[]>([]);
-	const [selectedLanguage, setSelectedLanguage] = useState('English');
-	const [url, setUrl] = useState('/uploadpfp.png');
+	const [selectedLanguage, setSelectedLanguage] = useState("English");
+	const [url, setUrl] = useState("/uploadpfp.png");
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -51,10 +51,10 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 			if (selectedFile) {
 				imageUrl = await uploadImage(selectedFile);
 			}
-			await fetch('/api/user/onboard', {
-				method: 'POST',
+			await fetch("/api/user/onboard", {
+				method: "POST",
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
 					image: imageUrl,
@@ -65,11 +65,11 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 					})),
 				}),
 			});
-			router.push('/dashboard');
+			router.push("/dashboard");
 			setParentLoading(false);
 		} catch (error) {
 			setParentLoading(false);
-			console.error('Error during onboarding:', error);
+			console.error("Error during onboarding:", error);
 		}
 	};
 
@@ -85,10 +85,10 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 	useEffect(() => {
 		const getUserImage = async () => {
 			const session = await authClient.getSession();
-			let imageUrl = session.data?.user?.image ?? '';
-			if (imageUrl !== '') {
-				if (imageUrl.includes('=s96-c')) {
-					imageUrl = imageUrl.replace('=s96-c', '');
+			let imageUrl = session.data?.user?.image ?? "";
+			if (imageUrl !== "") {
+				if (imageUrl.includes("=s96-c")) {
+					imageUrl = imageUrl.replace("=s96-c", "");
 				}
 				return imageUrl;
 			}
@@ -140,7 +140,7 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 									width={12}
 									height={12}
 									alt="remove all"
-								/>{' '}
+								/>{" "}
 								Remove All
 							</button>
 						</div>
@@ -210,10 +210,10 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 							<h3 className="text-muted text-xs flex gap-1">Optional*</h3>
 						</div>
 						<div className="grid grid-cols-2 grid-rows-2 gap-4 mt-2">
-							{['English', 'Chinese', 'Spanish', 'French'].map(language => (
+							{["English", "Chinese", "Spanish", "French"].map(language => (
 								<button
 									key={language}
-									className={`flex gap-2 items-center justify-center py-2 px-3 w-full h-[44px] rounded-[10px] border border-border hover:bg-[#1F2324] duration-200 text-[15px] ${selectedLanguage === language ? 'bg-[#1F2324]' : ''}`}
+									className={`flex gap-2 items-center justify-center py-2 px-3 w-full h-[44px] rounded-[10px] border border-border hover:bg-[#1F2324] duration-200 text-[15px] ${selectedLanguage === language ? "bg-[#1F2324]" : ""}`}
 									onClick={() => setSelectedLanguage(language)}
 								>
 									<span className="truncate">{language}</span>

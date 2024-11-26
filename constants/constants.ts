@@ -11,72 +11,72 @@ interface NavCategory {
 
 export const sidebarRoutes: NavCategory[] = [
 	{
-		name: 'Dashboard',
+		name: "Dashboard",
 		routes: [
 			{
-				name: 'Overview',
-				href: '/dashboard/overview',
-				icon: 'ri-layout-grid-fill',
+				name: "Overview",
+				href: "/dashboard/overview",
+				icon: "ri-layout-grid-fill",
 			},
 			{
-				name: 'Calendar',
-				href: '/dashboard/calendar',
-				icon: 'ri-calendar-fill',
+				name: "Calendar",
+				href: "/dashboard/calendar",
+				icon: "ri-calendar-fill",
 			},
 			{
-				name: 'Reminder',
-				href: '/dashboard/reminder',
-				icon: 'ri-file-list-fill',
+				name: "Reminder",
+				href: "/dashboard/reminder",
+				icon: "ri-file-list-fill",
 			},
 		],
 	},
 	{
-		name: 'Courses',
+		name: "Courses",
 		routes: [
 			{
-				name: 'My Courses',
-				href: '/dashboard/courses/my',
-				icon: 'ri-book-fill',
+				name: "My Courses",
+				href: "/dashboard/courses/my",
+				icon: "ri-book-fill",
 			},
 			{
-				name: 'Assignments',
-				href: '/dashboard/courses/assignments',
-				icon: 'ri-book-open-fill',
+				name: "Assignments",
+				href: "/dashboard/courses/assignments",
+				icon: "ri-book-open-fill",
 			},
 			{
-				name: 'Grades',
-				href: '/dashboard/courses/grades',
-				icon: 'ri-numbers-fill',
+				name: "Grades",
+				href: "/dashboard/courses/grades",
+				icon: "ri-numbers-fill",
 			},
 		],
 	},
 	{
-		name: 'Study Tools',
+		name: "Study Tools",
 		routes: [
 			{
-				name: 'Notes',
-				href: '/dashboard/tools/notes',
-				icon: 'ri-sticky-note-add-fill',
+				name: "Notes",
+				href: "/dashboard/tools/notes",
+				icon: "ri-sticky-note-add-fill",
 			},
 			{
-				name: 'Flashcards',
-				href: '/dashboard/tools/flashcards',
-				icon: 'ri-sticky-note-2-fill',
+				name: "Flashcards",
+				href: "/dashboard/tools/flashcards",
+				icon: "ri-sticky-note-2-fill",
 			},
 		],
 	},
 	{
-		name: 'Community',
+		name: "Community",
 		routes: [
 			{
-				name: 'Friends',
-				href: '/dashboard/community/friends',
-				icon: 'ri-group-fill',
+				name: "Friends",
+				href: "/dashboard/community/friends",
+				icon: "ri-group-fill",
 			},
 			{
-				name: 'Study Groups',
-				href: '/dashboard/community/groups',
-				icon: 'ri-team-fill',
+				name: "Study Groups",
+				href: "/dashboard/community/groups",
+				icon: "ri-team-fill",
 			},
 		],
 	},
@@ -84,17 +84,17 @@ export const sidebarRoutes: NavCategory[] = [
 
 export const bottomRoutes: NavCategory[] = [
 	{
-		name: 'Others',
+		name: "Others",
 		routes: [
 			{
-				name: 'Inbox',
-				href: '/dashboard/inbox',
-				icon: 'ri-inbox-2-fill',
+				name: "Inbox",
+				href: "/dashboard/inbox",
+				icon: "ri-inbox-2-fill",
 			},
 			{
-				name: 'Settings',
-				href: '/dashboard/account/settings',
-				icon: 'ri-settings-4-fill',
+				name: "Settings",
+				href: "/dashboard/account/settings",
+				icon: "ri-settings-4-fill",
 			},
 		],
 	},

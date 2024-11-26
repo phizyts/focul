@@ -1,17 +1,17 @@
-'use client';
-import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { sidebarRoutes, bottomRoutes } from '@/constants/constants';
-import UserMultiple4 from '@/components/icons/UserMultiple';
-import Bell1 from '@/components/icons/Bell';
-import Gear1 from '@/components/icons/Gear';
-import Image from 'next/image';
-import { authClient } from '@/lib/auth-client';
+"use client";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { sidebarRoutes, bottomRoutes } from "@/constants/constants";
+import UserMultiple4 from "@/components/icons/UserMultiple";
+import Bell1 from "@/components/icons/Bell";
+import Gear1 from "@/components/icons/Gear";
+import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 import {
 	SidebarNavigationTop,
 	SidebarNavigationBottom,
-} from '../sidebar/SidebarNavigation';
+} from "../sidebar/SidebarNavigation";
 
 const Navbar = ({
 	session,
@@ -51,7 +51,7 @@ const Navbar = ({
 		}
 
 		return {
-			categoryName: 'Dashboard',
+			categoryName: "Dashboard",
 			currentRoute: sidebarRoutes[0].routes[0],
 			allRoutes: sidebarRoutes[0].routes,
 		};
@@ -61,14 +61,14 @@ const Navbar = ({
 
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
-			if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === 'k') {
+			if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || e.key === "k") {
 				e.preventDefault();
 				searchInputRef.current?.focus();
 			}
 		};
 
-		document.addEventListener('keydown', handleKeyPress);
-		return () => document.removeEventListener('keydown', handleKeyPress);
+		document.addEventListener("keydown", handleKeyPress);
+		return () => document.removeEventListener("keydown", handleKeyPress);
 	}, []);
 
 	useEffect(() => {
@@ -81,8 +81,8 @@ const Navbar = ({
 			}
 		};
 
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
 	return (
@@ -118,8 +118,8 @@ const Navbar = ({
 							<div
 								className={`absolute left-0 top-full transition-all duration-200 min-w-60 bg-[#242729] shadow-lg rounded-lg mt-2 ${
 									isOpen
-										? 'opacity-100 visible translate-y-0'
-										: 'opacity-0 invisible -translate-y-2'
+										? "opacity-100 visible translate-y-0"
+										: "opacity-0 invisible -translate-y-2"
 								}`}
 								role="menu"
 								aria-orientation="vertical"
@@ -130,8 +130,8 @@ const Navbar = ({
 											key={route.href}
 											className={`flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm ${
 												currentPath === route.href
-													? 'text-white bg-[#3B4245]'
-													: 'text-white hover:bg-[#3B4245]'
+													? "text-white bg-[#3B4245]"
+													: "text-white hover:bg-[#3B4245]"
 											} focus:outline-none focus:bg-[#3B4245] transition-colors`}
 											href={route.href}
 											onClick={() => setIsOpen(false)}
@@ -190,18 +190,18 @@ const Navbar = ({
 			<div
 				className={`fixed inset-0 bg-black/50 z-50 transition-[opacity] duration-300 md:hidden ${
 					isMobileMenuOpen
-						? 'opacity-100 pointer-events-auto'
-						: 'opacity-0 pointer-events-none'
+						? "opacity-100 pointer-events-auto"
+						: "opacity-0 pointer-events-none"
 				}`}
 				onClick={() => setIsMobileMenuOpen(false)}
-				style={{ transitionDuration: isMobileMenuOpen ? '200ms' : '200ms' }}
+				style={{ transitionDuration: isMobileMenuOpen ? "200ms" : "200ms" }}
 			>
 				<div
 					className={`absolute left-0 top-0 h-full w-[300px] bg-background transform transition-transform duration-300 ${
-						isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+						isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
 					}`}
 					onClick={e => e.stopPropagation()}
-					style={{ transitionDuration: isMobileMenuOpen ? '200ms' : '200ms' }}
+					style={{ transitionDuration: isMobileMenuOpen ? "200ms" : "200ms" }}
 				>
 					<div className="flex flex-col h-full">
 						<div className="pt-8 pb-12 px-8 w-full">

@@ -1,28 +1,28 @@
-'use client';
-import { Loading } from '@/components/ui/Loading';
+"use client";
+import { Loading } from "@/components/ui/Loading";
 import {
 	authClient,
 	signInWithGithub,
 	signInWithGoogle,
-} from '@/lib/auth-client';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
+} from "@/lib/auth-client";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 const LoginForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const signIn = async (formData: FormData) => {
-		const email = formData.get('email') as string;
-		const password = formData.get('password') as string;
+		const email = formData.get("email") as string;
+		const password = formData.get("password") as string;
 		try {
 			const { data, error } = await authClient.signIn.email({
 				email,
 				password,
-				callbackURL: '/dashboard',
+				callbackURL: "/dashboard",
 			});
 		} catch (error) {
-			console.error('Sign-in error', error);
+			console.error("Sign-in error", error);
 		} finally {
 			setIsLoading(false);
 		}
@@ -36,7 +36,7 @@ const LoginForm = () => {
 						try {
 							await signInWithGoogle();
 						} catch (error) {
-							console.error('Sign-in error', error);
+							console.error("Sign-in error", error);
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
@@ -49,7 +49,7 @@ const LoginForm = () => {
 						try {
 							await signInWithGithub();
 						} catch (error) {
-							console.error('Sign-in error', error);
+							console.error("Sign-in error", error);
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
@@ -105,7 +105,7 @@ const LoginForm = () => {
 						setIsLoading(true);
 					}}
 				>
-					{isLoading ? <Loading isWhite /> : 'Login'}
+					{isLoading ? <Loading isWhite /> : "Login"}
 				</button>
 			</form>
 		</>

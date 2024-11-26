@@ -1,6 +1,6 @@
-import { inferAdditionalFields } from 'better-auth/client/plugins';
-import { createAuthClient } from 'better-auth/react';
-import type { auth } from './auth';
+import { inferAdditionalFields } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
+import type { auth } from "./auth";
 export const authClient = createAuthClient({
 	baseURL: process.env.BETTER_AUTH_URL,
 	plugins: [inferAdditionalFields<typeof auth>()],
@@ -8,14 +8,14 @@ export const authClient = createAuthClient({
 
 export const signInWithGoogle = async () => {
 	const data = await authClient.signIn.social({
-		provider: 'google',
-		callbackURL: '/dashboard',
+		provider: "google",
+		callbackURL: "/dashboard",
 	});
 };
 
 export const signInWithGithub = async () => {
 	const data = await authClient.signIn.social({
-		provider: 'github',
-		callbackURL: '/dashboard',
+		provider: "github",
+		callbackURL: "/dashboard",
 	});
 };

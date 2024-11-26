@@ -1,5 +1,5 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 
 interface CourseFormProps {
 	onSubmit: (course: { name: string; type: string }) => void;
@@ -7,8 +7,8 @@ interface CourseFormProps {
 }
 
 export function AddCourseForm({ onSubmit, onClose }: CourseFormProps) {
-	const [courseName, setCourseName] = useState('');
-	const [courseType, setCourseType] = useState('Regular');
+	const [courseName, setCourseName] = useState("");
+	const [courseType, setCourseType] = useState("Regular");
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();

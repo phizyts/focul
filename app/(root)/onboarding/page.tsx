@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import OnboardingForm from './OnboardingForm';
-import { useState } from 'react';
-import { Loading } from '@/components/ui/Loading';
+import Image from "next/image";
+import OnboardingForm from "./OnboardingForm";
+import { useState } from "react";
+import { Loading } from "@/components/ui/Loading";
 
 export default function OnBoarding() {
 	const [isLoading, setIsLoading] = useState(false);

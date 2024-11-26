@@ -1,8 +1,8 @@
-import { auth } from '@/lib/auth';
-import { prisma } from '@/prisma';
-import { Lang } from '@prisma/client';
-import { headers } from 'next/headers';
-import { uploadImage } from './server.action';
+import { auth } from "@/lib/auth";
+import { prisma } from "@/prisma";
+import { Lang } from "@prisma/client";
+import { headers } from "next/headers";
+import { uploadImage } from "./server.action";
 
 export const getUser = async () => {
 	const session = await auth.api.getSession({

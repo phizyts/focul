@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import LoginForm from './LoginForm';
+import Link from "next/link";
+import LoginForm from "./LoginForm";
 
 export default function Login() {
 	return (
@@ -8,7 +8,7 @@ export default function Login() {
 				<h1 className="font-medium text-2xl">Login to Oxcel</h1>
 				<LoginForm />
 				<span className="text-sm text-center text-muted mt-3">
-					Don't have an account?{' '}
+					Don't have an account?{" "}
 					<Link href="/auth/signup" className="text-primary hover:underline">
 						Sign Up
 					</Link>

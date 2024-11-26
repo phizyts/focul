@@ -1,13 +1,13 @@
-import { betterAuth } from 'better-auth';
-import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { PrismaClient } from '@prisma/client';
-import argon2 from 'argon2';
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { PrismaClient } from "@prisma/client";
+import argon2 from "argon2";
 
 const prisma = new PrismaClient();
 export const auth = betterAuth({
 	baseURL: process.env.BETTER_AUTH_URL,
 	database: prismaAdapter(prisma, {
-		provider: 'postgresql',
+		provider: "postgresql",
 	}),
 	emailAndPassword: {
 		enabled: true,
@@ -31,20 +31,20 @@ export const auth = betterAuth({
 		},
 	},
 	advanced: {
-		cookiePrefix: 'oxcel',
+		cookiePrefix: "oxcel",
 	},
 	user: {
 		additionalFields: {
 			onboarded: {
-				type: 'boolean',
+				type: "boolean",
 				required: true,
 				defaultValue: false,
 				input: false,
 			},
 			language: {
-				type: 'string',
+				type: "string",
 				required: true,
-				defaultValue: 'english',
+				defaultValue: "english",
 				input: true,
 			},
 		},
