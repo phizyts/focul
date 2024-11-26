@@ -1,55 +1,55 @@
-'use client'
-import { authClient } from '@/lib/auth-client'
-import Image from 'next/image'
-import { useState, useEffect } from 'react'
-import CourseModal from './_components/CourseModal'
-import { AddCourseForm } from './_components/AddCourseForm'
-import { EditCourseForm } from './_components/EditCourseForm'
-import { uploadImage } from '@/action/server.action'
-import { useRouter } from 'next/navigation'
+'use client';
+import { authClient } from '@/lib/auth-client';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import CourseModal from './_components/CourseModal';
+import { AddCourseForm } from './_components/AddCourseForm';
+import { EditCourseForm } from './_components/EditCourseForm';
+import { uploadImage } from '@/action/server.action';
+import { useRouter } from 'next/navigation';
 
 interface Course {
-	name: string
-	type: string
+	name: string;
+	type: string;
 }
 
 interface Props {
-	setParentLoading: (loading: boolean) => void
+	setParentLoading: (loading: boolean) => void;
 }
 
 const OnboardingForm = ({ setParentLoading }: Props) => {
-	const router = useRouter()
-	const [courses, setCourses] = useState<Course[]>([])
-	const [selectedLanguage, setSelectedLanguage] = useState('English')
-	const [url, setUrl] = useState('/uploadpfp.png')
-	const [selectedFile, setSelectedFile] = useState<File | null>(null)
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
+	const router = useRouter();
+	const [courses, setCourses] = useState<Course[]>([]);
+	const [selectedLanguage, setSelectedLanguage] = useState('English');
+	const [url, setUrl] = useState('/uploadpfp.png');
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
 	const handleAddCourse = (newCourse: Course) => {
-		setCourses([...courses, newCourse])
-	}
+		setCourses([...courses, newCourse]);
+	};
 
 	const handleRemoveAll = () => {
-		setCourses([])
-	}
+		setCourses([]);
+	};
 
 	const handleCourseClick = (course: Course) => {
-		setSelectedCourse(course)
-		setIsModalOpen(true)
-	}
+		setSelectedCourse(course);
+		setIsModalOpen(true);
+	};
 
 	const closeModal = () => {
-		setSelectedCourse(null)
-		setIsModalOpen(false)
-	}
+		setSelectedCourse(null);
+		setIsModalOpen(false);
+	};
 
 	const completeOnBoard = async () => {
-		setParentLoading(true)
+		setParentLoading(true);
 		try {
-			let imageUrl = url
+			let imageUrl = url;
 			if (selectedFile) {
-				imageUrl = await uploadImage(selectedFile)
+				imageUrl = await uploadImage(selectedFile);
 			}
 			await fetch('/api/user/onboard', {
 				method: 'POST',
@@ -64,43 +64,43 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 						type: course.type,
 					})),
 				}),
-			})
-			router.push('/dashboard')
-			setParentLoading(false)
+			});
+			router.push('/dashboard');
+			setParentLoading(false);
 		} catch (error) {
-			setParentLoading(false)
-			console.error('Error during onboarding:', error)
+			setParentLoading(false);
+			console.error('Error during onboarding:', error);
 		}
-	}
+	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target?.files?.[0]
+		const file = e.target?.files?.[0];
 		if (file) {
-			setSelectedFile(file)
-			const objectUrl = URL.createObjectURL(file)
-			setUrl(objectUrl)
+			setSelectedFile(file);
+			const objectUrl = URL.createObjectURL(file);
+			setUrl(objectUrl);
 		}
-	}
+	};
 
 	useEffect(() => {
 		const getUserImage = async () => {
-			const session = await authClient.getSession()
-			let imageUrl = session.data?.user?.image ?? ''
+			const session = await authClient.getSession();
+			let imageUrl = session.data?.user?.image ?? '';
 			if (imageUrl !== '') {
 				if (imageUrl.includes('=s96-c')) {
-					imageUrl = imageUrl.replace('=s96-c', '')
+					imageUrl = imageUrl.replace('=s96-c', '');
 				}
-				return imageUrl
+				return imageUrl;
 			}
-			return null
-		}
+			return null;
+		};
 
 		getUserImage().then(userImage => {
 			if (userImage) {
-				setUrl(userImage)
+				setUrl(userImage);
 			}
-		})
-	}, [])
+		});
+	}, []);
 
 	return (
 		<>
@@ -242,13 +242,13 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 										courses.map(c =>
 											c.name === selectedCourse.name ? updatedCourse : c,
 										),
-									)
+									);
 								} else {
 									setCourses(
 										courses.filter(c => c.name !== selectedCourse.name),
-									)
+									);
 								}
-								closeModal()
+								closeModal();
 							}}
 							onClose={closeModal}
 						/>
@@ -258,6 +258,6 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 				</CourseModal>
 			)}
 		</>
-	)
-}
-export default OnboardingForm
+	);
+};
+export default OnboardingForm;

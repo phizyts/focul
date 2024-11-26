@@ -3,6 +3,7 @@
 Ultimate Solution to Your Sudent Life
 
 Tech Stack:
+
 - NextJS (Main Framework)
 - TypeScript (Type Checking)
 - PostgreSQL (Database)

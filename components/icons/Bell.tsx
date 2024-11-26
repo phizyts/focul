@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 export default function Bell1() {
 	return (
 		<svg
@@ -16,5 +16,5 @@ export default function Bell1() {
 				clipRule="evenodd"
 			/>
 		</svg>
-	)
+	);
 }

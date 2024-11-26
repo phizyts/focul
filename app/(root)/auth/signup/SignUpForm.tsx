@@ -1,42 +1,42 @@
-'use client'
-import { Loading } from '@/components/ui/Loading'
+'use client';
+import { Loading } from '@/components/ui/Loading';
 import {
 	authClient,
 	signInWithGithub,
 	signInWithGoogle,
-} from '@/lib/auth-client'
-import Image from 'next/image'
-import { useState } from 'react'
+} from '@/lib/auth-client';
+import Image from 'next/image';
+import { useState } from 'react';
 
 const SignUpForm = () => {
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(false);
 
 	const signUp = async (formData: FormData) => {
-		const name = formData.get('name') as string
-		const email = formData.get('email') as string
-		const password = formData.get('password') as string
+		const name = formData.get('name') as string;
+		const email = formData.get('email') as string;
+		const password = formData.get('password') as string;
 		try {
 			const { data, error } = await authClient.signUp.email({
 				email,
 				password,
 				name,
 				callbackURL: '/dashboard',
-			})
+			});
 		} catch (error) {
-			console.error('Sign-up error', error)
+			console.error('Sign-up error', error);
 		} finally {
-			setIsLoading(false)
+			setIsLoading(false);
 		}
-	}
+	};
 	return (
 		<>
 			<div className="flex gap-4 mt-6 w-full">
 				<button
 					onClick={async () => {
 						try {
-							await signInWithGoogle()
+							await signInWithGoogle();
 						} catch (error) {
-							console.error('Sign-in error', error)
+							console.error('Sign-in error', error);
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
@@ -47,9 +47,9 @@ const SignUpForm = () => {
 				<button
 					onClick={async () => {
 						try {
-							await signInWithGithub()
+							await signInWithGithub();
 						} catch (error) {
-							console.error('Sign-in error', error)
+							console.error('Sign-in error', error);
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
@@ -68,7 +68,7 @@ const SignUpForm = () => {
 			<form
 				className="flex flex-col gap-4 w-full"
 				action={async formData => {
-					await signUp(formData)
+					await signUp(formData);
 				}}
 			>
 				<div className="w-full flex flex-col gap-2">
@@ -104,13 +104,13 @@ const SignUpForm = () => {
 				<button
 					className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
 					onClick={() => {
-						setIsLoading(true)
+						setIsLoading(true);
 					}}
 				>
 					{isLoading ? <Loading isWhite /> : 'Sign Up'}
 				</button>
 			</form>
 		</>
-	)
-}
-export default SignUpForm
+	);
+};
+export default SignUpForm;

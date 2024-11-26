@@ -1,3 +1,3 @@
 export default function Reminder() {
-	return <div>Reminder</div>
+	return <div>Reminder</div>;
 }

@@ -1,10 +1,10 @@
-'use client'
-import Navbar from '@/components/ui/navbar/Navbar'
-import Sidebar from '@/components/ui/sidebar/Sidebar'
-import { authClient } from '@/lib/auth-client'
+'use client';
+import Navbar from '@/components/ui/navbar/Navbar';
+import Sidebar from '@/components/ui/sidebar/Sidebar';
+import { authClient } from '@/lib/auth-client';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-	const { data: session, isPending } = authClient.useSession()
+	const { data: session, isPending } = authClient.useSession();
 	return (
 		<main className="h-screen flex">
 			<Sidebar session={session} isPending={isPending} />
@@ -13,5 +13,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				{children}
 			</div>
 		</main>
-	)
+	);
 }

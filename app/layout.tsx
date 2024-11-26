@@ -1,7 +1,7 @@
-import type { Metadata } from 'next'
-import localFont from 'next/font/local'
-import './globals.css'
-import 'remixicon/fonts/remixicon.css'
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import './globals.css';
+import 'remixicon/fonts/remixicon.css';
 
 const poppins = localFont({
 	src: [
@@ -51,17 +51,17 @@ const poppins = localFont({
 			style: 'normal',
 		},
 	],
-})
+});
 
 export const metadata: Metadata = {
 	title: 'Oxcel',
 	description: 'All In One Student Dashboard',
-}
+};
 
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode
+	children: React.ReactNode;
 }>) {
 	return (
 		<html lang="en">
@@ -69,5 +69,5 @@ export default function RootLayout({
 				{children}
 			</body>
 		</html>
-	)
+	);
 }

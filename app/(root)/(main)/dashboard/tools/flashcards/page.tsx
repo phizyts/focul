@@ -1,3 +1,3 @@
 export default function Flashcards() {
-	return <div>Flashcards</div>
+	return <div>Flashcards</div>;
 }

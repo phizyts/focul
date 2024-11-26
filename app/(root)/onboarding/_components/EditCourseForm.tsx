@@ -1,10 +1,10 @@
-'use client'
-import { useState } from 'react'
+'use client';
+import { useState } from 'react';
 
 interface EditCourseFormProps {
-	course: { name: string; type: string }
-	onSubmit: (updatedCourse: { name: string; type: string } | null) => void
-	onClose: () => void
+	course: { name: string; type: string };
+	onSubmit: (updatedCourse: { name: string; type: string } | null) => void;
+	onClose: () => void;
 }
 
 export function EditCourseForm({
@@ -12,19 +12,19 @@ export function EditCourseForm({
 	onSubmit,
 	onClose,
 }: EditCourseFormProps) {
-	const [courseName, setCourseName] = useState(course.name)
-	const [courseType, setCourseType] = useState(course.type)
+	const [courseName, setCourseName] = useState(course.name);
+	const [courseType, setCourseType] = useState(course.type);
 
 	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-		onSubmit({ name: courseName, type: courseType })
-		onClose()
-	}
+		e.preventDefault();
+		onSubmit({ name: courseName, type: courseType });
+		onClose();
+	};
 
 	const handleDelete = () => {
-		onSubmit(null)
-		onClose()
-	}
+		onSubmit(null);
+		onClose();
+	};
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
@@ -85,5 +85,5 @@ export function EditCourseForm({
 				</div>
 			</div>
 		</form>
-	)
+	);
 }

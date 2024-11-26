@@ -1,6 +1,6 @@
-import { CourseType } from '@prisma/client'
-import { getUser } from './user.action'
-import { prisma } from '@/prisma'
+import { CourseType } from '@prisma/client';
+import { getUser } from './user.action';
+import { prisma } from '@/prisma';
 
 export async function createCourse(name: string, type: CourseType) {
 	await prisma.courses.create({
@@ -9,6 +9,6 @@ export async function createCourse(name: string, type: CourseType) {
 			type,
 			userId: (await getUser())?.id as string,
 		},
-	})
-	return
+	});
+	return;
 }

@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import OnboardingForm from './OnboardingForm'
-import { useState } from 'react'
-import { Loading } from '@/components/ui/Loading'
+import Image from 'next/image';
+import OnboardingForm from './OnboardingForm';
+import { useState } from 'react';
+import { Loading } from '@/components/ui/Loading';
 
 export default function OnBoarding() {
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(false);
 
 	if (isLoading) {
 		return (
 			<div className="flex justify-center items-center gap-1 h-screen w-full">
 				<Loading />
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -32,5 +32,5 @@ export default function OnBoarding() {
 			</div>
 			<OnboardingForm setParentLoading={setIsLoading} />
 		</div>
-	)
+	);
 }

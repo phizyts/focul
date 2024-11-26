@@ -1,3 +1,3 @@
 export default function Assignments() {
-	return <div>Assignments</div>
+	return <div>Assignments</div>;
 }

@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import LoginForm from './LoginForm'
+import Link from 'next/link';
+import LoginForm from './LoginForm';
 
 export default function Login() {
 	return (
@@ -15,5 +15,5 @@ export default function Login() {
 				</span>
 			</div>
 		</div>
-	)
+	);
 }

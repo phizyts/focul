@@ -1,12 +1,12 @@
 interface NavRoute {
-	name: string
-	href: string
-	icon: string
+	name: string;
+	href: string;
+	icon: string;
 }
 
 interface NavCategory {
-	name: string
-	routes: NavRoute[]
+	name: string;
+	routes: NavRoute[];
 }
 
 export const sidebarRoutes: NavCategory[] = [
@@ -80,7 +80,7 @@ export const sidebarRoutes: NavCategory[] = [
 			},
 		],
 	},
-]
+];
 
 export const bottomRoutes: NavCategory[] = [
 	{
@@ -98,4 +98,4 @@ export const bottomRoutes: NavCategory[] = [
 			},
 		],
 	},
-]
+];

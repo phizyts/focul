@@ -1,32 +1,32 @@
-'use client'
-import Image from 'next/image'
+'use client';
+import Image from 'next/image';
 import {
 	SidebarNavigationTop,
 	SidebarNavigationBottom,
-} from './SidebarNavigation'
-import { useState, useEffect } from 'react'
+} from './SidebarNavigation';
+import { useState, useEffect } from 'react';
 
 const Sidebar = ({
 	session,
 	isPending,
 }: {
-	session: any
-	isPending: boolean
+	session: any;
+	isPending: boolean;
 }) => {
-	const [isCollapsed, setIsCollapsed] = useState(false)
+	const [isCollapsed, setIsCollapsed] = useState(false);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
 			const handleResize = () => {
-				setIsCollapsed(window.innerWidth < 960)
-			}
+				setIsCollapsed(window.innerWidth < 960);
+			};
 
-			handleResize()
-			window.addEventListener('resize', handleResize)
+			handleResize();
+			window.addEventListener('resize', handleResize);
 
-			return () => window.removeEventListener('resize', handleResize)
+			return () => window.removeEventListener('resize', handleResize);
 		}
-	}, [])
+	}, []);
 
 	return (
 		<nav
@@ -96,7 +96,7 @@ const Sidebar = ({
 				)}
 			</div>
 		</nav>
-	)
-}
+	);
+};
 
-export default Sidebar
+export default Sidebar;

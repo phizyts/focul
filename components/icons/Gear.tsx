@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 export default function Gear1() {
 	return (
 		<svg
@@ -22,5 +22,5 @@ export default function Gear1() {
 				clipRule="evenodd"
 			/>
 		</svg>
-	)
+	);
 }

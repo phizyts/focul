@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function UserMultiple4() {
 	return (
@@ -29,5 +29,5 @@ export default function UserMultiple4() {
 				className="fill-current"
 			/>
 		</svg>
-	)
+	);
 }

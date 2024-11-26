@@ -1,3 +1,3 @@
 export default function Friends() {
-	return <div>Friends</div>
+	return <div>Friends</div>;
 }

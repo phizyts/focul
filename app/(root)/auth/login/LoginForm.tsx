@@ -1,32 +1,32 @@
-'use client'
-import { Loading } from '@/components/ui/Loading'
+'use client';
+import { Loading } from '@/components/ui/Loading';
 import {
 	authClient,
 	signInWithGithub,
 	signInWithGoogle,
-} from '@/lib/auth-client'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useState } from 'react'
+} from '@/lib/auth-client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
 
 const LoginForm = () => {
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(false);
 
 	const signIn = async (formData: FormData) => {
-		const email = formData.get('email') as string
-		const password = formData.get('password') as string
+		const email = formData.get('email') as string;
+		const password = formData.get('password') as string;
 		try {
 			const { data, error } = await authClient.signIn.email({
 				email,
 				password,
 				callbackURL: '/dashboard',
-			})
+			});
 		} catch (error) {
-			console.error('Sign-in error', error)
+			console.error('Sign-in error', error);
 		} finally {
-			setIsLoading(false)
+			setIsLoading(false);
 		}
-	}
+	};
 
 	return (
 		<>
@@ -34,9 +34,9 @@ const LoginForm = () => {
 				<button
 					onClick={async () => {
 						try {
-							await signInWithGoogle()
+							await signInWithGoogle();
 						} catch (error) {
-							console.error('Sign-in error', error)
+							console.error('Sign-in error', error);
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
@@ -47,9 +47,9 @@ const LoginForm = () => {
 				<button
 					onClick={async () => {
 						try {
-							await signInWithGithub()
+							await signInWithGithub();
 						} catch (error) {
-							console.error('Sign-in error', error)
+							console.error('Sign-in error', error);
 						}
 					}}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
@@ -68,7 +68,7 @@ const LoginForm = () => {
 			<form
 				className="flex flex-col gap-4 w-full"
 				action={async formData => {
-					await signIn(formData)
+					await signIn(formData);
 				}}
 			>
 				<div className="w-full flex flex-col gap-2">
@@ -102,13 +102,13 @@ const LoginForm = () => {
 				<button
 					className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
 					onClick={() => {
-						setIsLoading(true)
+						setIsLoading(true);
 					}}
 				>
 					{isLoading ? <Loading isWhite /> : 'Login'}
 				</button>
 			</form>
 		</>
-	)
-}
-export default LoginForm
+	);
+};
+export default LoginForm;

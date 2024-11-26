@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import SignUpForm from './SignUpForm'
+import Link from 'next/link';
+import SignUpForm from './SignUpForm';
 
 export default function SignUp() {
 	return (
@@ -15,5 +15,5 @@ export default function SignUp() {
 				</span>
 			</div>
 		</div>
-	)
+	);
 }

@@ -1,32 +1,32 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { bottomRoutes, sidebarRoutes } from '@/constants/constants'
-import { useState } from 'react'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { bottomRoutes, sidebarRoutes } from '@/constants/constants';
+import { useState } from 'react';
 
 interface NavigationProps {
-	isCollapsed?: boolean
+	isCollapsed?: boolean;
 }
 
 export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
-	const currentPath = usePathname()
-	const [collapsedCategories, setCollapsedCategories] = useState<string[]>([])
+	const currentPath = usePathname();
+	const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
 	const toggleCategory = (categoryName: string) => {
 		setCollapsedCategories(prev =>
 			prev.includes(categoryName)
 				? prev.filter(name => name !== categoryName)
 				: [...prev, categoryName],
-		)
-	}
+		);
+	};
 
 	return (
 		<div
 			className={`flex flex-col gap-5 overflow-y-auto overflow-x-hidden relative ${isCollapsed ? 'items-center' : ''}`}
 		>
 			{sidebarRoutes.map(category => {
-				const isMenuCollapsed = collapsedCategories.includes(category.name)
+				const isMenuCollapsed = collapsedCategories.includes(category.name);
 				return (
 					<div
 						key={category.name}
@@ -74,14 +74,14 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 							))}
 						</ul>
 					</div>
-				)
+				);
 			})}
 		</div>
-	)
-}
+	);
+};
 
 export const SidebarNavigationBottom = ({ isCollapsed }: NavigationProps) => {
-	const currentPath = usePathname()
+	const currentPath = usePathname();
 
 	return (
 		<div
@@ -119,5 +119,5 @@ export const SidebarNavigationBottom = ({ isCollapsed }: NavigationProps) => {
 				</div>
 			))}
 		</div>
-	)
-}
+	);
+};

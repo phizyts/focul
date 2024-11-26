@@ -1,52 +1,52 @@
-'use client'
-import { useState, useRef, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { sidebarRoutes, bottomRoutes } from '@/constants/constants'
-import UserMultiple4 from '@/components/icons/UserMultiple'
-import Bell1 from '@/components/icons/Bell'
-import Gear1 from '@/components/icons/Gear'
-import Image from 'next/image'
-import { authClient } from '@/lib/auth-client'
+'use client';
+import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { sidebarRoutes, bottomRoutes } from '@/constants/constants';
+import UserMultiple4 from '@/components/icons/UserMultiple';
+import Bell1 from '@/components/icons/Bell';
+import Gear1 from '@/components/icons/Gear';
+import Image from 'next/image';
+import { authClient } from '@/lib/auth-client';
 import {
 	SidebarNavigationTop,
 	SidebarNavigationBottom,
-} from '../sidebar/SidebarNavigation'
+} from '../sidebar/SidebarNavigation';
 
 const Navbar = ({
 	session,
 	isPending,
 }: {
-	session: any
-	isPending: boolean
+	session: any;
+	isPending: boolean;
 }) => {
-	const [isOpen, setIsOpen] = useState(false)
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-	const [isSearchFocused, setIsSearchFocused] = useState(false)
-	const searchInputRef = useRef<HTMLInputElement>(null)
-	const dropdownRef = useRef<HTMLDivElement>(null)
-	const currentPath = usePathname()
+	const [isOpen, setIsOpen] = useState(false);
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isSearchFocused, setIsSearchFocused] = useState(false);
+	const searchInputRef = useRef<HTMLInputElement>(null);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	const currentPath = usePathname();
 
 	const getCurrentCategory = () => {
 		for (const category of sidebarRoutes) {
-			const route = category.routes.find(route => route.href === currentPath)
+			const route = category.routes.find(route => route.href === currentPath);
 			if (route) {
 				return {
 					categoryName: category.name,
 					currentRoute: route,
 					allRoutes: category.routes,
-				}
+				};
 			}
 		}
 
 		for (const category of bottomRoutes) {
-			const route = category.routes.find(route => route.href === currentPath)
+			const route = category.routes.find(route => route.href === currentPath);
 			if (route) {
 				return {
 					categoryName: category.name,
 					currentRoute: route,
 					allRoutes: category.routes,
-				}
+				};
 			}
 		}
 
@@ -54,22 +54,22 @@ const Navbar = ({
 			categoryName: 'Dashboard',
 			currentRoute: sidebarRoutes[0].routes[0],
 			allRoutes: sidebarRoutes[0].routes,
-		}
-	}
+		};
+	};
 
-	const { currentRoute, allRoutes } = getCurrentCategory()
+	const { currentRoute, allRoutes } = getCurrentCategory();
 
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
 			if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === 'k') {
-				e.preventDefault()
-				searchInputRef.current?.focus()
+				e.preventDefault();
+				searchInputRef.current?.focus();
 			}
-		}
+		};
 
-		document.addEventListener('keydown', handleKeyPress)
-		return () => document.removeEventListener('keydown', handleKeyPress)
-	}, [])
+		document.addEventListener('keydown', handleKeyPress);
+		return () => document.removeEventListener('keydown', handleKeyPress);
+	}, []);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -77,13 +77,13 @@ const Navbar = ({
 				dropdownRef.current &&
 				!dropdownRef.current.contains(event.target as Node)
 			) {
-				setIsOpen(false)
+				setIsOpen(false);
 			}
-		}
+		};
 
-		document.addEventListener('mousedown', handleClickOutside)
-		return () => document.removeEventListener('mousedown', handleClickOutside)
-	}, [])
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
 
 	return (
 		<>
@@ -103,8 +103,8 @@ const Navbar = ({
 							<Link
 								href="#"
 								onClick={e => {
-									e.preventDefault()
-									setIsOpen(!isOpen)
+									e.preventDefault();
+									setIsOpen(!isOpen);
 								}}
 								className="group hover:text-white text-muted flex justify-center gap-1 items-center h-8 text-[20px] font-medium rounded-lg focus:outline-none disabled:opacity-50 disabled:pointer-events-none transition-colors"
 								aria-haspopup="menu"
@@ -116,7 +116,7 @@ const Navbar = ({
 							</Link>
 
 							<div
-								className={`absolute left-0 top-full transition-all duration-200 min-w-60 bg-[#2A2D2F] shadow-lg rounded-lg mt-2 ${
+								className={`absolute left-0 top-full transition-all duration-200 min-w-60 bg-[#242729] shadow-lg rounded-lg mt-2 ${
 									isOpen
 										? 'opacity-100 visible translate-y-0'
 										: 'opacity-0 invisible -translate-y-2'
@@ -263,6 +263,6 @@ const Navbar = ({
 				</div>
 			</div>
 		</>
-	)
-}
-export default Navbar
+	);
+};
+export default Navbar;

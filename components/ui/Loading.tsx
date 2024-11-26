@@ -20,5 +20,5 @@ export const Loading = ({ isWhite = false }: { isWhite?: boolean }) => {
 				</svg>
 			</div>
 		</div>
-	)
-}
+	);
+};
