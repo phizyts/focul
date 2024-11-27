@@ -7,10 +7,11 @@ import {
 } from "@/lib/auth-client";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
-
+	const router = useRouter();
 	const signUp = async (formData: FormData) => {
 		const name = formData.get("name") as string;
 		const email = formData.get("email") as string;
@@ -20,12 +21,12 @@ const SignUpForm = () => {
 				email,
 				password,
 				name,
-				callbackURL: "/dashboard",
 			});
 		} catch (error) {
 			console.error("Sign-up error", error);
 		} finally {
 			setIsLoading(false);
+			router.push("/onboarding");
 		}
 	};
 	return (

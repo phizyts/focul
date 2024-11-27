@@ -93,7 +93,7 @@ export const bottomRoutes: NavCategory[] = [
 			},
 			{
 				name: "Settings",
-				href: "/dashboard/account/settings",
+				href: "/dashboard/settings",
 				icon: "ri-settings-4-fill",
 			},
 		],

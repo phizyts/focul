@@ -47,6 +47,12 @@ export const auth = betterAuth({
 				defaultValue: "english",
 				input: true,
 			},
+			location: {
+				type: "string",
+				required: false,
+				defaultValue: "Country: Unset",
+				input: true,
+			},
 		},
 	},
 });

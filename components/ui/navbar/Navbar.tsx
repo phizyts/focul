@@ -171,9 +171,12 @@ const Navbar = ({
 					<div className="w-7 h-7 flex items-center justify-center">
 						<Bell1 />
 					</div>
-					<div className="w-7 h-7 flex items-center justify-center">
+					<Link
+						href="/dashboard/settings"
+						className="w-7 h-7 flex items-center justify-center"
+					>
 						<Gear1 />
-					</div>
+					</Link>
 					{isPending || !session ? (
 						<div className="w-10 h-10 rounded-full bg-gray-700 animate-pulse"></div>
 					) : (
