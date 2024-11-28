@@ -2,13 +2,17 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
 import argon2 from "argon2";
+import { twoFactor } from "better-auth/plugins";
 
 const prisma = new PrismaClient();
+
 export const auth = betterAuth({
+	appName: "Oxcel",
 	baseURL: process.env.BETTER_AUTH_URL,
 	database: prismaAdapter(prisma, {
 		provider: "postgresql",
 	}),
+	plugins: [twoFactor()],
 	emailAndPassword: {
 		enabled: true,
 		password: {
@@ -30,6 +34,7 @@ export const auth = betterAuth({
 			clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
 		},
 	},
+
 	advanced: {
 		cookiePrefix: "oxcel",
 	},

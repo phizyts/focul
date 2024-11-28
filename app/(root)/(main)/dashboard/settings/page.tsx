@@ -5,11 +5,15 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Settings() {
-	const pathname = usePathname();
-	const [isLoading, setIsLoading] = useState(false);
-	const [url, setUrl] = useState("/uploadpfp.png");
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const { data: session, isPending } = authClient.useSession();
+	const [url, setUrl] = useState(
+		session?.user?.image
+			? session.user.image.includes("=s96-c")
+				? session.user.image.replace("=s96-c", "")
+				: session.user.image
+			: "/uploadpfp.png",
+	);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target?.files?.[0];
@@ -21,27 +25,16 @@ export default function Settings() {
 	};
 
 	useEffect(() => {
-		const getUserImage = async () => {
-			const session = await authClient.getSession();
-			let imageUrl = session.data?.user?.image ?? "";
-			if (imageUrl !== "") {
-				if (imageUrl.includes("=s96-c")) {
-					imageUrl = imageUrl.replace("=s96-c", "");
-				}
-				return imageUrl;
-			}
-			return null;
-		};
-
-		getUserImage().then(userImage => {
-			if (userImage) {
-				setUrl(userImage);
-			}
-		});
-	}, []);
+		if (session?.user?.image) {
+			const imageUrl = session.user.image.includes("=s96-c")
+				? session.user.image.replace("=s96-c", "")
+				: session.user.image;
+			setUrl(imageUrl);
+		}
+	}, [session?.user?.image]);
 
 	return (
-		<div className="flex flex-col gap-8">
+		<div className="flex flex-col gap-8 overflow-y-auto h-full">
 			<div className="flex justify-between items-center w-full rounded-lg border border-border p-6">
 				<div>
 					<div>
@@ -55,7 +48,7 @@ export default function Settings() {
 					{isPending || !session ? (
 						<div className="flex items-center gap-4 mt-8">
 							<div className="w-[120px] h-[120px] rounded-full bg-gray-700 animate-pulse"></div>
-							<div className="flex flex-col gap-1">
+							<div className="flex flex-col gap-2">
 								<div className="h-[20px] w-24 bg-gray-700 rounded animate-pulse"></div>
 								<div className="h-[20px] w-44 bg-gray-700 rounded animate-pulse"></div>
 								<div className="h-[20px] w-36 bg-gray-700 rounded animate-pulse"></div>
@@ -63,14 +56,17 @@ export default function Settings() {
 						</div>
 					) : (
 						<div className="flex items-center gap-4 mt-8">
-							<Image
-								src={url}
-								alt="Profile"
-								width={120}
-								height={120}
-								className="rounded-full object-cover w-[120px] h-[120px]"
-							/>
-							<div>
+							<div className="relative flex items-center justify-center rounded-full w-[120px] h-[120px] cursor-pointer group">
+								<Image
+									src={url}
+									alt="Profile"
+									width={120}
+									height={120}
+									className="object-cover w-[120px] h-[120px] rounded-full transition-all duration-200 group-hover:brightness-75"
+								/>
+								<i className="ri-upload-2-fill ri-xl absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200"></i>
+							</div>
+							<div className="flex flex-col gap-1">
 								<h3 className="text-xl font-medium">{session?.user?.name}</h3>
 								<p className="text-muted">{session?.user?.email}</p>
 								<p className="text-muted text-sm">{session?.user?.location}</p>
@@ -83,15 +79,21 @@ export default function Settings() {
 					Edit
 				</button>
 			</div>
-			<div className="flex w-full flex-col rounded-lg border border-border p-6">
+			<div className="flex justify-between items-center w-full rounded-lg border border-border p-6">
 				<div>
-					<h2 className="flex gap-2 items-center text-xl font-medium mb-2">
-						<i className="ri-shield-fill ri-md"></i>Privacy & Security
-					</h2>
-					<p className="text-muted">
-						Control your security settings and connected accounts.
-					</p>
+					<div>
+						<h2 className="flex gap-2 items-center text-xl font-medium mb-2">
+							<i className="ri-shield-fill ri-md"></i>Privacy & Security
+						</h2>
+						<p className="text-muted">
+							Control your security settings and connected accounts.
+						</p>
+					</div>
 				</div>
+				<button className="cursor-pointer text-muted font-medium flex gap-2 items-center justify-center py-2 my-2 h-[44px] px-6 rounded-[10px] border border-border hover:bg-[#1F2324] duration-200">
+					<i className="ri-pencil-fill ri-lg"></i>
+					Edit
+				</button>
 			</div>
 			<div className="flex w-full flex-col rounded-lg border border-border p-6">
 				<div>

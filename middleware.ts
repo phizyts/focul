@@ -1,10 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getSessionWithCache, updateSessionCache } from "./lib/session-cache";
 
-export const PRIVATE_ROUTES = [
-	"/dashboard",
-	"/dashboard/overview",
-	"/onboarding",
-];
+export const PRIVATE_ROUTES = ["/onboarding"];
 export const AUTH_ROUTES = ["/auth/login", "/auth/signup"];
 
 export default async function middleware(request: NextRequest) {
@@ -14,19 +11,35 @@ export default async function middleware(request: NextRequest) {
 		return NextResponse.redirect(new URL("/dashboard/overview", request.url));
 	}
 
-	if (PRIVATE_ROUTES.includes(path) || AUTH_ROUTES.includes(path)) {
-		const req = await fetch(
-			`${process.env.BETTER_AUTH_URL}/api/auth/get-session`,
-			{
-				headers: {
-					cookie: request.headers.get("cookie") ?? "",
-				},
-			},
-		);
+	if (
+		PRIVATE_ROUTES.includes(path) ||
+		path.startsWith("/dashboard/") ||
+		AUTH_ROUTES.includes(path)
+	) {
+		const session = await getSessionWithCache(request);
+		const isAuthenticated = !!session?.user;
 
-		const session = await req.json();
+		if (!isAuthenticated) {
+			if (PRIVATE_ROUTES.includes(path) || path.startsWith("/dashboard/")) {
+				return NextResponse.redirect(new URL("/auth/login", request.url));
+			}
 
-		if (session?.user) {
+			if (AUTH_ROUTES.includes(path)) {
+				return NextResponse.next();
+			}
+		}
+
+		if (isAuthenticated) {
+			const response = NextResponse.next();
+			const currentCache = request.cookies.get("session_cache")?.value;
+			updateSessionCache(response, session, currentCache);
+
+			if (AUTH_ROUTES.includes(path)) {
+				return NextResponse.redirect(
+					new URL("/dashboard/overview", request.url),
+				);
+			}
+
 			if (!session.user.onboarded && path !== "/onboarding") {
 				return NextResponse.redirect(new URL("/onboarding", request.url));
 			}
@@ -35,15 +48,8 @@ export default async function middleware(request: NextRequest) {
 					new URL("/dashboard/overview", request.url),
 				);
 			}
-			if (AUTH_ROUTES.includes(path)) {
-				return NextResponse.redirect(
-					new URL("/dashboard/overview", request.url),
-				);
-			}
-		} else {
-			if (PRIVATE_ROUTES.includes(path)) {
-				return NextResponse.redirect(new URL("/auth/login", request.url));
-			}
+
+			return response;
 		}
 	}
 

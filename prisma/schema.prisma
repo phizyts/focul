@@ -45,23 +45,26 @@ enum Lang {
 }
 
 model User {
-  id             String           @id
-  name           String
-  email          String
-  emailVerified  Boolean
-  role           Role             @default(user)
-  image          String?
-  onboarded      Boolean          @default(false)
-  language       Lang             @default(english)
-  location       String           @default("Country: Unset")
-  createdAt      DateTime
-  updatedAt      DateTime
-  linkedAccounts linkedAccounts[]
-  Session        Session[]
-  Account        Account[]
-  Todos          Reminder[]
-  Notes          Notes[]
-  Courses        Courses[]
+  id                    String           @id
+  name                  String
+  email                 String
+  emailVerified         Boolean
+  recoveryEmail         String           @default("Unlinked")
+  recoveryEmailVerified Boolean          @default(false)
+  twoFactorEnabled      Boolean          @default(false)
+  role                  Role             @default(user)
+  image                 String?
+  onboarded             Boolean          @default(false)
+  language              Lang             @default(english)
+  location              String           @default("Country: Unset")
+  createdAt             DateTime
+  updatedAt             DateTime
+  linkedAccounts        linkedAccounts[]
+  Session               Session[]
+  Account               Account[]
+  Todos                 Reminder[]
+  Notes                 Notes[]
+  Courses               Courses[]
 
   @@unique([email])
   @@map("user")
