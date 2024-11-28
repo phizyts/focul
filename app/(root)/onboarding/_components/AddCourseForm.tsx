@@ -24,16 +24,21 @@ export function AddCourseForm({ onSubmit, onClose }: CourseFormProps) {
 				<label className="block text-sm font-medium text-gray-300">
 					Course Type
 				</label>
-				<select
-					value={courseType}
-					onChange={e => setCourseType(e.target.value)}
-					className="mt-1 block w-full rounded-md border-gray-600 bg-[#2a2d31] px-3 py-2 text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-				>
-					<option value="Regular">Regular Course</option>
-					<option value="AP">AP Course</option>
-					<option value="IB">IB Course</option>
-					<option value="Honors">Honors Course</option>
-				</select>
+				<div className="relative">
+					<select
+						value={courseType}
+						onChange={e => setCourseType(e.target.value)}
+						className="mt-1 block w-full appearance-none rounded-lg border border-[#3B4245] bg-[#1A1D1E] pl-4 pr-10 py-2 text-gray-300 shadow-sm focus:border-[#3B4245] focus:outline-none focus:ring-1 focus:ring-[#3B4245] transition-colors"
+					>
+						<option value="Regular">Regular Course</option>
+						<option value="AP">AP Course</option>
+						<option value="IB">IB Course</option>
+						<option value="Honors">Honors Course</option>
+					</select>
+					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 mt-1 text-gray-300">
+						<i className="ri-arrow-drop-down-line ri-lg"></i>
+					</div>
+				</div>
 			</div>
 
 			<div>
@@ -44,7 +49,7 @@ export function AddCourseForm({ onSubmit, onClose }: CourseFormProps) {
 					type="text"
 					value={courseName}
 					onChange={e => setCourseName(e.target.value)}
-					className="mt-1 block w-full rounded-md border-gray-600 bg-[#2a2d31] px-3 py-2 text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+					className="mt-1 block w-full rounded-lg border border-[#3B4245] bg-[#1A1D1E] px-4 py-2 text-gray-300 shadow-sm focus:border-[#3B4245] focus:outline-none focus:ring-1 focus:ring-[#3B4245] transition-colors"
 					placeholder="Enter course name"
 					required
 				/>
@@ -54,13 +59,13 @@ export function AddCourseForm({ onSubmit, onClose }: CourseFormProps) {
 				<button
 					type="button"
 					onClick={onClose}
-					className="rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+					className="rounded-lg border border-[#3B4245] bg-[#1A1D1E] px-4 py-2 text-sm font-medium text-gray-300 transition-colors"
 				>
 					Cancel
 				</button>
 				<button
 					type="submit"
-					className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
+					className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors"
 				>
 					Add Course
 				</button>

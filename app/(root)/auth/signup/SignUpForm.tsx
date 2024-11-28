@@ -12,15 +12,31 @@ import { useRouter } from "next/navigation";
 const SignUpForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+
+	const getUserLocation = async () => {
+		try {
+			const response = await fetch("https://ipapi.co/json/");
+			const data = await response.json();
+			return data.city && data.country_name
+				? `${data.city}, ${data.country_name}`
+				: "Location Not Set";
+		} catch (error) {
+			console.error("Error fetching location:", error);
+			return "Location Not Set";
+		}
+	};
+
 	const signUp = async (formData: FormData) => {
 		const name = formData.get("name") as string;
 		const email = formData.get("email") as string;
 		const password = formData.get("password") as string;
 		try {
+			const location = await getUserLocation();
 			const { data, error } = await authClient.signUp.email({
 				email,
 				password,
 				name,
+				location,
 			});
 		} catch (error) {
 			console.error("Sign-up error", error);

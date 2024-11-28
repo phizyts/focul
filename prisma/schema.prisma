@@ -56,7 +56,7 @@ model User {
   image                 String?
   onboarded             Boolean          @default(false)
   language              Lang             @default(english)
-  location              String           @default("Country: Unset")
+  location              String           @default("Location Not Set")
   createdAt             DateTime
   updatedAt             DateTime
   linkedAccounts        linkedAccounts[]

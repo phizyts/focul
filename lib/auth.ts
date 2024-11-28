@@ -55,7 +55,7 @@ export const auth = betterAuth({
 			location: {
 				type: "string",
 				required: false,
-				defaultValue: "Country: Unset",
+				defaultValue: "Location Not Set",
 				input: true,
 			},
 		},

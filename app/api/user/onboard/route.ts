@@ -1,9 +1,7 @@
 import { createCourse } from "@/action/course.action";
 import { uploadImage } from "@/action/server.action";
 import { getUser, onBoardUser } from "@/action/user.action";
-import { auth } from "@/lib/auth";
 import { CourseType } from "@prisma/client";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -37,7 +35,6 @@ export async function POST(req: NextRequest) {
 			{ status: 200 },
 		);
 
-		// Clear the session cache to force a fresh fetch
 		response.cookies.delete("session_cache");
 
 		return response;

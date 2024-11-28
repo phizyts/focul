@@ -21,10 +21,12 @@ const Navbar = ({
 	isPending: boolean;
 }) => {
 	const [isOpen, setIsOpen] = useState(false);
+	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isSearchFocused, setIsSearchFocused] = useState(false);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const dropdownRef = useRef<HTMLDivElement>(null);
+	const profileDropdownRef = useRef<HTMLDivElement>(null);
 	const currentPath = usePathname();
 
 	const getCurrentCategory = () => {
@@ -85,6 +87,20 @@ const Navbar = ({
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				profileDropdownRef.current &&
+				!profileDropdownRef.current.contains(event.target as Node)
+			) {
+				setIsProfileOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
+
 	return (
 		<>
 			<div className="flex items-center justify-between w-full pt-7 pb-10 gap-5">
@@ -116,7 +132,7 @@ const Navbar = ({
 							</Link>
 
 							<div
-								className={`absolute left-0 top-full transition-all duration-200 min-w-60 bg-[#242729] shadow-lg rounded-lg mt-2 ${
+								className={`absolute left-0 top-full mt-2 w-60 bg-[#1A1D1E] shadow-lg py-1 z-50 border border-[#3B4245] rounded-lg transition-all duration-200 ${
 									isOpen
 										? "opacity-100 visible translate-y-0"
 										: "opacity-0 invisible -translate-y-2"
@@ -124,20 +140,22 @@ const Navbar = ({
 								role="menu"
 								aria-orientation="vertical"
 							>
-								<div className="p-1 space-y-0.5">
+								<div className="space-y-0.5">
 									{allRoutes.map(route => (
 										<Link
 											key={route.href}
-											className={`flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm ${
+											className={`block px-4 py-2 text-sm ${
 												currentPath === route.href
-													? "text-white bg-[#3B4245]"
-													: "text-white hover:bg-[#3B4245]"
-											} focus:outline-none focus:bg-[#3B4245] transition-colors`}
+													? "text-white bg-[#212426]"
+													: "text-gray-300 hover:bg-[#212426]"
+											} cursor-pointer`}
 											href={route.href}
 											onClick={() => setIsOpen(false)}
 										>
-											<i className={`${route.icon} ri-lg`}></i>
-											{route.name}
+											<div className="flex items-center gap-x-3.5">
+												<i className={`${route.icon} ri-lg`}></i>
+												{route.name}
+											</div>
 										</Link>
 									))}
 								</div>
@@ -180,13 +198,63 @@ const Navbar = ({
 					{isPending || !session ? (
 						<div className="w-10 h-10 rounded-full bg-gray-700 animate-pulse"></div>
 					) : (
-						<Image
-							src={session?.user?.image as string}
-							alt="Profile"
-							width={40}
-							height={40}
-							className="rounded-full cursor-pointer"
-						/>
+						<div
+							className="relative"
+							ref={profileDropdownRef}
+							onMouseEnter={() => setIsProfileOpen(true)}
+							onMouseLeave={() => setIsProfileOpen(false)}
+						>
+							<div
+								className="relative"
+								onClick={e => {
+									e.preventDefault();
+									setIsProfileOpen(!isProfileOpen);
+								}}
+							>
+								<Image
+									src={session?.user?.image as string}
+									alt="Profile"
+									width={40}
+									height={40}
+									className="rounded-full cursor-pointer"
+								/>
+							</div>
+							<div
+								className={`absolute right-0 mt-2 w-48 bg-[#1A1D1E] rounded-lg shadow-lg py-1 z-50 border border-[#3B4245] transition-all duration-200 ${
+									isProfileOpen
+										? "opacity-100 visible translate-y-0"
+										: "opacity-0 invisible -translate-y-2"
+								}`}
+							>
+								<div className="flex flex-col px-4 py-2 border-b mb-1 border-[#3B4245]">
+									<p className="text-sm text-white font-medium">
+										{session?.user?.name}
+									</p>
+									<p className="text-xs text-gray-400">
+										{session?.user?.email}
+									</p>
+								</div>
+								<Link
+									href="/dashboard/settings"
+									className="block px-4 py-2 text-sm text-gray-300 hover:bg-[#212426] cursor-pointer"
+									onClick={() => setIsProfileOpen(false)}
+								>
+									Settings
+								</Link>
+								<button
+									onClick={async () => {
+										await fetch("/api/auth/clear-session", {
+											method: "POST",
+										});
+										await authClient.signOut();
+										window.location.reload();
+									}}
+									className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#212426] cursor-pointer"
+								>
+									Sign Out
+								</button>
+							</div>
+						</div>
 					)}
 				</div>
 			</div>
