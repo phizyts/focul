@@ -1,8 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getSessionWithCache, updateSessionCache } from "./lib/session-cache";
 
 export const PRIVATE_ROUTES = ["/onboarding"];
 export const AUTH_ROUTES = ["/auth/login", "/auth/signup"];
+
+async function getSession(request: NextRequest) {
+	const req = await fetch(
+		`${process.env.BETTER_AUTH_URL}/api/auth/get-session`,
+		{
+			headers: {
+				cookie: request.headers.get("cookie") ?? "",
+			},
+		},
+	);
+
+	if (!req.ok) return null;
+	return req.json();
+}
 
 export default async function middleware(request: NextRequest) {
 	const path = request.nextUrl.pathname;
@@ -16,7 +29,7 @@ export default async function middleware(request: NextRequest) {
 		path.startsWith("/dashboard/") ||
 		AUTH_ROUTES.includes(path)
 	) {
-		const session = await getSessionWithCache(request);
+		const session = await getSession(request);
 		const isAuthenticated = !!session?.user;
 
 		if (!isAuthenticated) {
@@ -29,10 +42,8 @@ export default async function middleware(request: NextRequest) {
 			}
 		}
 
-		if (isAuthenticated) {
+		if (isAuthenticated && session) {
 			const response = NextResponse.next();
-			const currentCache = request.cookies.get("session_cache")?.value;
-			updateSessionCache(response, session, currentCache);
 
 			if (AUTH_ROUTES.includes(path)) {
 				return NextResponse.redirect(
@@ -43,6 +54,7 @@ export default async function middleware(request: NextRequest) {
 			if (!session.user.onboarded && path !== "/onboarding") {
 				return NextResponse.redirect(new URL("/onboarding", request.url));
 			}
+
 			if (session.user.onboarded && path === "/onboarding") {
 				return NextResponse.redirect(
 					new URL("/dashboard/overview", request.url),
