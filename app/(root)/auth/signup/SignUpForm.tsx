@@ -37,6 +37,7 @@ const SignUpForm = () => {
 				password,
 				name,
 				location,
+				passwordSet: true,
 			});
 		} catch (error) {
 			console.error("Sign-up error", error);
