@@ -45,6 +45,17 @@ export default async function middleware(request: NextRequest) {
 		if (isAuthenticated && session) {
 			const response = NextResponse.next();
 
+			if (session.user.location === "Location Not Set") {
+				const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+				const host = request.headers.get('host') || 'localhost:3000';
+				await fetch(`${protocol}://${host}/api/user/fetchlocation`, {
+					method: "POST",
+					headers: {
+						cookie: request.headers.get("cookie") ?? "",
+					},
+				});
+			}
+
 			if (AUTH_ROUTES.includes(path)) {
 				return NextResponse.redirect(
 					new URL("/dashboard/overview", request.url),
