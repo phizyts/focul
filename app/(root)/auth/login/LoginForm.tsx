@@ -20,19 +20,27 @@ const LoginForm = () => {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			const { data, error } = await authClient.signIn.email({
-				email,
-				password,
-				callbackURL: "/dashboard/overview",
-			});
+			const { data, error } = await authClient.signIn.email(
+				{
+					email,
+					password,
+					callbackURL: "/dashboard/overview",
+				},
+				{
+					async onSuccess(context) {
+						if (context.data.twoFactorRedirect) {
+							const { data, error } = await authClient.twoFactor.sendOtp();
+							if (data) {
+								setShowOTP(true);
+							}
+						}
+					},
+				},
+			);
 		} catch (error) {
 			console.error("Sign-in error", error);
 		} finally {
 			setIsLoading(false);
-			const { data, error } = await authClient.twoFactor.sendOtp();
-			if (data) {
-				setShowOTP(true);
-			}
 		}
 	};
 
