@@ -8,11 +8,9 @@ import {
 } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const LoginForm = () => {
-	const router = useRouter();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -22,26 +20,19 @@ const LoginForm = () => {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			await authClient.signIn.email(
-				{ email, password },
-				{
-					onSuccess: async ctx => {
-						if (ctx.data.twoFactorEnabled) {
-							const { data, error } = await authClient.twoFactor.sendOtp();
-							if (data) {
-								setShowOTP(true);
-							}
-							setShowOTP(true);
-						} else {
-							router.push("/dashboard/overview");
-						}
-					},
-				},
-			);
+			const { data, error } = await authClient.signIn.email({
+				email,
+				password,
+				callbackURL: "/dashboard/overview",
+			});
 		} catch (error) {
 			console.error("Sign-in error", error);
 		} finally {
 			setIsLoading(false);
+			const { data, error } = await authClient.twoFactor.sendOtp();
+			if (data) {
+				setShowOTP(true);
+			}
 		}
 	};
 
