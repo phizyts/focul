@@ -1,8 +1,11 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, TwoFactor } from "@prisma/client";
 import argon2 from "argon2";
 import { twoFactor } from "better-auth/plugins";
+import { resend } from "@/helpers/email/resend";
+import { TwoFactorVerificationEmail } from "@/components/ui/emails/TwoFactorVerification";
+import EmailVerification from "@/components/ui/emails/EmailVerification";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +15,23 @@ export const auth = betterAuth({
 	database: prismaAdapter(prisma, {
 		provider: "postgresql",
 	}),
-	plugins: [twoFactor()],
+	plugins: [
+		twoFactor({
+			otpOptions: {
+				async sendOTP({ user, otp }) {
+					await resend.emails.send({
+						from: "Oxcel <2fa@oxcel.phizy.dev>",
+						to: user.email,
+						subject: "Two-Factor Authentication (2FA)",
+						react: TwoFactorVerificationEmail({ otp }),
+					});
+				},
+				period: 5,
+			},
+
+			skipVerificationOnEnable: true,
+		}),
+	],
 	emailAndPassword: {
 		enabled: true,
 		password: {
@@ -64,6 +83,22 @@ export const auth = betterAuth({
 				defaultValue: false,
 				input: true,
 			},
+			linkedAccounts: {
+				type: "string[]",
+				required: false,
+				input: false,
+			},
 		},
+	},
+	emailVerification: {
+		sendVerificationEmail: async ({ user, url, token }, request) => {
+			await resend.emails.send({
+				from: "Oxcel <verification@oxcel.phizy.dev>",
+				to: user.email,
+				subject: "Verify your email address",
+				react: EmailVerification({ url }),
+			});
+		},
+		sendOnSignUp: true,
 	},
 });

@@ -1,5 +1,6 @@
 "use client";
 import { Loading } from "@/components/ui/Loading";
+import { OTPForm } from "@/components/ui/auth/OTPForm";
 import {
 	authClient,
 	signInWithGithub,
@@ -7,26 +8,46 @@ import {
 } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const LoginForm = () => {
+	const router = useRouter();
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [showOTP, setShowOTP] = useState(false);
 
-	const signIn = async (formData: FormData) => {
-		const email = formData.get("email") as string;
-		const password = formData.get("password") as string;
+	const signIn = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsLoading(true);
 		try {
-			const { data, error } = await authClient.signIn.email({
-				email,
-				password,
-				callbackURL: "/dashboard",
-			});
+			await authClient.signIn.email(
+				{ email, password },
+				{
+					onSuccess: async ctx => {
+						if (ctx.data.twoFactorEnabled) {
+							const { data, error } = await authClient.twoFactor.sendOtp();
+							if (data) {
+								setShowOTP(true);
+							}
+							setShowOTP(true);
+						} else {
+							router.push("/dashboard/overview");
+						}
+					},
+				},
+			);
 		} catch (error) {
 			console.error("Sign-in error", error);
 		} finally {
 			setIsLoading(false);
 		}
 	};
+
+	if (showOTP) {
+		return <OTPForm onCancel={() => setShowOTP(false)} />;
+	}
 
 	return (
 		<>
@@ -65,18 +86,15 @@ const LoginForm = () => {
 				</span>
 				<div className="flex-grow border-t border-muted"></div>
 			</div>
-			<form
-				className="flex flex-col gap-4 w-full"
-				action={async formData => {
-					await signIn(formData);
-				}}
-			>
+			<form className="flex flex-col gap-4 w-full" onSubmit={signIn}>
 				<div className="w-full flex flex-col gap-2">
 					<label htmlFor="email">Email</label>
 					<input
 						type="email"
 						name="email"
 						id="email"
+						value={email}
+						onChange={e => setEmail(e.target.value)}
 						placeholder="john.doe@example.com"
 						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
 					/>
@@ -95,15 +113,15 @@ const LoginForm = () => {
 						type="password"
 						name="password"
 						id="password"
+						value={password}
+						onChange={e => setPassword(e.target.value)}
 						placeholder="Enter Your Password"
 						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
 					/>
 				</div>
 				<button
 					className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
-					onClick={() => {
-						setIsLoading(true);
-					}}
+					type="submit"
 				>
 					{isLoading ? <Loading isWhite /> : "Login"}
 				</button>

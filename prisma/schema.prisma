@@ -32,9 +32,9 @@ enum CourseType {
 }
 
 enum linkedAccounts {
-  google
-  github
-  discord
+  Google
+  Github
+  Discord
 }
 
 enum Lang {
@@ -58,6 +58,7 @@ model User {
   location         String           @default("Location Not Set")
   createdAt        DateTime
   updatedAt        DateTime
+  twoFactor        TwoFactor[]
   linkedAccounts   linkedAccounts[]
   Session          Session[]
   Account          Account[]
@@ -172,4 +173,14 @@ model Notes {
   updatedAt  DateTime @updatedAt
 
   @@map("notes")
+}
+
+model TwoFactor {
+  id          String @id @default(cuid())
+  secret      String
+  backupCodes String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("twoFactor")
 }

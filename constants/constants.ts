@@ -99,3 +99,22 @@ export const bottomRoutes: NavCategory[] = [
 		],
 	},
 ];
+
+export const languages = [
+	{
+		display: "English",
+		value: "English",
+	},
+	{
+		display: "Español",
+		value: "Spanish",
+	},
+	{
+		display: "中文",
+		value: "Chinese",
+	},
+	{
+		display: "Français",
+		value: "French",
+	},
+];

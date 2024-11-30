@@ -65,6 +65,12 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 					})),
 				}),
 			});
+			await fetch("/api/user/fetchaccounts", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
 			router.push("/dashboard");
 			setParentLoading(false);
 		} catch (error) {
