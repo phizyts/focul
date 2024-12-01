@@ -26,7 +26,6 @@ export const auth = betterAuth({
 						react: TwoFactorVerificationEmail({ otp }),
 					});
 				},
-				period: 5,
 			},
 
 			skipVerificationOnEnable: true,
