@@ -43,6 +43,11 @@ const PrivacySecurityModal: React.FC<PrivacySecurityModalProps> = ({
 	const handleVerifyEmail = async () => {
 		setIsLoading(true);
 		try {
+			if (!session?.user?.emailVerified && session?.user?.email) {
+				await authClient.sendVerificationEmail({
+					email: session?.user?.email,
+				});
+			}
 		} catch (error) {
 			console.error("Error sending verification email:", error);
 		} finally {
