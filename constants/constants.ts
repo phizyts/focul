@@ -118,3 +118,22 @@ export const languages = [
 		value: "French",
 	},
 ];
+
+export const courseTypes = [
+	{
+		display: "Regular Course",
+		value: "Regular",
+	},
+	{
+		display: "AP Course",
+		value: "AP",
+	},
+	{
+		display: "IB Course",
+		value: "IB",
+	},
+	{
+		display: "Honors Course",
+		value: "Honors",
+	},
+];

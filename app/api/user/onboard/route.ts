@@ -6,11 +6,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 	try {
-		const { image, language, courses } = await req.json();
+		const { imageUrl, language, courses } = await req.json();
 		const user = await getUser();
 
 		if (!user) {
-			return NextResponse.json({ error: "User not found" }, { status: 404 });
+			return NextResponse.json({ error: "User not found" }, { status: 401 });
 		}
 
 		if (user.onboarded) {
@@ -19,8 +19,6 @@ export async function POST(req: NextRequest) {
 				{ status: 400 },
 			);
 		}
-
-		const imageUrl = await uploadImage(image);
 
 		await onBoardUser(imageUrl, language);
 

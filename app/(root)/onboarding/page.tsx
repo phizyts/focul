@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import OnboardingForm from "./OnboardingForm";
+import OnboardingForm from "../../../components/ui/onboarding/OnboardingForm";
 import { useState } from "react";
 import { Loading } from "@/components/ui/Loading";
 

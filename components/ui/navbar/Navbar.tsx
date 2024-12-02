@@ -12,6 +12,8 @@ import {
 	SidebarNavigationTop,
 	SidebarNavigationBottom,
 } from "../sidebar/SidebarNavigation";
+import NavbarDropdown from "./NavbarDropdown";
+import Searchbar from "../Searchbar";
 
 const Navbar = ({
 	session,
@@ -20,72 +22,9 @@ const Navbar = ({
 	session: any;
 	isPending: boolean;
 }) => {
-	const [isOpen, setIsOpen] = useState(false);
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const [isSearchFocused, setIsSearchFocused] = useState(false);
-	const searchInputRef = useRef<HTMLInputElement>(null);
-	const dropdownRef = useRef<HTMLDivElement>(null);
 	const profileDropdownRef = useRef<HTMLDivElement>(null);
-	const currentPath = usePathname();
-
-	const getCurrentCategory = () => {
-		for (const category of sidebarRoutes) {
-			const route = category.routes.find(route => route.href === currentPath);
-			if (route) {
-				return {
-					categoryName: category.name,
-					currentRoute: route,
-					allRoutes: category.routes,
-				};
-			}
-		}
-
-		for (const category of bottomRoutes) {
-			const route = category.routes.find(route => route.href === currentPath);
-			if (route) {
-				return {
-					categoryName: category.name,
-					currentRoute: route,
-					allRoutes: category.routes,
-				};
-			}
-		}
-
-		return {
-			categoryName: "Dashboard",
-			currentRoute: sidebarRoutes[0].routes[0],
-			allRoutes: sidebarRoutes[0].routes,
-		};
-	};
-
-	const { currentRoute, allRoutes } = getCurrentCategory();
-
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || e.key === "k") {
-				e.preventDefault();
-				searchInputRef.current?.focus();
-			}
-		};
-
-		document.addEventListener("keydown", handleKeyPress);
-		return () => document.removeEventListener("keydown", handleKeyPress);
-	}, []);
-
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(event.target as Node)
-			) {
-				setIsOpen(false);
-			}
-		};
-
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, []);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -103,84 +42,17 @@ const Navbar = ({
 
 	return (
 		<>
-			<div className="flex items-center justify-between w-full pt-7 pb-10 gap-5">
+			<div className="flex items-center justify-between w-full pt-7 md:pb-10 pb-7 gap-5">
 				<div className="flex items-center gap-4 md:w-full xl:w-full h-[40px]">
 					<div className="flex items-center gap-4">
 						<i
 							onClick={() => setIsMobileMenuOpen(true)}
 							className={`ri-menu-line ri-xl h-[32px] flex justify-center items-center text-muted cursor-pointer hover:text-white duration-200 md:hidden`}
 						></i>
-						<div
-							className="relative hidden xs:inline-flex"
-							ref={dropdownRef}
-							onMouseEnter={() => setIsOpen(true)}
-							onMouseLeave={() => setIsOpen(false)}
-						>
-							<Link
-								href="#"
-								onClick={e => {
-									e.preventDefault();
-									setIsOpen(!isOpen);
-								}}
-								className="group hover:text-white text-muted flex justify-center gap-1 items-center h-8 text-[20px] font-medium rounded-lg focus:outline-none disabled:opacity-50 disabled:pointer-events-none transition-colors"
-								aria-haspopup="menu"
-								aria-expanded={isOpen}
-								aria-label="Dropdown"
-							>
-								{currentRoute.name}
-								<i className="ri-arrow-drop-down-line ri-lg text-muted group-hover:text-white"></i>
-							</Link>
-
-							<div
-								className={`absolute left-0 top-full mt-2 w-60 bg-[#1A1D1E] shadow-lg py-1 z-50 border border-[#3B4245] rounded-lg transition-all duration-200 ${
-									isOpen
-										? "opacity-100 visible translate-y-0"
-										: "opacity-0 invisible -translate-y-2"
-								}`}
-								role="menu"
-								aria-orientation="vertical"
-							>
-								<div className="space-y-0.5">
-									{allRoutes.map(route => (
-										<Link
-											key={route.href}
-											className={`block px-4 py-2 text-sm ${
-												currentPath === route.href
-													? "text-white bg-[#212426]"
-													: "text-gray-300 hover:bg-[#212426]"
-											} cursor-pointer`}
-											href={route.href}
-											onClick={() => setIsOpen(false)}
-										>
-											<div className="flex items-center gap-x-3.5">
-												<i className={`${route.icon} ri-lg`}></i>
-												{route.name}
-											</div>
-										</Link>
-									))}
-								</div>
-							</div>
-						</div>
+						<NavbarDropdown />
 						<i className="ri-search-line text-muted ri-lg block xl:hidden md:hidden lg:block cursor-pointer hover:text-white duration-200"></i>
 					</div>
-					<div className="flex-1 relative w-full hidden md:block lg:hidden xl:block">
-						<input
-							ref={searchInputRef}
-							type="text"
-							placeholder="Type a command or search..."
-							className="w-full h-[44px] pl-11 pr-16 bg-transparent text-white rounded-[10px] border border-[#3B4245] focus:outline-none focus:border-gray-500 transition-colors"
-							onFocus={() => setIsSearchFocused(true)}
-							onBlur={() => setIsSearchFocused(false)}
-						/>
-						<i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 ri-lg"></i>
-						{!isSearchFocused && (
-							<div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-								<span className="text-sm text-muted bg-[#212426] px-1.5 py-0.5 rounded">
-									⌘ K
-								</span>
-							</div>
-						)}
-					</div>
+					<Searchbar />
 				</div>
 				<div className="flex gap-4 items-center xl:w-fit xl:justify-end min-w-max">
 					<div className="w-7 h-7 flex items-center justify-center">

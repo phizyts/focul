@@ -73,7 +73,7 @@ const PrivacySecurityModal: React.FC<PrivacySecurityModalProps> = ({
 					revokeOtherSessions: true,
 				});
 			} else {
-				const response = await fetch("/api/user/password", {
+				const response = await fetch("/api/user/setpassword", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

@@ -2,15 +2,16 @@
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import CourseModal from "./_components/CourseModal";
-import { AddCourseForm } from "./_components/AddCourseForm";
-import { EditCourseForm } from "./_components/EditCourseForm";
-import { uploadImage } from "@/action/server.action";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const CourseModal = dynamic(() =>
+	import("@/components/ui/modal/modals/CourseModal").then(mod => mod.default),
+);
 
 interface Course {
 	name: string;
-	type: string;
+	type: "AP" | "IB" | "Honors" | "Regular";
 }
 
 interface Props {
@@ -24,10 +25,22 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 	const [url, setUrl] = useState("/uploadpfp.png");
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+	const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(
+		undefined,
+	);
 
-	const handleAddCourse = (newCourse: Course) => {
-		setCourses([...courses, newCourse]);
+	const handleCourseSubmit = (course: Course | null) => {
+		if (selectedCourse) {
+			if (course) {
+				setCourses(
+					courses.map(c => (c.name === selectedCourse.name ? course : c)),
+				);
+			} else {
+				setCourses(courses.filter(c => c.name !== selectedCourse.name));
+			}
+		} else if (course) {
+			setCourses([...courses, course]);
+		}
 	};
 
 	const handleRemoveAll = () => {
@@ -40,8 +53,17 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 	};
 
 	const closeModal = () => {
-		setSelectedCourse(null);
+		setSelectedCourse(undefined);
 		setIsModalOpen(false);
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target?.files?.[0];
+		if (file) {
+			setSelectedFile(file);
+			const objectUrl = URL.createObjectURL(file);
+			setUrl(objectUrl);
+		}
 	};
 
 	const completeOnBoard = async () => {
@@ -49,7 +71,33 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 		try {
 			let imageUrl = url;
 			if (selectedFile) {
-				imageUrl = await uploadImage(selectedFile);
+				try {
+					if (typeof selectedFile === "string") {
+						if (!selectedFile || selectedFile === "/uploadpfp.png") {
+							imageUrl = "/uploadpfp.png";
+						}
+						imageUrl = selectedFile;
+					}
+
+					const formData = new FormData();
+					formData.append("file", selectedFile);
+
+					const response = await fetch("/api/upload", {
+						method: "POST",
+						body: formData,
+					});
+
+					if (!response.ok) {
+						console.error(`Upload failed with status: ${response.status}`);
+						return null;
+					}
+
+					const data = await response.json();
+					imageUrl = data.secure_url;
+				} catch (err) {
+					console.error("Error uploading image:", err);
+					return null;
+				}
 			}
 			await fetch("/api/user/onboard", {
 				method: "POST",
@@ -57,7 +105,7 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					image: imageUrl,
+					imageUrl,
 					language: selectedLanguage.toLowerCase(),
 					courses: courses.map(course => ({
 						name: course.name,
@@ -76,15 +124,6 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 		} catch (error) {
 			setParentLoading(false);
 			console.error("Error during onboarding:", error);
-		}
-	};
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target?.files?.[0];
-		if (file) {
-			setSelectedFile(file);
-			const objectUrl = URL.createObjectURL(file);
-			setUrl(objectUrl);
 		}
 	};
 
@@ -237,33 +276,14 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 					Complete
 				</button>
 			</div>
-			{isModalOpen && (
-				<CourseModal isOpen={isModalOpen} onClose={closeModal}>
-					{selectedCourse ? (
-						<EditCourseForm
-							course={selectedCourse}
-							onSubmit={updatedCourse => {
-								if (updatedCourse) {
-									setCourses(
-										courses.map(c =>
-											c.name === selectedCourse.name ? updatedCourse : c,
-										),
-									);
-								} else {
-									setCourses(
-										courses.filter(c => c.name !== selectedCourse.name),
-									);
-								}
-								closeModal();
-							}}
-							onClose={closeModal}
-						/>
-					) : (
-						<AddCourseForm onSubmit={handleAddCourse} onClose={closeModal} />
-					)}
-				</CourseModal>
-			)}
+			<CourseModal
+				isOpen={isModalOpen}
+				onClose={closeModal}
+				course={selectedCourse}
+				onSubmit={handleCourseSubmit}
+			/>
 		</>
 	);
 };
+
 export default OnboardingForm;

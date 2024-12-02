@@ -1,77 +1,81 @@
 "use client";
 import { Loading } from "@/components/ui/Loading";
-import { OTPForm } from "@/components/ui/auth/OTPForm";
 import {
 	authClient,
 	signInWithGithub,
 	signInWithGoogle,
 } from "@/lib/auth-client";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Form from "next/form";
 
-const LoginForm = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+const SignUpForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
-	const [showOTP, setShowOTP] = useState(false);
+	const router = useRouter();
 
-	const signIn = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setIsLoading(true);
+	const getUserLocation = async () => {
 		try {
-			const { data, error } = await authClient.signIn.email(
-				{
-					email,
-					password,
-					callbackURL: "/dashboard/overview",
-				},
-				{
-					async onSuccess(context) {
-						if (context.data.twoFactorRedirect) {
-							const { data, error } = await authClient.twoFactor.sendOtp();
-							if (data) {
-								setShowOTP(true);
-							}
-						}
-					},
-				},
-			);
+			const response = await fetch("https://ipapi.co/json/");
+			const data = await response.json();
+			return data.city && data.country_name
+				? `${data.city}, ${data.country_name}`
+				: "Location Not Set";
 		} catch (error) {
-			console.error("Sign-in error", error);
-		} finally {
-			setIsLoading(false);
+			console.error("Error fetching location:", error);
+			return "Location Not Set";
 		}
 	};
 
-	if (showOTP) {
-		return <OTPForm onCancel={() => setShowOTP(false)} />;
-	}
+	const signUpWithEmail = async (formData: FormData) => {
+		const name = formData.get("name") as string;
+		const email = formData.get("email") as string;
+		const password = formData.get("password") as string;
+		try {
+			const location = await getUserLocation();
+			await authClient.signUp.email({
+				email,
+				password,
+				name,
+				location,
+				passwordSet: true,
+			});
+		} catch (error) {
+			console.error("Sign-up error", error);
+		} finally {
+			setIsLoading(false);
+			router.push("/onboarding");
+		}
+	};
+
+	const SignInWithGoogle = async () => {
+		try {
+			await signInWithGoogle();
+		} catch (error) {
+			console.error("Sign-in error", error);
+		}
+	};
+
+	const SignInWithGithub = async () => {
+		try {
+			await signInWithGithub();
+		} catch (error) {
+			console.error("Sign-in error", error);
+		}
+	};
 
 	return (
 		<>
 			<div className="flex gap-4 mt-6 w-full">
 				<button
-					onClick={async () => {
-						try {
-							await signInWithGoogle();
-						} catch (error) {
-							console.error("Sign-in error", error);
-						}
-					}}
+					onClick={SignInWithGoogle}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
 				>
 					<Image src="/google.svg" alt="Google" width={18} height={18} />
 					Google
 				</button>
 				<button
-					onClick={async () => {
-						try {
-							await signInWithGithub();
-						} catch (error) {
-							console.error("Sign-in error", error);
-						}
-					}}
+					onClick={SignInWithGithub}
 					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
 				>
 					<Image src="/github.svg" alt="Github" width={18} height={18} />
@@ -85,47 +89,52 @@ const LoginForm = () => {
 				</span>
 				<div className="flex-grow border-t border-muted"></div>
 			</div>
-			<form className="flex flex-col gap-4 w-full" onSubmit={signIn}>
+			<Form
+				className="flex flex-col gap-4 w-full"
+				action={async formData => {
+					await signUpWithEmail(formData);
+				}}
+			>
+				<div className="w-full flex flex-col gap-2">
+					<label htmlFor="email">Name</label>
+					<input
+						type="text"
+						name="name"
+						id="name"
+						placeholder="John Doe"
+						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
+					/>
+				</div>
 				<div className="w-full flex flex-col gap-2">
 					<label htmlFor="email">Email</label>
 					<input
 						type="email"
 						name="email"
 						id="email"
-						value={email}
-						onChange={e => setEmail(e.target.value)}
 						placeholder="john.doe@example.com"
 						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
 					/>
 				</div>
 				<div className="flex flex-col w-full gap-2">
-					<div className="flex w-full justify-between items-center">
-						<label htmlFor="password">Password</label>
-						<Link
-							href="/auth/forgot-password"
-							className="text-sm text-primary hover:underline"
-						>
-							Forgot Password?
-						</Link>
-					</div>
+					<label htmlFor="password">Password</label>
 					<input
 						type="password"
 						name="password"
 						id="password"
-						value={password}
-						onChange={e => setPassword(e.target.value)}
 						placeholder="Enter Your Password"
 						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
 					/>
 				</div>
 				<button
 					className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
-					type="submit"
+					onClick={() => {
+						setIsLoading(true);
+					}}
 				>
-					{isLoading ? <Loading isWhite /> : "Login"}
+					{isLoading ? <Loading isWhite /> : "Sign Up"}
 				</button>
-			</form>
+			</Form>
 		</>
 	);
 };
-export default LoginForm;
+export default SignUpForm;

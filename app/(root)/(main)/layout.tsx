@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="h-screen flex overflow-hidden">
 			<Sidebar session={session} isPending={isPending} />
-			<div className="flex-1 mx-6 sm:mx-8 flex flex-col overflow-y-auto">
+			<div className="flex-1 mx-4 xss:mx-5 sm:mx-8 flex flex-col overflow-y-auto">
 				<Navbar session={session} isPending={isPending} />
 				<main className="flex-1 md:mb-8 overflow-y-auto">{children}</main>
 			</div>

@@ -1,79 +1,84 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { AUTH_ROUTES, DASHBOARD_PREFIX, PROTECTED_ROUTES } from "./routes";
 
-export const PRIVATE_ROUTES = ["/onboarding"];
-export const AUTH_ROUTES = ["/auth/login", "/auth/signup"];
+const isProtectedRoute = (path: string) =>
+	PROTECTED_ROUTES.includes(path) || path.startsWith(DASHBOARD_PREFIX);
 
 async function getSession(request: NextRequest) {
-	const req = await fetch(
-		`${process.env.BETTER_AUTH_URL}/api/auth/get-session`,
-		{
-			headers: {
-				cookie: request.headers.get("cookie") ?? "",
+	try {
+		const req = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/get-session`,
+			{
+				headers: {
+					cookie: request.headers.get("cookie") ?? "",
+				},
 			},
-		},
-	);
+		);
 
-	if (!req.ok) return null;
-	return req.json();
+		if (!req.ok) return null;
+		return req.json();
+	} catch (error) {
+		console.error("Session fetch error:", error);
+		return null;
+	}
+}
+
+async function updateUserLocation(request: NextRequest) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/fetchlocation`,
+			{
+				method: "POST",
+				headers: {
+					cookie: request.headers.get("cookie") ?? "",
+				},
+				signal: AbortSignal.timeout(5000),
+			},
+		);
+		return response.ok;
+	} catch (error) {
+		console.error("Location update error:", error);
+		return false;
+	}
 }
 
 export default async function middleware(request: NextRequest) {
-	const path = request.nextUrl.pathname;
+	const currentPath = request.nextUrl.pathname;
 
-	if (path === "/dashboard") {
+	if (currentPath === "/dashboard") {
 		return NextResponse.redirect(new URL("/dashboard/overview", request.url));
 	}
 
-	if (
-		PRIVATE_ROUTES.includes(path) ||
-		path.startsWith("/dashboard/") ||
-		AUTH_ROUTES.includes(path)
-	) {
+	if (isProtectedRoute(currentPath) || AUTH_ROUTES.includes(currentPath)) {
 		const session = await getSession(request);
 		const isAuthenticated = !!session?.user;
 
 		if (!isAuthenticated) {
-			if (PRIVATE_ROUTES.includes(path) || path.startsWith("/dashboard/")) {
-				return NextResponse.redirect(new URL("/auth/login", request.url));
-			}
-
-			if (AUTH_ROUTES.includes(path)) {
-				return NextResponse.next();
-			}
+			return isProtectedRoute(currentPath)
+				? NextResponse.redirect(new URL("/auth/login", request.url))
+				: NextResponse.next();
 		}
 
-		if (isAuthenticated && session) {
-			const response = NextResponse.next();
-
-			if (!session.user.onboarded && path !== "/onboarding") {
+		if (session) {
+			if (!session.user.onboarded && currentPath !== "/onboarding") {
 				return NextResponse.redirect(new URL("/onboarding", request.url));
 			}
 
-			if (session.user.onboarded && path === "/onboarding") {
+			if (session.user.onboarded && currentPath === "/onboarding") {
 				return NextResponse.redirect(
 					new URL("/dashboard/overview", request.url),
 				);
 			}
 
-			if (AUTH_ROUTES.includes(path)) {
+			if (AUTH_ROUTES.includes(currentPath)) {
 				return NextResponse.redirect(
 					new URL("/dashboard/overview", request.url),
 				);
 			}
 
 			if (session.user.location === "Location Not Set") {
-				const protocol =
-					process.env.NODE_ENV === "production" ? "https" : "http";
-				const host = request.headers.get("host") || "localhost:3000";
-				await fetch(`${protocol}://${host}/api/user/fetchlocation`, {
-					method: "POST",
-					headers: {
-						cookie: request.headers.get("cookie") ?? "",
-					},
-				});
+				updateUserLocation(request).catch(console.error);
 			}
-
-			return response;
 		}
 	}
 

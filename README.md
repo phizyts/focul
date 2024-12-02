@@ -1,4 +1,4 @@
-## Oxcel
+## Oxcel (Private Repository)
 
 Ultimate Solution to Your Sudent Life
 
@@ -11,3 +11,6 @@ Tech Stack:
 - Cloudinary (Image Storage)
 - SocketIO (Realtime Communication)
 - TailwindCSS (CSS Styling)
+- Better-Auth (Authentication)
+- Resend (Email Service)
+-

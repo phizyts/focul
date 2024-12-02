@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 	try {
 		const user = await getUser();
 		if (!user) {
-			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+			return NextResponse.json({ error: "User not found" }, { status: 401 });
 		}
 		if (user.passwordSet) {
 			return NextResponse.json(

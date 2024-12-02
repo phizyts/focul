@@ -14,7 +14,7 @@ export default function Layout({
 					</div>
 					<Link
 						href="/auth/login"
-						className="font-medium text-muted hover:text-white transition-colors"
+						className="text-muted hover:text-white transition-colors"
 					>
 						Login
 					</Link>

@@ -28,13 +28,7 @@ export default function Settings() {
 	const { data: session } = authClient.useSession() as {
 		data: (Session & { user?: any; expires: string }) | null;
 	};
-	const [url, setUrl] = useState(
-		session?.user?.image
-			? session.user.image.includes("=s96-c")
-				? session.user.image.replace("=s96-c", "")
-				: session.user.image
-			: "/uploadpfp.png",
-	);
+	const [url, setUrl] = useState<string>("/uploadpfp.png");
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target?.files?.[0];
@@ -88,7 +82,7 @@ export default function Settings() {
 										alt="Profile"
 										width={120}
 										height={120}
-										className="object-cover xss:w-[100px] xss:h-[100px] xs:w-[120px] xs:h-[120px] w-[120px] h-[120px] sm:w-[120px] sm:h-[120px] rounded-full transition-all duration-200 group-hover:brightness-75"
+										className="object-cover xss:w-[90px] xss:h-[90px] xs:w-[120px] xs:h-[120px] w-[120px] h-[120px] sm:w-[120px] sm:h-[120px] rounded-full transition-all duration-200 group-hover:brightness-75"
 									/>
 									<i className="ri-upload-2-fill ri-xl absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200"></i>
 								</div>
