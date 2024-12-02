@@ -1,5 +1,4 @@
 import { createCourse } from "@/action/course.action";
-import { uploadImage } from "@/action/server.action";
 import { getUser, onBoardUser } from "@/action/user.action";
 import { CourseType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
