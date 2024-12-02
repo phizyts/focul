@@ -277,6 +277,7 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 				</button>
 			</div>
 			<CourseModal
+				key={selectedCourse ? `${selectedCourse.name}-${selectedCourse.type}` : 'new'}
 				isOpen={isModalOpen}
 				onClose={closeModal}
 				course={selectedCourse}

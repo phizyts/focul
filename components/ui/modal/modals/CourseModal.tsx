@@ -36,6 +36,8 @@ const CourseModal: React.FC<CourseModalProps> = ({
 				name: courseName,
 				type: courseType as CourseType,
 			});
+			setCourseName("");
+			setCourseType("");
 			onClose();
 		} catch (error) {
 			console.error("Error handling course:", error);
@@ -46,13 +48,19 @@ const CourseModal: React.FC<CourseModalProps> = ({
 
 	const handleDelete = () => {
 		onSubmit(null);
+		setCourseName("");
+		setCourseType("");
 		onClose();
 	};
 
 	return (
 		<Modal
 			isOpen={isOpen}
-			onClose={onClose}
+			onClose={() => {
+				setCourseName(course?.name || "");
+				setCourseType(course?.type || "");
+				onClose();
+			}}
 			title={course ? "Edit Course" : "Add Course"}
 		>
 			<form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -123,7 +131,11 @@ const CourseModal: React.FC<CourseModalProps> = ({
 					)}
 					<button
 						type="button"
-						onClick={onClose}
+						onClick={() => {
+							setCourseName(course?.name || "");
+							setCourseType(course?.type || "");
+							onClose();
+						}}
 						disabled={isLoading}
 						className="flex-1 border border-border hover:bg-[#1F2324] text-muted font-medium py-2 rounded-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
