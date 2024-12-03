@@ -65,6 +65,7 @@ model User {
   Todos            Reminder[]
   Notes            Notes[]
   Courses          Courses[]
+  Notification     Notification[]
 
   @@unique([email])
   @@map("user")
@@ -173,6 +174,18 @@ model Notes {
   updatedAt  DateTime @updatedAt
 
   @@map("notes")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  message   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  senderId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notification")
 }
 
 model TwoFactor {

@@ -23,8 +23,29 @@ const Navbar = ({
 	isPending: boolean;
 }) => {
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
+	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [notifications, setNotifications] = useState<any[]>([]);
 	const profileDropdownRef = useRef<HTMLDivElement>(null);
+	const notificationDropdownRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const fetchNotifications = async () => {
+			try {
+				const response = await fetch("/api/notifications");
+				const data = await response.json();
+				console.log("Fetched notifications:", data); // Log the data
+				if (Array.isArray(data.notifications)) {
+					setNotifications(data.notifications);
+				} else {
+					console.error("Expected an array for notifications, received:", data);
+				}
+			} catch (error) {
+				console.error("Error fetching notifications:", error);
+			}
+		};
+		fetchNotifications();
+	}, []);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -33,6 +54,12 @@ const Navbar = ({
 				!profileDropdownRef.current.contains(event.target as Node)
 			) {
 				setIsProfileOpen(false);
+			}
+			if (
+				notificationDropdownRef.current &&
+				!notificationDropdownRef.current.contains(event.target as Node)
+			) {
+				setIsNotificationOpen(false);
 			}
 		};
 
@@ -58,8 +85,62 @@ const Navbar = ({
 					<div className="w-7 h-7 flex items-center justify-center">
 						<UserMultiple4 />
 					</div>
-					<div className="w-7 h-7 flex items-center justify-center">
-						<Bell1 />
+					<div
+						className=""
+						ref={notificationDropdownRef}
+						onMouseEnter={() => setIsNotificationOpen(true)}
+						onMouseLeave={() => setIsNotificationOpen(false)}
+					>
+						<div className="w-7 h-7 flex items-center justify-center cursor-pointer">
+							<Bell1 />
+						</div>
+						<div
+							className={`absolute right-3 mt-4 w-80 bg-[#1A1D1E] rounded-lg shadow-lg py-1 z-50 border border-[#3B4245] transition-all duration-200 ${
+								isNotificationOpen
+									? "opacity-100 visible translate-y-0"
+									: "opacity-0 invisible -translate-y-2"
+							}`}
+						>
+							<div className="flex flex-col">
+								<div className="px-4 py-2 border-b border-[#3B4245]">
+									<h3 className="text-white font-medium">Notifications</h3>
+								</div>
+								<div className="max-h-[400px] overflow-y-auto">
+									{notifications.length === 0 ? (
+										<div className="px-4 py-2 text-sm text-muted">
+											No new notifications
+										</div>
+									) : (
+										notifications.map((notification, index) => (
+											<div
+												key={index}
+												className="px-4 py-2 hover:bg-[#2A2D2E] cursor-pointer"
+											>
+												<div className="flex items-start gap-3">
+													<div className="w-2 h-2 mt-2 rounded-full bg-blue-500"></div>
+													<div>
+														<p className="text-sm text-white">
+															{notification.message}
+														</p>
+														<p className="text-xs text-muted mt-1">
+															{notification.timeAgo}
+														</p>
+													</div>
+												</div>
+											</div>
+										))
+									)}
+								</div>
+								<div className="px-4 py-2 border-t border-[#3B4245]">
+									<Link
+										href="/dashboard/inbox"
+										className="text-sm text-blue-500 hover:text-blue-400"
+									>
+										View all notifications
+									</Link>
+								</div>
+							</div>
+						</div>
 					</div>
 					<Link
 						href="/dashboard/settings"
