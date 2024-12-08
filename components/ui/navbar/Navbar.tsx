@@ -86,7 +86,7 @@ const Navbar = ({
 						<UserMultiple4 />
 					</div>
 					<div
-						className=""
+						className="relative"
 						ref={notificationDropdownRef}
 						onMouseEnter={() => setIsNotificationOpen(true)}
 						onMouseLeave={() => setIsNotificationOpen(false)}
@@ -95,7 +95,7 @@ const Navbar = ({
 							<Bell1 />
 						</div>
 						<div
-							className={`absolute right-3 mt-4 w-80 bg-[#1A1D1E] rounded-lg shadow-lg py-1 z-50 border border-[#3B4245] transition-all duration-200 ${
+							className={`absolute right-0 mt-2 w-80 bg-[#1A1D1E] rounded-lg shadow-lg py-1 z-50 border border-[#3B4245] transition-all duration-200 ${
 								isNotificationOpen
 									? "opacity-100 visible translate-y-0"
 									: "opacity-0 invisible -translate-y-2"
@@ -117,7 +117,7 @@ const Navbar = ({
 												className="px-4 py-2 hover:bg-[#2A2D2E] cursor-pointer"
 											>
 												<div className="flex items-start gap-3">
-													<div className="w-2 h-2 mt-2 rounded-full bg-blue-500"></div>
+													<div className="w-2 h-1 mt-2 rounded-full bg-blue-500"></div>
 													<div>
 														<p className="text-sm text-white">
 															{notification.message}

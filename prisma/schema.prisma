@@ -178,7 +178,8 @@ model Notes {
 
 model Notification {
   id        String   @id @default(cuid())
-  message   String
+  title     String   @default("Title Not Set")
+  message   String   @default("Message Not Set")
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   senderId  String

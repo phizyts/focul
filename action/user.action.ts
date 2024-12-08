@@ -24,6 +24,25 @@ export const getLinkedAccounts = async () => {
 	}
 };
 
+export const getNotifications = async (user: any) => {
+	try {
+		if (!user) {
+			return [];
+		}
+		const notifications = await prisma.notification.findMany({
+			where: {
+				userId: user.id,
+			},
+			orderBy: {
+				createdAt: "desc",
+			},
+		});
+		return notifications;
+	} catch (error) {
+		return [];
+	}
+};
+
 export const onBoardUser = async (image: string, language: Lang) => {
 	const user = await getUser();
 	await prisma.user.update({
