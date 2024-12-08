@@ -23,6 +23,8 @@ const config: Config = {
 				lg: "960px",
 				xl: "1100px",
 				xl2: "1265px",
+				xl3: "1440px",
+				xl4: "2000px",
 			},
 		},
 	},
