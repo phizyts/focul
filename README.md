@@ -1,6 +1,6 @@
 # Oxcel - All-in-One Student Dashboard
 
-![Oxcel App Image](https://i.ibb.co/DD1csn2/image.png)
+![Oxcel App Image](https://i.ibb.co/0CcT0n1/Overview.png)
 
 **Oxcel** is a comprehensive student dashboard web application designed to help students stay organized, track their progress, and improve productivity throughout their academic journey.
 
