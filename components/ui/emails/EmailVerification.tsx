@@ -28,7 +28,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ url }) => {
 						<Section className="bg-white rounded-lg shadow-sm p-8">
 							<div className="mb-8">
 								<Img
-									src={`https://i.ibb.co/rZqZ6Q2/New-Project-2-4-1.png`}
+									src={`https://i.ibb.co/370tNFn/New-Project-3.png`}
 									width="119"
 									height="30"
 									alt="Oxcel"
@@ -41,8 +41,8 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ url }) => {
 							</Heading>
 
 							<Text className="text-gray-700 text-lg mb-8 text-center">
-								Thanks for signing up for Oxcel! Please verify your email address by clicking
-								the button below.
+								Thanks for signing up for Oxcel! Please verify your email
+								address by clicking the button below.
 							</Text>
 
 							<Section className="text-center mb-8">
@@ -55,7 +55,8 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ url }) => {
 							</Section>
 
 							<Text className="text-gray-600 text-sm text-center mb-4">
-								If you can't click the button, copy and paste this URL into your browser:
+								If you can't click the button, copy and paste this URL into your
+								browser:
 							</Text>
 							<Text className="text-gray-600 text-sm text-center mb-8">
 								<Link href={url} className="text-blue-600 break-all">

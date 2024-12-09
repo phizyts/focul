@@ -34,7 +34,6 @@ const Navbar = ({
 			try {
 				const response = await fetch("/api/notifications");
 				const data = await response.json();
-				console.log("Fetched notifications:", data); // Log the data
 				if (Array.isArray(data.notifications)) {
 					setNotifications(data.notifications);
 				} else {

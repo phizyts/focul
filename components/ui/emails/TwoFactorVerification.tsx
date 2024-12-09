@@ -28,7 +28,7 @@ export const TwoFactorVerificationEmail = ({
 					<Section className="bg-white rounded-lg shadow-sm p-8">
 						<div className="mb-8">
 							<Img
-								src={`https://i.ibb.co/rZqZ6Q2/New-Project-2-4-1.png`}
+								src={`https://i.ibb.co/370tNFn/New-Project-3.png`}
 								width="119"
 								height="30"
 								alt="Oxcel"
