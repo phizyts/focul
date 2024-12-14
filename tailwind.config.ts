@@ -9,11 +9,10 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				primary: "#0D92FF",
-				muted: "#A4A4A4",
-				text: "#FFFFFF",
-				background: "#1A1D1F",
-				border: "#3B4245",
+				primary: "#1F1F1F",
+				muted: "#727986",
+				background: "#FFFFFF",
+				border: "#DBDBDB",
 			},
 			screens: {
 				xss: "390px",

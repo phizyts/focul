@@ -21,7 +21,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ url }) => {
 	return (
 		<Html>
 			<Head />
-			<Preview>Verify your email address for Oxcel</Preview>
+			<Preview>Verify your email address for Focul</Preview>
 			<Tailwind>
 				<Body className="bg-gray-50 font-sans">
 					<Container className="mx-auto py-8 px-4 max-w-[600px]">
@@ -31,7 +31,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ url }) => {
 									src={`https://i.ibb.co/370tNFn/New-Project-3.png`}
 									width="119"
 									height="30"
-									alt="Oxcel"
+									alt="Focul"
 									className="mx-auto"
 								/>
 							</div>
@@ -41,7 +41,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ url }) => {
 							</Heading>
 
 							<Text className="text-gray-700 text-lg mb-8 text-center">
-								Thanks for signing up for Oxcel! Please verify your email
+								Thanks for signing up for Focul! Please verify your email
 								address by clicking the button below.
 							</Text>
 
@@ -67,7 +67,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ url }) => {
 							<hr className="border-gray-200 mb-8" />
 
 							<Text className="text-gray-500 text-xs text-center">
-								2024 Oxcel, the Ultimate Solution to Your Student Life.
+								2024 Focul, the Ultimate Solution to Your Student Life.
 								<br />
 								<br />
 								All rights reserved.

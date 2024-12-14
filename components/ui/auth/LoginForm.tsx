@@ -43,53 +43,14 @@ const LoginForm = () => {
 		}
 	};
 
-	const SignInWithGoogle = async () => {
-		try {
-			await signInWithGoogle();
-		} catch (error) {
-			console.error("Sign-in error", error);
-		}
-	};
-
-	const SignInWithGithub = async () => {
-		try {
-			await signInWithGithub();
-		} catch (error) {
-			console.error("Sign-in error", error);
-		}
-	};
-
 	if (showOTP) {
 		return <OTPForm onCancel={() => setShowOTP(false)} />;
 	}
 
 	return (
 		<>
-			<div className="flex gap-4 mt-6 w-full">
-				<button
-					onClick={SignInWithGoogle}
-					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
-				>
-					<Image src="/google.svg" alt="Google" width={18} height={18} />
-					Google
-				</button>
-				<button
-					onClick={SignInWithGithub}
-					className="flex gap-2 items-center py-2 px-8 h-[44px] w-full rounded-[10px] border border-border hover:bg-[#1F2324] duration-200"
-				>
-					<Image src="/github.svg" alt="Github" width={18} height={18} />
-					Github
-				</button>
-			</div>
-			<div className="flex items-center my-3 text-gray-500 w-full">
-				<div className="flex-grow border-t border-muted"></div>
-				<span className="px-4 text-xs font-medium text-muted">
-					Or continue with
-				</span>
-				<div className="flex-grow border-t border-muted"></div>
-			</div>
 			<Form
-				className="flex flex-col gap-4 w-full"
+				className="flex flex-col gap-4 w-full mt-5"
 				action={async formData => {
 					await signInWithEmail(formData);
 				}}
@@ -101,7 +62,7 @@ const LoginForm = () => {
 						name="email"
 						id="email"
 						placeholder="john.doe@example.com"
-						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
+						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
 					/>
 				</div>
 				<div className="flex flex-col w-full gap-2">
@@ -109,7 +70,7 @@ const LoginForm = () => {
 						<label htmlFor="password">Password</label>
 						<Link
 							href="/auth/forgot-password"
-							className="text-sm text-primary hover:underline"
+							className="text-sm text-[#0D92FF] hover:underline"
 						>
 							Forgot Password?
 						</Link>
@@ -119,11 +80,11 @@ const LoginForm = () => {
 						name="password"
 						id="password"
 						placeholder="Enter Your Password"
-						className="bg-transparent w-full py-2 px-4 h-[44px] border rounded-[10px] border-border"
+						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
 					/>
 				</div>
 				<button
-					className="w-full py-2 px-4 h-[44px] rounded-[10px] bg-primary duration-200 mt-2"
+					className="w-full py-2 px-4 h-[35px] rounded-[8px] bg-primary duration-200 text-white text-sm mt-2"
 					type="submit"
 					onClick={() => {
 						setIsLoading(true);
@@ -132,6 +93,27 @@ const LoginForm = () => {
 					{isLoading ? <Loading isWhite /> : "Login"}
 				</button>
 			</Form>
+			<div className="flex items-center my-3 text-muted w-full">
+				<div className="flex-grow border-t border-muted"></div>
+				<span className="px-4 text-xs text-muted">Or</span>
+				<div className="flex-grow border-t border-muted"></div>
+			</div>
+			<div className="flex gap-4 w-full">
+				<button
+					onClick={signInWithGoogle}
+					className="flex gap-2 items-center py-2 px-8 h-[35px] w-full rounded-[8px] border text-primary border-border hover:bg-[#F5F5F5] duration-200"
+				>
+					<Image src="/google.svg" alt="Google" width={16} height={16} />
+					Google
+				</button>
+				<button
+					onClick={signInWithGithub}
+					className="flex gap-2 items-center py-2 px-8 h-[35px] w-full rounded-[8px] border text-primary border-border hover:bg-[#F5F5F5] duration-200"
+				>
+					<Image src="/github.svg" alt="Github" width={18} height={18} />
+					Github
+				</button>
+			</div>
 		</>
 	);
 };

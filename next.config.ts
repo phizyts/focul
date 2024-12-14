@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
 			"lh3.googleusercontent.com",
 			"copper-obvious-ptarmigan-243.mypinata.cloud",
 			"res.cloudinary.com",
+			"avatars.githubusercontent.com",
 		],
 	},
 };

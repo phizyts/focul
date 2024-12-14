@@ -41,7 +41,7 @@ const Sidebar = ({
 							className={`flex items-center gap-2 transition-opacity duration-300`}
 						>
 							<Image src="/logo.png" alt="Logo" width={24} height={24} />
-							<span className="text-2xl font-semibold text-white">Oxcel</span>
+							<span className="text-2xl font-semibold text-white">Focul</span>
 						</div>
 					)}
 					<i

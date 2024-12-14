@@ -1,5 +1,5 @@
+import { Notification } from "@prisma/client";
 import React from "react";
-import { Notification } from "@/types/notification";
 
 interface NotificationCardProps {
 	notification: Notification;
@@ -23,7 +23,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
 				<div className="flex items-center gap-4 mt-2 text-xs text-muted">
 					<span className="flex items-center gap-1">
 						<i className="ri-user-fill"></i>
-						Oxcel
+						Focul
 					</span>
 					<span className="flex items-center gap-1">
 						<i className="ri-time-fill"></i>

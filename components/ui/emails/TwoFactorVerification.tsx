@@ -31,7 +31,7 @@ export const TwoFactorVerificationEmail = ({
 								src={`https://i.ibb.co/370tNFn/New-Project-3.png`}
 								width="119"
 								height="30"
-								alt="Oxcel"
+								alt="Focul"
 								className="mx-auto"
 							/>
 						</div>
@@ -60,7 +60,7 @@ export const TwoFactorVerificationEmail = ({
 						<hr className="border-gray-200 mb-8" />
 
 						<Text className="text-gray-500 text-xs text-center">
-							©2024 Oxcel, the Ultimate Solution to Your Student Life.
+							©2024 Focul, the Ultimate Solution to Your Student Life.
 							<br />
 							<br />
 							All rights reserved.

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	@apply text-text;
+	@apply text-primary;
 }
 
 ::-webkit-scrollbar {
@@ -19,7 +19,7 @@ body {
 		position: absolute;
 		left: 0;
 		transform: translateX(-50%);
-		content: '';
+		content: "";
 		@apply bg-primary w-2 h-7 rounded-full;
 	}
 	.hoverActive:hover {
@@ -29,14 +29,14 @@ body {
 		position: absolute;
 		left: 0;
 		transform: translateX(-50%);
-		content: '';
+		content: "";
 		@apply bg-primary w-2 h-0 rounded-full duration-200 ease-in-out;
 	}
 	.hoverActive:hover:after {
 		position: absolute;
 		left: 0;
 		transform: translateX(-50%);
-		content: '';
+		content: "";
 		@apply bg-primary w-2 h-7 rounded-full;
 	}
 	.hide-scrollbar::-webkit-scrollbar {
@@ -65,7 +65,7 @@ body {
 	}
 
 	.fade-blur-top::before {
-		content: '';
+		content: "";
 		position: absolute;
 		top: -30px;
 		left: 0;

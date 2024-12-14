@@ -232,7 +232,7 @@ const Navbar = ({
 								<div className="flex items-center gap-2">
 									<Image src="/logo.png" alt="Logo" width={24} height={24} />
 									<span className="text-2xl font-semibold text-white">
-										Oxcel
+										Focul
 									</span>
 								</div>
 								<i

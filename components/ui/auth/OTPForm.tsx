@@ -97,7 +97,7 @@ export const OTPForm = ({ onCancel }: OTPFormProps) => {
 					{otp.map((digit, index) => (
 						<input
 							key={index}
-							ref={(el) => {
+							ref={el => {
 								inputRefs.current[index] = el;
 							}}
 							type="text"
@@ -107,7 +107,7 @@ export const OTPForm = ({ onCancel }: OTPFormProps) => {
 							onChange={e => handleInputChange(index, e.target.value)}
 							onKeyDown={e => handleKeyDown(index, e)}
 							onPaste={handlePaste}
-							className="w-12 h-14 text-center text-lg font-medium bg-[#1F2324] border-2 border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							className="w-12 h-14 text-center text-lg font-medium border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
 							required
 						/>
 					))}
@@ -123,14 +123,14 @@ export const OTPForm = ({ onCancel }: OTPFormProps) => {
 					<button
 						type="submit"
 						disabled={isLoading || otp.join("").length !== 6}
-						className="flex-1 bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+						className="flex-1 bg-primary text-white px-4 h-[35px] rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
 					>
 						{isLoading ? "Verifying..." : "Verify Code"}
 					</button>
 					<button
 						type="button"
 						onClick={onCancel}
-						className="flex-1 px-4 py-2.5 border border-border rounded-lg hover:bg-[#1F2324] transition-colors font-medium"
+						className="flex-1 px-4 h-[35px] border border-border rounded-lg hover:bg-[#F5F5F5] transition-colors text-sm"
 					>
 						Cancel
 					</button>

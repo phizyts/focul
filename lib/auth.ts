@@ -10,7 +10,7 @@ import EmailVerification from "@/components/ui/emails/EmailVerification";
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
-	appName: "Oxcel",
+	appName: "Focul",
 	baseURL: process.env.BETTER_AUTH_URL,
 	database: prismaAdapter(prisma, {
 		provider: "postgresql",
@@ -20,7 +20,7 @@ export const auth = betterAuth({
 			otpOptions: {
 				async sendOTP({ user, otp }) {
 					await resend.emails.send({
-						from: "Oxcel <2fa@oxcel.phizy.dev>",
+						from: "Focul <2fa@focul.phizy.dev>",
 						to: user.email,
 						subject: "Two-Factor Authentication (2FA)",
 						react: TwoFactorVerificationEmail({ otp }),
@@ -54,7 +54,7 @@ export const auth = betterAuth({
 	},
 
 	advanced: {
-		cookiePrefix: "oxcel",
+		cookiePrefix: "focul",
 	},
 	user: {
 		additionalFields: {
@@ -92,7 +92,7 @@ export const auth = betterAuth({
 	emailVerification: {
 		sendVerificationEmail: async ({ user, url, token }, request) => {
 			await resend.emails.send({
-				from: "Oxcel <verification@oxcel.phizy.dev>",
+				from: "Focul <verification@focul.phizy.dev>",
 				to: user.email,
 				subject: "Verify your email address",
 				react: EmailVerification({ url }),

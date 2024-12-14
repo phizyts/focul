@@ -16,9 +16,10 @@ interface Course {
 
 interface Props {
 	setParentLoading: (loading: boolean) => void;
+	step: number;
 }
 
-const OnboardingForm = ({ setParentLoading }: Props) => {
+const OnboardingForm = ({ setParentLoading, step }: Props) => {
 	const router = useRouter();
 	const [courses, setCourses] = useState<Course[]>([]);
 	const [selectedLanguage, setSelectedLanguage] = useState("English");
@@ -277,7 +278,11 @@ const OnboardingForm = ({ setParentLoading }: Props) => {
 				</button>
 			</div>
 			<CourseModal
-				key={selectedCourse ? `${selectedCourse.name}-${selectedCourse.type}` : 'new'}
+				key={
+					selectedCourse
+						? `${selectedCourse.name}-${selectedCourse.type}`
+						: "new"
+				}
 				isOpen={isModalOpen}
 				onClose={closeModal}
 				course={selectedCourse}

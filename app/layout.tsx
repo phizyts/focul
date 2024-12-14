@@ -54,7 +54,7 @@ const poppins = localFont({
 });
 
 export const metadata: Metadata = {
-	title: "Oxcel",
+	title: "Focul",
 	description: "All In One Student Dashboard",
 };
 
