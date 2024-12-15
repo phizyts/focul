@@ -4,17 +4,28 @@ export const useFormStep = (steps: ReactElement[]) => {
 	const [currentStep, setCurrentStep] = useState(1);
 
 	const next = () => {
-		if (currentStep === steps.length) return currentStep;
-		setCurrentStep(prev => prev + 1);
+		setCurrentStep(prev => {
+			if (prev === steps.length) return prev;
+			return prev + 1;
+		});
 	};
 	const prev = () => {
-		if (currentStep === 1) return currentStep;
-		setCurrentStep(prev => prev - 1);
+		setCurrentStep(prev => {
+			if (prev === 1) return prev;
+			return prev - 1;
+		});
 	};
 
 	const reset = () => {
 		setCurrentStep(1);
 	};
 
-	return { currentStep, step: steps[currentStep], next, prev, reset };
+	return {
+		currentStep,
+		step: steps[currentStep - 1],
+		steps,
+		next,
+		prev,
+		reset,
+	};
 };

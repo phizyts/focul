@@ -2,6 +2,8 @@ import { Modal } from "../Modal";
 import { useState } from "react";
 import { CourseType } from "@prisma/client";
 import { courseTypes } from "@/constants/constants";
+import PrimaryButton from "../../PrimaryButton";
+import SecondaryButton from "@/components/SecondaryButton";
 
 interface Course {
 	name: string;
@@ -23,7 +25,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [courseName, setCourseName] = useState(course?.name || "");
-	const [courseType, setCourseType] = useState(course?.type || "");
+	const [courseType, setCourseType] = useState(course?.type || "Regular");
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -37,7 +39,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
 				type: courseType as CourseType,
 			});
 			setCourseName("");
-			setCourseType("");
+			setCourseType("Regular");
 			onClose();
 		} catch (error) {
 			console.error("Error handling course:", error);
@@ -49,7 +51,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
 	const handleDelete = () => {
 		onSubmit(null);
 		setCourseName("");
-		setCourseType("");
+		setCourseType("Regular");
 		onClose();
 	};
 
@@ -58,34 +60,30 @@ const CourseModal: React.FC<CourseModalProps> = ({
 			isOpen={isOpen}
 			onClose={() => {
 				setCourseName(course?.name || "");
-				setCourseType(course?.type || "");
+				setCourseType(course?.type || "Regular");
 				onClose();
 			}}
 			title={course ? "Edit Course" : "Add Course"}
 		>
 			<form onSubmit={handleSubmit} className="flex flex-col gap-4">
 				<div className="flex flex-col gap-2">
-					<label className="text-sm font-medium text-gray-300">
-						Course Name
-					</label>
+					<label className="text-sm text-primary">Course Name</label>
 					<input
 						type="text"
 						value={courseName}
 						onChange={e => setCourseName(e.target.value)}
-						className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 bg-[#1A1D1E] text-white placeholder-gray-500"
+						className="w-full text-sm px-4 h-[35px] border border-border rounded-lg text-primary placeholder-muted"
 						placeholder="Enter course name"
 						required
 					/>
 				</div>
 
 				<div className="flex flex-col gap-2">
-					<label className="text-sm font-medium text-gray-300">
-						Course Type
-					</label>
+					<label className="text-sm text-primary">Course Type</label>
 					<select
 						value={courseType}
 						onChange={e => setCourseType(e.target.value as Course["type"])}
-						className="w-full bg-[#1A1D1E] text-white py-2 px-4 h-[44px] rounded-lg border border-border hover:bg-[#2A2F30] duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer appearance-none"
+						className="w-full text-sm px-4 h-[35px] rounded-lg border border-border duration-200 cursor-pointer"
 						style={{
 							backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
 							backgroundRepeat: "no-repeat",
@@ -96,14 +94,11 @@ const CourseModal: React.FC<CourseModalProps> = ({
 						}}
 						required
 					>
-						<option value="" disabled className="bg-[#1A1D1E] text-gray-400">
-							Select a type
-						</option>
 						{courseTypes.map(type => (
 							<option
 								key={type.value}
 								value={type.value}
-								className="bg-[#1A1D1E] text-white hover:bg-[#2A2F30]"
+								className="bg-background text-primary"
 							>
 								{type.display}
 							</option>
@@ -111,36 +106,31 @@ const CourseModal: React.FC<CourseModalProps> = ({
 					</select>
 				</div>
 
-				<div className="flex gap-3 mt-6">
-					<button
+				<div className="flex justify-between gap-3 mt-2">
+					<PrimaryButton
+						text={isLoading ? "Saving..." : course ? "Save" : "Add Course"}
+						extraClasses="flex !w-fit"
 						type="submit"
-						disabled={isLoading}
-						className="flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-2 rounded-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-					>
-						{isLoading ? "Saving..." : course ? "Save" : "Add Course"}
-					</button>
-					{course && (
-						<button
+					/>
+					<div className="flex gap-3">
+						{course && (
+							<PrimaryButton
+								text="Delete"
+								extraClasses="flex !w-fit !bg-[#b80404]"
+								type="button"
+								onClick={handleDelete}
+							/>
+						)}
+						<SecondaryButton
+							text="Cancel"
+							onClick={() => {
+								setCourseName(course?.name || "");
+								setCourseType(course?.type || "Regular");
+								onClose();
+							}}
 							type="button"
-							onClick={handleDelete}
-							disabled={isLoading}
-							className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium py-2 rounded-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-						>
-							Delete
-						</button>
-					)}
-					<button
-						type="button"
-						onClick={() => {
-							setCourseName(course?.name || "");
-							setCourseType(course?.type || "");
-							onClose();
-						}}
-						disabled={isLoading}
-						className="flex-1 border border-border hover:bg-[#1F2324] text-muted font-medium py-2 rounded-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-					>
-						Cancel
-					</button>
+						/>
+					</div>
 				</div>
 			</form>
 		</Modal>
