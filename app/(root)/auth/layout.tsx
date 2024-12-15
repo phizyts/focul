@@ -12,7 +12,7 @@ export default function Layout({
 					width={0}
 					height={0}
 					sizes="100%"
-					className="w-full h-full object-cover"
+					className="w-full h-full object-cover hidden xl:block"
 				/>
 				{children}
 			</div>
