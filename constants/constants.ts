@@ -5,13 +5,12 @@ interface NavRoute {
 }
 
 interface NavCategory {
-	name: string;
+	name?: string;
 	routes: NavRoute[];
 }
 
 export const sidebarRoutes: NavCategory[] = [
 	{
-		name: "Dashboard",
 		routes: [
 			{
 				name: "Overview",
@@ -19,14 +18,19 @@ export const sidebarRoutes: NavCategory[] = [
 				icon: "ri-layout-grid-fill",
 			},
 			{
+				name: "Community",
+				href: "/dashboard/community",
+				icon: "ri-group-fill",
+			},
+			{
 				name: "Calendar",
 				href: "/dashboard/calendar",
 				icon: "ri-calendar-fill",
 			},
 			{
-				name: "Reminder",
-				href: "/dashboard/reminder",
-				icon: "ri-file-list-fill",
+				name: "Tasks",
+				href: "/dashboard/tasks",
+				icon: "ri-todo-fill",
 			},
 		],
 	},
@@ -34,9 +38,9 @@ export const sidebarRoutes: NavCategory[] = [
 		name: "Courses",
 		routes: [
 			{
-				name: "My Courses",
+				name: "Courses",
 				href: "/dashboard/courses/my",
-				icon: "ri-book-fill",
+				icon: "ri-graduation-cap-fill",
 			},
 			{
 				name: "Assignments",
@@ -56,27 +60,17 @@ export const sidebarRoutes: NavCategory[] = [
 			{
 				name: "Notes",
 				href: "/dashboard/tools/notes",
-				icon: "ri-sticky-note-add-fill",
+				icon: "ri-booklet-fill",
 			},
 			{
 				name: "Flashcards",
 				href: "/dashboard/tools/flashcards",
 				icon: "ri-sticky-note-2-fill",
 			},
-		],
-	},
-	{
-		name: "Community",
-		routes: [
 			{
-				name: "Friends",
-				href: "/dashboard/community/friends",
-				icon: "ri-group-fill",
-			},
-			{
-				name: "Study Groups",
-				href: "/dashboard/community/groups",
-				icon: "ri-team-fill",
+				name: "Promodoro",
+				href: "/dashboard/tools/promodoro",
+				icon: "ri-timer-fill",
 			},
 		],
 	},

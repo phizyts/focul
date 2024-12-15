@@ -25,14 +25,15 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 		<div
 			className={`flex flex-col gap-5 overflow-y-auto overflow-x-hidden relative ${isCollapsed ? "items-center" : ""}`}
 		>
-			{sidebarRoutes.map(category => {
+			{sidebarRoutes.map((category, index) => {
+				const uniqueCategoryKey = category.name || `category-${index}`;
 				const isMenuCollapsed = collapsedCategories.includes(category.name);
 				return (
 					<div
-						key={category.name}
+						key={uniqueCategoryKey}
 						className={`relative ${isCollapsed ? "w-full flex flex-col items-center" : ""}`}
 					>
-						{!isCollapsed && (
+						{!isCollapsed && category.name != null && (
 							<span
 								onClick={() => toggleCategory(category.name)}
 								className="ml-8 text-sm font-medium text-muted cursor-pointer hover:text-white flex items-center gap-1 w-fit"
@@ -50,28 +51,31 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 								isMenuCollapsed ? "max-h-0" : "max-h-[1000px] mt-3"
 							}`}
 						>
-							{category.routes.map(route => (
-								<li key={route.href}>
-									<Link
-										href={route.href}
-										title={isCollapsed ? route.name : undefined}
-										className={`group flex gap-2 items-center ${isCollapsed ? "justify-center w-fit py-2" : "w-fit"} ${
-											currentPath === route.href && !isMenuCollapsed
-												? "activeLink"
-												: "text-muted hoverActive"
-										} duration-200 overflow-hidden`}
-									>
-										<i
-											className={`${route.icon} ri-xl group-hover:text-white`}
-										></i>
-										{!isCollapsed && (
-											<span className="group-hover:text-white">
-												{route.name}
-											</span>
-										)}
-									</Link>
-								</li>
-							))}
+							{category.routes.map((route, routeIndex) => {
+								const uniqueRouteKey = `${category.name}-${route.href || routeIndex}`;
+								return (
+									<li key={uniqueRouteKey}>
+										<Link
+											href={route.href}
+											title={isCollapsed ? route.name : undefined}
+											className={`group flex gap-2 items-center ${isCollapsed ? "justify-center w-fit py-2" : "w-fit"} ${
+												currentPath === route.href && !isMenuCollapsed
+													? "activeLink"
+													: "text-muted hoverActive"
+											} duration-200 overflow-hidden`}
+										>
+											<i
+												className={`${route.icon} ri-xl group-hover:text-white`}
+											></i>
+											{!isCollapsed && (
+												<span className="group-hover:text-white">
+													{route.name}
+												</span>
+											)}
+										</Link>
+									</li>
+								);
+							})}
 						</ul>
 					</div>
 				);
