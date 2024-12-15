@@ -13,9 +13,9 @@ export const sidebarRoutes: NavCategory[] = [
 	{
 		routes: [
 			{
-				name: "Overview",
+				name: "Dashboard",
 				href: "/dashboard/overview",
-				icon: "ri-layout-grid-fill",
+				icon: "ri-layout-fill",
 			},
 			{
 				name: "Community",
@@ -32,10 +32,15 @@ export const sidebarRoutes: NavCategory[] = [
 				href: "/dashboard/tasks",
 				icon: "ri-todo-fill",
 			},
+			{
+				name: "Inbox",
+				href: "/dashboard/inbox",
+				icon: "ri-inbox-2-fill",
+			},
 		],
 	},
 	{
-		name: "Courses",
+		name: "COURSES",
 		routes: [
 			{
 				name: "Courses",
@@ -55,7 +60,7 @@ export const sidebarRoutes: NavCategory[] = [
 		],
 	},
 	{
-		name: "Study Tools",
+		name: "STUDY TOOLS",
 		routes: [
 			{
 				name: "Notes",

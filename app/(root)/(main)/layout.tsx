@@ -1,16 +1,44 @@
 "use client";
 import Navbar from "@/components/ui/navbar/Navbar";
 import Sidebar from "@/components/ui/sidebar/Sidebar";
+import { useSidebar } from "@/hooks/useSidebar";
 import { authClient } from "@/lib/auth-client";
+import { useEffect } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const { data: session, isPending } = authClient.useSession();
+	const { sidebarCollapsed, toggleSidebar, sidebarHidden, toggleHidden } =
+		useSidebar();
+
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			const handleResize = () => {
+				toggleSidebar(window.innerWidth < 960);
+				toggleHidden(window.innerWidth < 768);
+			};
+
+			handleResize();
+			window.addEventListener("resize", handleResize);
+
+			return () => window.removeEventListener("resize", handleResize);
+		}
+	}, []);
+
 	return (
 		<div className="h-screen flex overflow-hidden">
-			<Sidebar session={session} isPending={isPending} />
-			<div className="flex-1 mx-4 xss:mx-5 sm:mx-8 flex flex-col overflow-y-auto">
+			<Sidebar
+				session={session}
+				isPending={isPending}
+				sidebarCollapsed={sidebarCollapsed}
+				toggleSidebar={toggleSidebar}
+			/>
+			<div
+				className={`w-full mx-4 xss:mx-5 sm:mx-8 flex flex-col overflow-y-auto duration-200 ${
+					sidebarCollapsed ? "pl-[80px]" : "pl-[285px]"
+				} ${sidebarHidden ? "!pl-0" : ""}`}
+			>
 				<Navbar session={session} isPending={isPending} />
-				<main className="flex-1 md:mb-8 overflow-y-auto">{children}</main>
+				<main className="overflow-y-auto">{children}</main>
 			</div>
 		</div>
 	);

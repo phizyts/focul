@@ -13,31 +13,10 @@ body {
 
 @layer utilities {
 	.activeLink {
-		@apply text-white;
-	}
-	.activeLink:after {
-		position: absolute;
-		left: 0;
-		transform: translateX(-50%);
-		content: "";
-		@apply bg-primary w-2 h-7 rounded-full;
+		@apply text-white bg-primary w-full;
 	}
 	.hoverActive:hover {
-		@apply text-white;
-	}
-	.hoverActive:after {
-		position: absolute;
-		left: 0;
-		transform: translateX(-50%);
-		content: "";
-		@apply bg-primary w-2 h-0 rounded-full duration-200 ease-in-out;
-	}
-	.hoverActive:hover:after {
-		position: absolute;
-		left: 0;
-		transform: translateX(-50%);
-		content: "";
-		@apply bg-primary w-2 h-7 rounded-full;
+		@apply text-white bg-primary w-full;
 	}
 	.hide-scrollbar::-webkit-scrollbar {
 		display: none;

@@ -1,19 +1,15 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { sidebarRoutes, bottomRoutes } from "@/constants/constants";
 import UserMultiple4 from "@/components/icons/UserMultiple";
 import Bell1 from "@/components/icons/Bell";
 import Gear1 from "@/components/icons/Gear";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
-import {
-	SidebarNavigationTop,
-	SidebarNavigationBottom,
-} from "../sidebar/SidebarNavigation";
+import { SidebarNavigationTop } from "../sidebar/SidebarNavigation";
 import NavbarDropdown from "./NavbarDropdown";
 import Searchbar from "../Searchbar";
+import { useSidebar } from "@/hooks/useSidebar";
 
 const Navbar = ({
 	session,
@@ -28,6 +24,7 @@ const Navbar = ({
 	const [notifications, setNotifications] = useState<any[]>([]);
 	const profileDropdownRef = useRef<HTMLDivElement>(null);
 	const notificationDropdownRef = useRef<HTMLDivElement>(null);
+	const { sidebarCollapsed } = useSidebar();
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -75,7 +72,6 @@ const Navbar = ({
 							onClick={() => setIsMobileMenuOpen(true)}
 							className={`ri-menu-line ri-xl h-[32px] flex justify-center items-center text-muted cursor-pointer hover:text-white duration-200 md:hidden`}
 						></i>
-						<NavbarDropdown />
 						<i className="ri-search-line text-muted ri-lg block xl:hidden md:hidden lg:block cursor-pointer hover:text-white duration-200"></i>
 					</div>
 					<Searchbar />
@@ -227,11 +223,13 @@ const Navbar = ({
 					style={{ transitionDuration: isMobileMenuOpen ? "200ms" : "200ms" }}
 				>
 					<div className="flex flex-col h-full">
-						<div className="pt-8 pb-12 px-8 w-full">
+						<div className="py-6 px-7 w-full border-b border-border">
 							<div className="flex justify-between items-center">
-								<div className="flex items-center gap-2">
-									<Image src="/logo.png" alt="Logo" width={24} height={24} />
-									<span className="text-2xl font-semibold text-white">
+								<div
+									className={`flex items-center gap-2 transition-opacity duration-300`}
+								>
+									<Image src="/logo.png" alt="Logo" width={14} height={17} />
+									<span className="text-xl font-medium text-primary">
 										Focul
 									</span>
 								</div>
@@ -241,46 +239,8 @@ const Navbar = ({
 								></i>
 							</div>
 						</div>
-						<div className="flex flex-col flex-1 overflow-y-auto justify-between">
-							<SidebarNavigationTop isCollapsed={false} />
-							<div className="pt-3">
-								<SidebarNavigationBottom isCollapsed={false} />
-								{isPending || !session ? (
-									<div
-										className={`flex items-center cursor-pointer py-3 hover:bg-[#1F2324] mt-4 p-2 mb-5 rounded-lg px-4 mx-4 justify-between`}
-									>
-										<div className="w-10 h-10 rounded-full bg-gray-700 animate-pulse"></div>
-										<div className={`flex flex-col gap-2`}>
-											<span className="h-[20px] w-24 bg-gray-700 rounded animate-pulse"></span>
-											<span className="h-[16px] w-[150px] bg-gray-700 rounded animate-pulse"></span>
-										</div>
-										<i
-											className={`ri-expand-up-down-line text-muted ri-lg`}
-										></i>
-									</div>
-								) : (
-									<div
-										className={`flex items-center cursor-pointer py-3 hover:bg-[#1F2324] mt-4 p-2 mb-5 rounded-lg px-4 mx-4 justify-between`}
-									>
-										<Image
-											src={session?.user?.image as string}
-											alt="Profile"
-											width={40}
-											height={40}
-											className="rounded-full"
-										/>
-										<div className={`flex flex-col`}>
-											<span className="text-white">{session?.user?.name}</span>
-											<span className="text-muted text-sm w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
-												{session?.user?.email}
-											</span>
-										</div>
-										<i
-											className={`ri-expand-up-down-line text-muted ri-lg`}
-										></i>
-									</div>
-								)}
-							</div>
+						<div className="flex flex-col flex-1 overflow-y-auto justify-between mx-4">
+							<SidebarNavigationTop sidebarCollapsed={sidebarCollapsed} />
 						</div>
 					</div>
 				</div>

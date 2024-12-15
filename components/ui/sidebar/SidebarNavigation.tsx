@@ -6,10 +6,10 @@ import { bottomRoutes, sidebarRoutes } from "@/constants/constants";
 import { useState } from "react";
 
 interface NavigationProps {
-	isCollapsed?: boolean;
+	sidebarCollapsed?: boolean;
 }
 
-export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
+export const SidebarNavigationTop = ({ sidebarCollapsed }: NavigationProps) => {
 	const currentPath = usePathname();
 	const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
@@ -23,20 +23,26 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 
 	return (
 		<div
-			className={`flex flex-col gap-5 overflow-y-auto overflow-x-hidden relative ${isCollapsed ? "items-center" : ""}`}
+			className={`flex flex-col gap-2 mt-2 overflow-y-auto overflow-x-hidden relative ${sidebarCollapsed ? "" : ""}`}
 		>
 			{sidebarRoutes.map((category, index) => {
 				const uniqueCategoryKey = category.name || `category-${index}`;
-				const isMenuCollapsed = collapsedCategories.includes(category.name);
+				const isMenuCollapsed = collapsedCategories.includes(
+					category.name as string,
+				);
 				return (
 					<div
 						key={uniqueCategoryKey}
-						className={`relative ${isCollapsed ? "w-full flex flex-col items-center" : ""}`}
+						className={`relative ${sidebarCollapsed ? "w-full flex flex-col items-center" : ""}`}
 					>
-						{!isCollapsed && category.name != null && (
+						{!sidebarCollapsed && category.name != null && (
 							<span
-								onClick={() => toggleCategory(category.name)}
-								className="ml-8 text-sm font-medium text-muted cursor-pointer hover:text-white flex items-center gap-1 w-fit"
+								onClick={() => {
+									if (category.name !== undefined) {
+										toggleCategory(category.name);
+									}
+								}}
+								className="ml-2 text-xs text-muted cursor-pointer hover:text-primary flex items-center gap-1 w-fit"
 							>
 								{category.name}
 								<i
@@ -47,8 +53,8 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 							</span>
 						)}
 						<ul
-							className={`${isCollapsed ? "flex flex-col items-center gap-5 w-full px-2" : "pl-8 flex flex-col gap-5"} overflow-hidden transition-all duration-200 ${
-								isMenuCollapsed ? "max-h-0" : "max-h-[1000px] mt-3"
+							className={`${sidebarCollapsed ? "flex flex-col items-center w-full px-2" : "flex flex-col gap-1.5"} overflow-hidden transition-all duration-200 ${
+								isMenuCollapsed ? "max-h-0" : "max-h-[1000px] mt-2"
 							}`}
 						>
 							{category.routes.map((route, routeIndex) => {
@@ -57,20 +63,16 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 									<li key={uniqueRouteKey}>
 										<Link
 											href={route.href}
-											title={isCollapsed ? route.name : undefined}
-											className={`group flex gap-2 items-center ${isCollapsed ? "justify-center w-fit py-2" : "w-fit"} ${
+											title={sidebarCollapsed ? route.name : undefined}
+											className={`flex gap-1.5 items-center ${sidebarCollapsed ? "justify-center w-fit py-1 my-1 px-2 rounded-[6px]" : "px-3 py-1 rounded-[6px]"} ${
 												currentPath === route.href && !isMenuCollapsed
 													? "activeLink"
-													: "text-muted hoverActive"
-											} duration-200 overflow-hidden`}
+													: "text-primary hoverActive"
+											} overflow-hidden`}
 										>
-											<i
-												className={`${route.icon} ri-xl group-hover:text-white`}
-											></i>
-											{!isCollapsed && (
-												<span className="group-hover:text-white">
-													{route.name}
-												</span>
+											<i className={`${route.icon} text-[18px]`}></i>
+											{!sidebarCollapsed && (
+												<span className="text-sm">{route.name}</span>
 											)}
 										</Link>
 									</li>
@@ -80,48 +82,6 @@ export const SidebarNavigationTop = ({ isCollapsed }: NavigationProps) => {
 					</div>
 				);
 			})}
-		</div>
-	);
-};
-
-export const SidebarNavigationBottom = ({ isCollapsed }: NavigationProps) => {
-	const currentPath = usePathname();
-
-	return (
-		<div
-			className={`flex flex-col gap-5 overflow-y-auto overflow-x-hidden relative ${isCollapsed ? "items-center" : ""}`}
-		>
-			{bottomRoutes.map(category => (
-				<div
-					key={category.name}
-					className={`relative ${isCollapsed ? "w-full flex flex-col items-center" : ""}`}
-				>
-					<ul
-						className={`${isCollapsed ? "flex flex-col items-center gap-5 w-full px-2" : "pl-8 flex flex-col gap-5"} mt-3`}
-					>
-						{category.routes.map(route => (
-							<li key={route.href}>
-								<Link
-									href={route.href}
-									title={isCollapsed ? route.name : undefined}
-									className={`group flex gap-2 items-center ${isCollapsed ? "justify-center w-fit py-2" : "w-fit"} ${
-										currentPath === route.href
-											? "activeLink"
-											: "text-muted hoverActive"
-									} duration-200 overflow-hidden`}
-								>
-									<i
-										className={`${route.icon} ri-xl group-hover:text-white`}
-									></i>
-									{!isCollapsed && (
-										<span className="group-hover:text-white">{route.name}</span>
-									)}
-								</Link>
-							</li>
-						))}
-					</ul>
-				</div>
-			))}
 		</div>
 	);
 };
