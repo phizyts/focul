@@ -17,9 +17,9 @@ const Sidebar = ({
 		<nav
 			className={`hidden flex-col h-full border-r border-border transition-all duration-300 ${sidebarCollapsed ? "w-[80px]" : "w-[285px]"} md:flex md:fixed`}
 		>
-			<div className="py-6 px-7 w-full border-b border-border">
+			<div className="flex h-[75px] px-7 w-full border-b border-border">
 				<div
-					className={`flex ${sidebarCollapsed ? "justify-center px-2" : "justify-between"} items-center`}
+					className={`flex w-full ${sidebarCollapsed ? "justify-center px-2" : "justify-between"} items-center`}
 				>
 					{!sidebarCollapsed && (
 						<div

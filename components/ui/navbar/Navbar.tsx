@@ -1,13 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import UserMultiple4 from "@/components/icons/UserMultiple";
-import Bell1 from "@/components/icons/Bell";
-import Gear1 from "@/components/icons/Gear";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { SidebarNavigationTop } from "../sidebar/SidebarNavigation";
-import NavbarDropdown from "./NavbarDropdown";
 import Searchbar from "../Searchbar";
 import { useSidebar } from "@/hooks/useSidebar";
 
@@ -65,40 +61,39 @@ const Navbar = ({
 
 	return (
 		<>
-			<div className="flex items-center justify-between w-full pt-7 md:pb-10 pb-7 gap-5">
-				<div className="flex items-center gap-4 md:w-full xl:w-full h-[40px]">
+			<div className="flex items-center justify-between w-full h-[75px] gap-5 px-4 xss:px-5 sm:px-7 border-b border-border">
+				<div className="flex items-center md:w-full xl:w-full h-[36px]">
 					<div className="flex items-center gap-4">
 						<i
 							onClick={() => setIsMobileMenuOpen(true)}
 							className={`ri-menu-line ri-xl h-[32px] flex justify-center items-center text-muted cursor-pointer hover:text-white duration-200 md:hidden`}
 						></i>
-						<i className="ri-search-line text-muted ri-lg block xl:hidden md:hidden lg:block cursor-pointer hover:text-white duration-200"></i>
+						<i className="ri-search-line text-muted ri-lg block md:hidden cursor-pointer hover:text-white duration-200"></i>
 					</div>
 					<Searchbar />
 				</div>
-				<div className="flex gap-4 items-center xl:w-fit xl:justify-end min-w-max">
-					<div className="w-7 h-7 flex items-center justify-center">
-						<UserMultiple4 />
-					</div>
+				<div className="flex gap-2 items-center xl:w-fit xl:justify-end min-w-max">
+					<i className="ri-group-line text-muted cursor-pointer hover:bg-[#F5F5F5] p-5 rounded-[6px] ri-xl w-7 h-7 flex items-center justify-center duration-200"></i>
 					<div
 						className="relative"
 						ref={notificationDropdownRef}
 						onMouseEnter={() => setIsNotificationOpen(true)}
 						onMouseLeave={() => setIsNotificationOpen(false)}
 					>
-						<div className="w-7 h-7 flex items-center justify-center cursor-pointer">
-							<Bell1 />
-						</div>
+						<i className="ri-notification-2-line text-muted cursor-pointer hover:bg-[#F5F5F5] p-5 rounded-[6px] ri-xl w-7 h-7 flex items-center justify-center duration-200"></i>
+
 						<div
-							className={`absolute right-0 mt-2 w-80 bg-[#1A1D1E] rounded-lg shadow-lg py-1 z-50 border border-[#3B4245] transition-all duration-200 ${
+							className={`absolute -right-[100px] xs:right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-1 z-50 border border-border transition-all duration-200 ${
 								isNotificationOpen
 									? "opacity-100 visible translate-y-0"
 									: "opacity-0 invisible -translate-y-2"
 							}`}
 						>
 							<div className="flex flex-col">
-								<div className="px-4 py-2 border-b border-[#3B4245]">
-									<h3 className="text-white font-medium">Notifications</h3>
+								<div className="px-4 py-2 border-b border-border">
+									<h3 className="text-muted text-sm font-medium">
+										Notifications
+									</h3>
 								</div>
 								<div className="max-h-[400px] overflow-y-auto">
 									{notifications.length === 0 ? (
@@ -109,12 +104,12 @@ const Navbar = ({
 										notifications.map((notification, index) => (
 											<div
 												key={index}
-												className="px-4 py-2 hover:bg-[#2A2D2E] cursor-pointer"
+												className="px-4 py-2 hover:bg-[#F5F5F5] cursor-pointer"
 											>
 												<div className="flex items-start gap-3">
 													<div className="w-2 h-1 mt-2 rounded-full bg-blue-500"></div>
 													<div>
-														<p className="text-sm text-white">
+														<p className="text-sm text-muted">
 															{notification.message}
 														</p>
 														<p className="text-xs text-muted mt-1">
@@ -126,7 +121,7 @@ const Navbar = ({
 										))
 									)}
 								</div>
-								<div className="px-4 py-2 border-t border-[#3B4245]">
+								<div className="px-4 py-2 border-t border-border">
 									<Link
 										href="/dashboard/inbox"
 										className="text-sm text-blue-500 hover:text-blue-400"
@@ -139,12 +134,12 @@ const Navbar = ({
 					</div>
 					<Link
 						href="/dashboard/settings"
-						className="w-7 h-7 flex items-center justify-center"
+						className="w-7 h-7 flex items-center justify-center mr-2"
 					>
-						<Gear1 />
+						<i className="ri-settings-3-line text-muted cursor-pointer hover:bg-[#F5F5F5] p-5 rounded-[6px] ri-xl w-7 h-7 flex items-center justify-center duration-200"></i>
 					</Link>
 					{isPending || !session ? (
-						<div className="w-10 h-10 rounded-full bg-gray-700 animate-pulse"></div>
+						<div className="w-9 h-9 rounded-full bg-gray-700 animate-pulse"></div>
 					) : (
 						<div
 							className="relative"
@@ -162,20 +157,20 @@ const Navbar = ({
 								<Image
 									src={session?.user?.image as string}
 									alt="Profile"
-									width={40}
-									height={40}
+									width={36}
+									height={36}
 									className="rounded-full cursor-pointer"
 								/>
 							</div>
 							<div
-								className={`absolute right-0 mt-2 w-48 bg-[#1A1D1E] rounded-lg shadow-lg py-1 z-50 border border-[#3B4245] transition-all duration-200 ${
+								className={`absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-border transition-all duration-200 ${
 									isProfileOpen
 										? "opacity-100 visible translate-y-0"
 										: "opacity-0 invisible -translate-y-2"
 								}`}
 							>
-								<div className="flex flex-col px-4 py-2 border-b mb-1 border-[#3B4245]">
-									<p className="text-sm text-white font-medium">
+								<div className="flex flex-col px-4 py-2 border-b mb-1 border-border">
+									<p className="text-sm text-muted font-medium">
 										{session?.user?.name}
 									</p>
 									<p className="text-xs text-gray-400">
@@ -184,7 +179,7 @@ const Navbar = ({
 								</div>
 								<Link
 									href="/dashboard/settings"
-									className="block px-4 py-2 text-sm text-gray-300 hover:bg-[#212426] cursor-pointer"
+									className="block px-4 py-2 text-sm text-muted hover:bg-[#F5F5F5] cursor-pointer"
 									onClick={() => setIsProfileOpen(false)}
 								>
 									Settings
@@ -197,7 +192,7 @@ const Navbar = ({
 										await authClient.signOut();
 										window.location.reload();
 									}}
-									className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#212426] cursor-pointer"
+									className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#F5F5F5] cursor-pointer"
 								>
 									Sign Out
 								</button>

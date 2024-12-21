@@ -53,7 +53,7 @@ export const SidebarNavigationTop = ({ sidebarCollapsed }: NavigationProps) => {
 							</span>
 						)}
 						<ul
-							className={`${sidebarCollapsed ? "flex flex-col items-center w-full px-2" : "flex flex-col gap-1.5"} overflow-hidden transition-all duration-200 ${
+							className={`${sidebarCollapsed ? "flex flex-col items-center w-full px-2 gap-1.5" : "flex flex-col gap-1.5"} overflow-hidden transition-all duration-200 ${
 								isMenuCollapsed ? "max-h-0" : "max-h-[1000px] mt-2"
 							}`}
 						>
@@ -64,7 +64,7 @@ export const SidebarNavigationTop = ({ sidebarCollapsed }: NavigationProps) => {
 										<Link
 											href={route.href}
 											title={sidebarCollapsed ? route.name : undefined}
-											className={`flex gap-1.5 items-center ${sidebarCollapsed ? "justify-center w-fit py-1 my-1 px-2 rounded-[6px]" : "px-3 py-1 rounded-[6px]"} ${
+											className={`flex gap-1.5 items-center ${sidebarCollapsed ? "justify-center w-fit py-1 px-2 rounded-[6px]" : "px-3 py-1 rounded-[6px]"} ${
 												currentPath === route.href && !isMenuCollapsed
 													? "activeLink"
 													: "text-primary hoverActive"

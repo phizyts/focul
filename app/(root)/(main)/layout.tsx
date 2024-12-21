@@ -33,12 +33,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				toggleSidebar={toggleSidebar}
 			/>
 			<div
-				className={`w-full mx-4 xss:mx-5 sm:mx-8 flex flex-col overflow-y-auto duration-200 ${
+				className={`w-full flex flex-col overflow-y-auto duration-200 ${
 					sidebarCollapsed ? "pl-[80px]" : "pl-[285px]"
 				} ${sidebarHidden ? "!pl-0" : ""}`}
 			>
 				<Navbar session={session} isPending={isPending} />
-				<main className="overflow-y-auto">{children}</main>
+				<main className="overflow-y-auto mx-4 xss:mx-5 sm:mx-7 mt-6">
+					{children}
+				</main>
 			</div>
 		</div>
 	);
