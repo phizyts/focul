@@ -123,7 +123,7 @@ const Navbar = ({
 								</div>
 								<div className="px-4 py-2 border-t border-border">
 									<Link
-										href="/dashboard/inbox"
+										href="/inbox"
 										className="text-sm text-blue-500 hover:text-blue-400"
 									>
 										View all notifications
@@ -133,8 +133,8 @@ const Navbar = ({
 						</div>
 					</div>
 					<Link
-						href="/dashboard/settings"
-						className="w-7 h-7 flex items-center justify-center mr-2"
+						href="/settings"
+						className="w-7 h-7 flex items-center justify-center p-5"
 					>
 						<i className="ri-settings-3-line text-muted cursor-pointer hover:bg-[#F5F5F5] p-5 rounded-[6px] ri-xl w-7 h-7 flex items-center justify-center duration-200"></i>
 					</Link>
@@ -142,7 +142,7 @@ const Navbar = ({
 						<div className="w-9 h-9 rounded-full bg-gray-700 animate-pulse"></div>
 					) : (
 						<div
-							className="relative"
+							className="relative ml-1"
 							ref={profileDropdownRef}
 							onMouseEnter={() => setIsProfileOpen(true)}
 							onMouseLeave={() => setIsProfileOpen(false)}
@@ -178,7 +178,7 @@ const Navbar = ({
 									</p>
 								</div>
 								<Link
-									href="/dashboard/settings"
+									href="/settings"
 									className="block px-4 py-2 text-sm text-muted hover:bg-[#F5F5F5] cursor-pointer"
 									onClick={() => setIsProfileOpen(false)}
 								>

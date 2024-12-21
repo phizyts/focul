@@ -1,8 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { AUTH_ROUTES, DASHBOARD_PREFIX, PROTECTED_ROUTES } from "./routes";
-
-const isProtectedRoute = (path: string) =>
-	PROTECTED_ROUTES.includes(path) || path.startsWith(DASHBOARD_PREFIX);
+import { AUTH_ROUTES } from "./routes";
 
 async function getSession(request: NextRequest) {
 	try {
@@ -45,35 +42,29 @@ async function updateUserLocation(request: NextRequest) {
 export default async function middleware(request: NextRequest) {
 	const currentPath = request.nextUrl.pathname;
 
-	if (currentPath === "/dashboard") {
-		return NextResponse.redirect(new URL("/dashboard/overview", request.url));
+	if (currentPath === "/") {
+		return NextResponse.redirect(new URL("/dashboard", request.url));
 	}
 
-	if (isProtectedRoute(currentPath) || AUTH_ROUTES.includes(currentPath)) {
-		const session = await getSession(request);
-		const isAuthenticated = !!session?.user;
+	const session = await getSession(request);
+	const isAuthenticated = !!session?.user;
 
-		if (!isAuthenticated) {
-			return isProtectedRoute(currentPath)
-				? NextResponse.redirect(new URL("/auth/login", request.url))
-				: NextResponse.next();
+	if (!isAuthenticated) {
+		if (!AUTH_ROUTES.includes(currentPath)) {
+			return NextResponse.redirect(new URL("/auth/login", request.url));
 		}
-
-		if (session) {
+	} else {
+		if (AUTH_ROUTES.includes(currentPath)) {
 			if (!session.user.onboarded && currentPath !== "/onboarding") {
 				return NextResponse.redirect(new URL("/onboarding", request.url));
 			}
 
 			if (session.user.onboarded && currentPath === "/onboarding") {
-				return NextResponse.redirect(
-					new URL("/dashboard/overview", request.url),
-				);
+				return NextResponse.redirect(new URL("/dashboard", request.url));
 			}
 
 			if (AUTH_ROUTES.includes(currentPath)) {
-				return NextResponse.redirect(
-					new URL("/dashboard/overview", request.url),
-				);
+				return NextResponse.redirect(new URL("/dashboard", request.url));
 			}
 
 			if (session.user.location === "Location Not Set") {

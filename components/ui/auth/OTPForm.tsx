@@ -74,7 +74,7 @@ export const OTPForm = ({ onCancel }: OTPFormProps) => {
 				},
 				{
 					onSuccess() {
-						router.push("/dashboard/overview");
+						router.push("/dashboard");
 					},
 				},
 			);

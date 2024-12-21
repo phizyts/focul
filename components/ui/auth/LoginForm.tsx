@@ -23,7 +23,7 @@ const LoginForm = () => {
 				{
 					email,
 					password,
-					callbackURL: "/dashboard/overview",
+					callbackURL: "/dashboard",
 				},
 				{
 					async onSuccess(ctx) {

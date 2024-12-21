@@ -37,7 +37,7 @@ const PrivacySecurityModal: React.FC<PrivacySecurityModalProps> = ({
 				},
 			});
 		}
-		router.push("/dashboard/settings");
+		router.push("/settings");
 	}, []);
 
 	const handleVerifyEmail = async () => {
@@ -341,7 +341,7 @@ const PrivacySecurityModal: React.FC<PrivacySecurityModalProps> = ({
 							onClick={async () => {
 								await authClient.linkSocial({
 									provider: "google",
-									callbackURL: "/dashboard/settings?callback=true",
+									callbackURL: "/settings?callback=true",
 								});
 							}}
 							disabled={
@@ -368,7 +368,7 @@ const PrivacySecurityModal: React.FC<PrivacySecurityModalProps> = ({
 							onClick={async () => {
 								await authClient.linkSocial({
 									provider: "github",
-									callbackURL: "/dashboard/settings?callback=true",
+									callbackURL: "/settings?callback=true",
 								});
 							}}
 							disabled={

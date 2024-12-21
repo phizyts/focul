@@ -14,27 +14,27 @@ export const sidebarRoutes: NavCategory[] = [
 		routes: [
 			{
 				name: "Dashboard",
-				href: "/dashboard/overview",
+				href: "/dashboard",
 				icon: "ri-layout-fill",
 			},
 			{
 				name: "Community",
-				href: "/dashboard/community",
+				href: "/community",
 				icon: "ri-group-fill",
 			},
 			{
 				name: "Calendar",
-				href: "/dashboard/calendar",
+				href: "/calendar",
 				icon: "ri-calendar-fill",
 			},
 			{
 				name: "Tasks",
-				href: "/dashboard/tasks",
+				href: "/tasks",
 				icon: "ri-todo-fill",
 			},
 			{
 				name: "Inbox",
-				href: "/dashboard/inbox",
+				href: "/inbox",
 				icon: "ri-inbox-2-fill",
 			},
 		],
@@ -44,17 +44,17 @@ export const sidebarRoutes: NavCategory[] = [
 		routes: [
 			{
 				name: "Courses",
-				href: "/dashboard/courses/my",
+				href: "/courses/my",
 				icon: "ri-graduation-cap-fill",
 			},
 			{
 				name: "Assignments",
-				href: "/dashboard/courses/assignments",
+				href: "/courses/assignments",
 				icon: "ri-book-open-fill",
 			},
 			{
 				name: "Grades",
-				href: "/dashboard/courses/grades",
+				href: "/courses/grades",
 				icon: "ri-numbers-fill",
 			},
 		],
@@ -64,17 +64,17 @@ export const sidebarRoutes: NavCategory[] = [
 		routes: [
 			{
 				name: "Notes",
-				href: "/dashboard/tools/notes",
+				href: "/tools/notes",
 				icon: "ri-booklet-fill",
 			},
 			{
 				name: "Flashcards",
-				href: "/dashboard/tools/flashcards",
+				href: "/tools/flashcards",
 				icon: "ri-sticky-note-2-fill",
 			},
 			{
 				name: "Promodoro",
-				href: "/dashboard/tools/promodoro",
+				href: "/tools/promodoro",
 				icon: "ri-timer-fill",
 			},
 		],
@@ -87,12 +87,12 @@ export const bottomRoutes: NavCategory[] = [
 		routes: [
 			{
 				name: "Inbox",
-				href: "/dashboard/inbox",
+				href: "/inbox",
 				icon: "ri-inbox-2-fill",
 			},
 			{
 				name: "Settings",
-				href: "/dashboard/settings",
+				href: "/settings",
 				icon: "ri-settings-4-fill",
 			},
 		],
