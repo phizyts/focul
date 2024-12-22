@@ -3,6 +3,7 @@ import { CourseType } from "@prisma/client";
 import { courseTypes } from "@/constants/constants";
 import PrimaryButton from "../../PrimaryButton";
 import SecondaryButton from "@/components/SecondaryButton";
+import { Modal } from "../Modal";
 
 interface Course {
 	name: string;
