@@ -9,6 +9,7 @@ import { useSidebar } from "@/hooks/useSidebar";
 import { useModal } from "@/hooks/useModal";
 import ProfileSettings from "../modal/modals/pages/ProfileSettings";
 import SecuritySettings from "../modal/modals/pages/SecuritySettings";
+import { useRouter } from "next/navigation";
 
 const Navbar = ({
 	session,
@@ -17,6 +18,7 @@ const Navbar = ({
 	session: any;
 	isPending: boolean;
 }) => {
+	const router = useRouter();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -25,7 +27,7 @@ const Navbar = ({
 	const notificationDropdownRef = useRef<HTMLDivElement>(null);
 	const { sidebarCollapsed } = useSidebar();
 	const { isOpen, currentPage, openModal, closeModal, changePage, page } =
-		useModal([<ProfileSettings />, <SecuritySettings />, <SecuritySettings />]);
+		useModal([<ProfileSettings />, <SecuritySettings />]);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -292,7 +294,6 @@ const Navbar = ({
 										</li>
 										<li>
 											<button
-												onClick={() => changePage(3)}
 												title="Billings"
 												className={`flex gap-1.5 w-full items-center px-3 py-1 rounded-[6px] ${currentPage === 3 ? "activeLink" : "hoverActive"} overflow-hidden`}
 											>
@@ -301,14 +302,13 @@ const Navbar = ({
 											</button>
 										</li>
 										<li>
-											<Link
-												href="/courses/my"
+											<button
 												title="Preferences"
 												className={`flex gap-1.5 items-center px-3 py-1 rounded-[6px] hoverActive overflow-hidden`}
 											>
 												<i className={`ri-brush-4-fill text-[18px]`}></i>
 												<span className="text-sm">Preferences</span>
-											</Link>
+											</button>
 										</li>
 									</ul>
 								</div>
@@ -322,7 +322,7 @@ const Navbar = ({
 										</button>
 									</div>
 
-									<div className="p-6 h-full">{page}</div>
+									<div className="p-6 h-full overflow-y-auto">{page}</div>
 								</div>
 							</div>
 						</div>

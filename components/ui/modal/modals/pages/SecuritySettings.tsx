@@ -1,7 +1,8 @@
 import SecondaryButton from "@/components/SecondaryButton";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
-import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const SecuritySettings = () => {
 	const { data: session } = authClient.useSession();
@@ -12,20 +13,6 @@ const SecuritySettings = () => {
 	const [show2FAPasswordForm, setShow2FAPasswordForm] = useState(false);
 	const [password2FA, setPassword2FA] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-
-	useEffect(() => {
-		const searchParams = new URLSearchParams(window.location.search);
-		const isCallback = searchParams.get("callback");
-
-		if (isCallback === "true") {
-			fetch("/api/user/fetchaccounts", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-		}
-	}, []);
 
 	const handleVerifyEmail = async () => {
 		setIsLoading(true);
@@ -114,13 +101,14 @@ const SecuritySettings = () => {
 			return;
 		}
 		setShow2FAPasswordForm(true);
+		setShowPasswordForm(false);
 	};
 
 	return (
 		<div className="h-full flex flex-col relative">
 			<h1 className="text-xl font-medium">Security Settings</h1>
-			<div className="flex flex-col gap-5 mt-4">
-				<div className="flex justify-between items-center">
+			<div className="flex flex-1 flex-col gap-5 mt-4">
+				<div className="flex flex-wrap justify-between items-center">
 					<div className="max-w-[325px]">
 						<h2 className="font-medium">Email Verification</h2>
 						<p className="text-muted text-sm">
@@ -133,7 +121,13 @@ const SecuritySettings = () => {
 							Verified
 						</p>
 					) : (
-						<p className="text-sm text-muted mt-1">Verify your email address</p>
+						<SecondaryButton
+							text="Send Email"
+							icon="ri-mail-send-fill"
+							onClick={handleVerifyEmail}
+							disabled={isLoading}
+							extraClasses="flex gap-1 items-center"
+						/>
 					)}
 				</div>
 				<div className="flex justify-between items-center">
@@ -147,7 +141,7 @@ const SecuritySettings = () => {
 						<SecondaryButton
 							text={session?.user?.twoFactorEnabled ? "Disable" : "Enable"}
 							icon="ri-lock-fill"
-							extraClasses="flex gap-1 items-center"
+							extraClasses="flex gap-1 items-center disabled:cursor-not-allowed"
 							onClick={handleToggle2FA}
 							disabled={
 								isLoading ||
@@ -160,7 +154,7 @@ const SecuritySettings = () => {
 						<SecondaryButton
 							text="Cancel"
 							icon={`ri-close-fill`}
-							extraClasses="flex gap-1 items-center"
+							extraClasses="flex gap-1 items-center disabled:cursor-not-allowed"
 							onClick={() => {
 								setShow2FAPasswordForm(false);
 								setPassword2FA("");
@@ -228,12 +222,112 @@ const SecuritySettings = () => {
 							Change or create a new password for your account.
 						</p>
 					</div>
-					<SecondaryButton
-						text={session?.user?.passwordSet ? "Change" : "Set"}
-						icon="ri-lock-fill"
-						extraClasses="flex gap-1 items-center"
-					/>
+					{!showPasswordForm ? (
+						<SecondaryButton
+							text={session?.user?.passwordSet ? "Change" : "Set"}
+							icon="ri-lock-fill"
+							extraClasses="flex gap-1 items-center disabled:cursor-not-allowed"
+							disabled={
+								isLoading ||
+								!session?.user?.emailVerified ||
+								!session?.user?.twoFactorEnabled
+							}
+							onClick={() => {
+								setShowPasswordForm(true);
+								setShow2FAPasswordForm(false);
+							}}
+						/>
+					) : (
+						<SecondaryButton
+							text="Cancel"
+							icon={`ri-close-fill`}
+							extraClasses="flex gap-1 items-center disabled:cursor-not-allowed"
+							onClick={() => {
+								setShowPasswordForm(false);
+								setPassword2FA("");
+							}}
+						/>
+					)}
 				</div>
+				{showPasswordForm && (
+					<form onSubmit={handlePasswordChange} className="space-y-4">
+						{session?.user?.passwordSet && (
+							<div className="flex flex-col gap-2">
+								<label htmlFor="name" className="w-fit">
+									Current Password
+								</label>
+								<input
+									type="password"
+									name="name"
+									id="name"
+									value={currentPassword}
+									onChange={e => setCurrentPassword(e.target.value)}
+									placeholder="Enter Your Password"
+									className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
+								/>
+							</div>
+						)}
+						<div className="flex flex-col gap-2">
+							<label htmlFor="name" className="w-fit">
+								New Password
+							</label>
+							<input
+								type="password"
+								name="name"
+								id="name"
+								value={newPassword}
+								onChange={e => setNewPassword(e.target.value)}
+								placeholder="Enter Your Password"
+								className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
+							/>
+						</div>
+						<div className="flex flex-col gap-2">
+							<label htmlFor="name" className="w-fit">
+								Confirm Password
+							</label>
+							<input
+								type="password"
+								name="name"
+								id="name"
+								value={confirmPassword}
+								onChange={e => setConfirmPassword(e.target.value)}
+								placeholder="Enter Your Password"
+								className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
+							/>
+						</div>
+						<div className="flex gap-3">
+							<div className="flex gap-3">
+								<SecondaryButton
+									text={
+										isLoading
+											? "Loading..."
+											: session?.user?.passwordSet
+												? "Change"
+												: "Set"
+									}
+									icon={`ri-save-fill`}
+									extraClasses="flex gap-1 items-center !mt-0"
+									type="submit"
+									disabled={
+										isLoading ||
+										!session?.user?.emailVerified ||
+										!session?.user?.twoFactorEnabled
+									}
+								/>
+							</div>
+							<div className="flex gap-3">
+								<SecondaryButton
+									text="Cancel"
+									icon={`ri-close-fill`}
+									extraClasses="flex gap-1 items-center !mt-0"
+									onClick={() => {
+										setShowPasswordForm(false);
+									}}
+								/>
+							</div>
+						</div>
+					</form>
+				)}
 				<div className="flex flex-col justify-between">
 					<div className="max-w-[325px]">
 						<h2 className="font-medium">Linked Accounts</h2>
@@ -243,8 +337,8 @@ const SecuritySettings = () => {
 					</div>
 					<div className="flex flex-col gap-3 mt-3">
 						<div className="flex gap-1 items-center justify-between">
-							<div className="flex gap-1 items-center">
-								<Image src="/google.svg" alt="Google" width={24} height={24} />
+							<div className="flex gap-2 items-center">
+								<Image src="/google.svg" alt="Google" width={22} height={22} />
 								<span className="text-sm">
 									Google
 									<p className="text-muted text-xs">
@@ -253,9 +347,23 @@ const SecuritySettings = () => {
 								</span>
 							</div>
 							<SecondaryButton
-								text="Link"
+								text={
+									session?.user?.linkedAccounts?.includes("Google")
+										? "Linked"
+										: "Link"
+								}
 								icon="ri-links-fill"
-								extraClasses="flex gap-1 items-center"
+								extraClasses="flex gap-1 items-center disabled:cursor-not-allowed"
+								disabled={
+									!session?.user?.emailVerified ||
+									session?.user?.linkedAccounts?.includes("Google")
+								}
+								onClick={async () => {
+									await authClient.linkSocial({
+										provider: "google",
+										callbackURL: "/api/user/callback",
+									});
+								}}
 							/>
 						</div>
 						<div className="flex gap-1 items-center justify-between">
@@ -269,9 +377,23 @@ const SecuritySettings = () => {
 								</span>
 							</div>
 							<SecondaryButton
-								text="Link"
+								text={
+									session?.user?.linkedAccounts?.includes("Github")
+										? "Linked"
+										: "Link"
+								}
 								icon="ri-links-fill"
-								extraClasses="flex gap-1 items-center"
+								extraClasses="flex gap-1 items-center disabled:cursor-not-allowed"
+								disabled={
+									!session?.user?.emailVerified ||
+									session?.user?.linkedAccounts?.includes("Github")
+								}
+								onClick={async () => {
+									await authClient.linkSocial({
+										provider: "github",
+										callbackURL: "/api/user/callback",
+									});
+								}}
 							/>
 						</div>
 					</div>
