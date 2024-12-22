@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { AUTH_ROUTES } from "./routes";
+import { AUTH_ROUTES, PROTECTED_ROUTES } from "./routes";
 
 async function getSession(request: NextRequest) {
 	try {
@@ -42,19 +42,10 @@ async function updateUserLocation(request: NextRequest) {
 export default async function middleware(request: NextRequest) {
 	const currentPath = request.nextUrl.pathname;
 
-	if (currentPath === "/") {
-		return NextResponse.redirect(new URL("/dashboard", request.url));
-	}
+	if (PROTECTED_ROUTES.some(route => currentPath.startsWith(route))) {
+		const session = await getSession(request);
 
-	const session = await getSession(request);
-	const isAuthenticated = !!session?.user;
-
-	if (!isAuthenticated) {
-		if (!AUTH_ROUTES.includes(currentPath)) {
-			return NextResponse.redirect(new URL("/auth/login", request.url));
-		}
-	} else {
-		if (AUTH_ROUTES.includes(currentPath)) {
+		if (session) {
 			if (!session.user.onboarded && currentPath !== "/onboarding") {
 				return NextResponse.redirect(new URL("/onboarding", request.url));
 			}
@@ -68,7 +59,11 @@ export default async function middleware(request: NextRequest) {
 			}
 
 			if (session.user.location === "Location Not Set") {
-				updateUserLocation(request).catch(console.error);
+				await updateUserLocation(request);
+			}
+		} else {
+			if (!AUTH_ROUTES.includes(currentPath)) {
+				return NextResponse.redirect(new URL("/auth/login", request.url));
 			}
 		}
 	}
@@ -78,6 +73,6 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|403|404|500).*)",
+		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|403|404|500|images).*)",
 	],
 };
