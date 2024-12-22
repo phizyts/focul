@@ -6,6 +6,9 @@ import { authClient } from "@/lib/auth-client";
 import { SidebarNavigationTop } from "../sidebar/SidebarNavigation";
 import Searchbar from "../Searchbar";
 import { useSidebar } from "@/hooks/useSidebar";
+import { useModal } from "@/hooks/useModal";
+import ProfileSettings from "../modal/modals/pages/ProfileSettings";
+import SecuritySettings from "../modal/modals/pages/SecuritySettings";
 
 const Navbar = ({
 	session,
@@ -21,6 +24,8 @@ const Navbar = ({
 	const profileDropdownRef = useRef<HTMLDivElement>(null);
 	const notificationDropdownRef = useRef<HTMLDivElement>(null);
 	const { sidebarCollapsed } = useSidebar();
+	const { isOpen, currentPage, openModal, closeModal, changePage, page } =
+		useModal([<ProfileSettings />, <SecuritySettings />, <SecuritySettings />]);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -132,14 +137,14 @@ const Navbar = ({
 							</div>
 						</div>
 					</div>
-					<Link
-						href="/settings"
+					<button
 						className="w-7 h-7 flex items-center justify-center p-5"
+						onClick={() => openModal()}
 					>
 						<i className="ri-settings-3-line text-muted cursor-pointer hover:bg-[#F5F5F5] p-5 rounded-[6px] ri-xl w-7 h-7 flex items-center justify-center duration-200"></i>
-					</Link>
+					</button>
 					{isPending || !session ? (
-						<div className="w-9 h-9 rounded-full bg-gray-700 animate-pulse"></div>
+						<div className="w-9 h-9 rounded-full ml-1 bg-gray-700 animate-pulse"></div>
 					) : (
 						<div
 							className="relative ml-1"
@@ -177,13 +182,12 @@ const Navbar = ({
 										{session?.user?.email}
 									</p>
 								</div>
-								<Link
-									href="/settings"
-									className="block px-4 py-2 text-sm text-muted hover:bg-[#F5F5F5] cursor-pointer"
-									onClick={() => setIsProfileOpen(false)}
+								<button
+									className="flex w-full px-4 py-2 text-sm text-muted hover:bg-[#F5F5F5] cursor-pointer"
+									onClick={() => openModal()}
 								>
 									Settings
-								</Link>
+								</button>
 								<button
 									onClick={async () => {
 										await fetch("/api/auth/clear-session", {
@@ -240,6 +244,91 @@ const Navbar = ({
 					</div>
 				</div>
 			</div>
+			{isOpen && (
+				<div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+					<div className="w-full h-full flex items-center justify-center py-4">
+						<div
+							className="bg-background max-w-[800px] h-full max-h-[750px] border border-border rounded-lg w-full mx-4 shadow-sm overflow-y-auto sm:overflow-visible"
+							onClick={e => e.stopPropagation()}
+						>
+							<div className="flex h-full flex-col sm:flex-row">
+								<div className="flex flex-col w-full h-full sm:max-w-[200px] md:max-w-[270px]">
+									<div className="flex justify-between items-center text-xl font-medium border-b-0 sm:border-b sm:border-r py-6 px-8 border-r-0 border-r-border border-b-border text-primary">
+										<h3 className="flex gap-2 items-center">
+											<i className="ri-settings-3-fill"></i>
+											Settings
+										</h3>
+										<button
+											onClick={() => closeModal()}
+											className="text-muted h-[24px] hover:text-primary duration-200 sm:hidden"
+										>
+											<i className="ri-close-line ri-lg"></i>
+										</button>
+									</div>
+									<ul
+										className={
+											"flex flex-col gap-1.5 overflow-hidden transition-all duration-200 pb-5 sm:pt-5 px-5 h-full sm:border-r border-r-border border-r-0 border-b border-b-border sm:border-b-0"
+										}
+									>
+										<li>
+											<button
+												onClick={() => changePage(1)}
+												title="Profile"
+												className={`flex gap-1.5 w-full items-center px-3 py-1 rounded-[6px] ${currentPage === 1 ? "activeLink" : "hoverActive"} overflow-hidden`}
+											>
+												<i className={`ri-user-fill text-[18px]`}></i>
+												<span className="text-sm">Profile</span>
+											</button>
+										</li>
+										<li>
+											<button
+												onClick={() => changePage(2)}
+												title="Security"
+												className={`flex gap-1.5 w-full items-center px-3 py-1 rounded-[6px] ${currentPage === 2 ? "activeLink" : "hoverActive"} overflow-hidden`}
+											>
+												<i className={`ri-shield-fill text-[18px]`}></i>
+												<span className="text-sm">Security</span>
+											</button>
+										</li>
+										<li>
+											<button
+												onClick={() => changePage(3)}
+												title="Billings"
+												className={`flex gap-1.5 w-full items-center px-3 py-1 rounded-[6px] ${currentPage === 3 ? "activeLink" : "hoverActive"} overflow-hidden`}
+											>
+												<i className={`ri-wallet-fill text-[18px]`}></i>
+												<span className="text-sm">Billings</span>
+											</button>
+										</li>
+										<li>
+											<Link
+												href="/courses/my"
+												title="Preferences"
+												className={`flex gap-1.5 items-center px-3 py-1 rounded-[6px] hoverActive overflow-hidden`}
+											>
+												<i className={`ri-brush-4-fill text-[18px]`}></i>
+												<span className="text-sm">Preferences</span>
+											</Link>
+										</li>
+									</ul>
+								</div>
+								<div className="flex flex-col w-full">
+									<div className="w-full justify-end items-center p-6 border-b h-full min-h-[77px] max-h-[77px] border-b-border hidden sm:flex">
+										<button
+											onClick={() => closeModal()}
+											className="text-muted h-[24px] hover:text-primary duration-200"
+										>
+											<i className="ri-close-line ri-lg"></i>
+										</button>
+									</div>
+
+									<div className="p-6 h-full">{page}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 		</>
 	);
 };

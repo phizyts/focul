@@ -1,4 +1,3 @@
-import { Modal } from "../Modal";
 import { useState } from "react";
 import { CourseType } from "@prisma/client";
 import { courseTypes } from "@/constants/constants";

@@ -4,7 +4,7 @@ export const Loading = ({ isWhite = false }: { isWhite?: boolean }) => {
 			<div role="status">
 				<svg
 					aria-hidden="true"
-					className={`w-8 h-8 ${isWhite ? "text-transparent" : "text-gray-200"} animate-spin ${isWhite ? "fill-white" : "fill-blue-600"}`}
+					className={`w-5 h-5 ${isWhite ? "text-transparent" : "text-gray-200"} animate-spin ${isWhite ? "fill-white" : "fill-blue-600"}`}
 					viewBox="0 0 100 101"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
