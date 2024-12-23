@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient, TwoFactor } from "@prisma/client";
 import argon2 from "argon2";
-import { twoFactor } from "better-auth/plugins";
+import { openAPI, twoFactor } from "better-auth/plugins";
 import { resend } from "@/helpers/email/resend";
 import { TwoFactorVerificationEmail } from "@/components/ui/emails/TwoFactorVerification";
 import EmailVerification from "@/components/ui/emails/EmailVerification";
@@ -30,6 +30,7 @@ export const auth = betterAuth({
 
 			skipVerificationOnEnable: true,
 		}),
+		openAPI(),
 	],
 	emailAndPassword: {
 		enabled: true,
@@ -60,7 +61,7 @@ export const auth = betterAuth({
 		additionalFields: {
 			onboarded: {
 				type: "boolean",
-				required: true,
+				required: false,
 				defaultValue: false,
 				input: false,
 			},

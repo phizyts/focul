@@ -33,13 +33,15 @@ const SignUpForm = () => {
 		const password = formData.get("password") as string;
 		try {
 			const location = await getUserLocation();
-			await authClient.signUp.email({
+			const { data, error } = await authClient.signUp.email({
 				email,
 				password,
 				name,
 				location,
 				passwordSet: true,
 			});
+			console.log(data);
+			console.log(error);
 		} catch (error) {
 			console.error("Sign-up error", error);
 		} finally {

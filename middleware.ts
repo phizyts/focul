@@ -41,8 +41,12 @@ async function updateUserLocation(request: NextRequest) {
 
 export default async function middleware(request: NextRequest) {
 	const currentPath = request.nextUrl.pathname;
+	const isProtectedRoute = PROTECTED_ROUTES.some(route =>
+		currentPath.startsWith(route),
+	);
+	const isAuthRoute = AUTH_ROUTES.includes(currentPath);
 
-	if (PROTECTED_ROUTES.some(route => currentPath.startsWith(route))) {
+	if (isProtectedRoute || isAuthRoute) {
 		const session = await getSession(request);
 
 		if (session) {
@@ -62,7 +66,7 @@ export default async function middleware(request: NextRequest) {
 				await updateUserLocation(request);
 			}
 		} else {
-			if (!AUTH_ROUTES.includes(currentPath)) {
+			if (!isAuthRoute) {
 				return NextResponse.redirect(new URL("/auth/login", request.url));
 			}
 		}
