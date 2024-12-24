@@ -65,7 +65,7 @@ export const SidebarNavigationTop = ({ sidebarCollapsed }: NavigationProps) => {
 											href={route.href}
 											title={sidebarCollapsed ? route.name : undefined}
 											className={`flex gap-1.5 items-center ${sidebarCollapsed ? "justify-center w-fit py-1 px-2 rounded-[6px]" : "px-3 py-1 rounded-[6px]"} ${
-												currentPath === route.href && !isMenuCollapsed
+												currentPath.startsWith(route.href) && !isMenuCollapsed
 													? "activeLink"
 													: "text-primary hoverActive"
 											} overflow-hidden`}

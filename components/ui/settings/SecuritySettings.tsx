@@ -1,8 +1,7 @@
-import SecondaryButton from "@/components/SecondaryButton";
+import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const SecuritySettings = () => {
 	const { data: session } = authClient.useSession();

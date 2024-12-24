@@ -68,7 +68,7 @@ export const auth = betterAuth({
 			language: {
 				type: "string",
 				required: true,
-				defaultValue: "english",
+				defaultValue: "English",
 				input: true,
 			},
 			location: {
@@ -100,5 +100,8 @@ export const auth = betterAuth({
 			});
 		},
 		sendOnSignUp: true,
+	},
+	session: {
+		freshAge: 0,
 	},
 });

@@ -38,7 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				} ${sidebarHidden ? "!pl-0" : ""}`}
 			>
 				<Navbar session={session} isPending={isPending} />
-				<main className="overflow-y-auto mx-4 xss:mx-5 sm:mx-7 mt-6">
+				<main className="overflow-y-auto h-full px-4 xss:px-5 sm:px-7 pt-6">
 					{children}
 				</main>
 			</div>

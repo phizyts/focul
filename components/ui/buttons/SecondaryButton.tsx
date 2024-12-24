@@ -8,7 +8,7 @@ const SecondaryButton = ({
 }: {
 	icon?: string | undefined;
 	disabled?: boolean;
-	text: string;
+	text?: string;
 	onClick?: () => void;
 	extraClasses?: string;
 	type?: "button" | "submit" | "reset" | undefined;
@@ -21,7 +21,7 @@ const SecondaryButton = ({
 			disabled={disabled}
 		>
 			{icon !== "" && <i className={`${icon}`}></i>}
-			{text}
+			{text && text}
 		</button>
 	);
 };

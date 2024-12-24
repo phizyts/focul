@@ -1,4 +1,4 @@
-import PrimaryButton from "@/components/ui/PrimaryButton";
+import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
@@ -105,7 +105,7 @@ const ProfileSettings = () => {
 					</div>
 				) : (
 					<div className="flex flex-col items-center xss:flex-row gap-4 mt-4">
-						<label className="relative flex items-center justify-center rounded-full w-[98px] h-[98px] cursor-pointer group ">
+						<label className="relative flex items-center justify-center rounded-full w-[98px] h-[98px] cursor-pointer group">
 							<Image
 								src={url}
 								alt="Profile"
@@ -116,6 +116,7 @@ const ProfileSettings = () => {
 							<input
 								type="file"
 								name="file"
+								disabled={!session.user.emailVerified}
 								onChange={handleChange}
 								className="hidden"
 							/>
@@ -133,6 +134,7 @@ const ProfileSettings = () => {
 						name="file"
 						className="hidden"
 						onChange={handleChange}
+						disabled={!session?.user.emailVerified}
 					/>
 					<i className="ri-upload-2-fill"></i>
 					Upload
@@ -153,7 +155,8 @@ const ProfileSettings = () => {
 						onChange={e => setName(e.target.value)}
 						value={name}
 						placeholder={name || session?.user?.name || "Enter Name"}
-						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
+						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border disabled:cursor-not-allowed"
+						disabled={!session?.user.emailVerified}
 					/>
 				</div>
 				<div className="w-full flex flex-col gap-2">
@@ -166,8 +169,9 @@ const ProfileSettings = () => {
 						id="email"
 						value={email}
 						placeholder={session?.user?.email || "Enter Email"}
-						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
+						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border disabled:cursor-not-allowed"
 						onChange={e => setEmail(e.target.value)}
+						disabled={!session?.user.emailVerified}
 					/>
 				</div>
 				<div className="w-full flex flex-col gap-2">
@@ -179,9 +183,10 @@ const ProfileSettings = () => {
 						name="location"
 						id="location"
 						placeholder={session?.user?.location || "Enter Location"}
-						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border"
+						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border disabled:cursor-not-allowed"
 						onChange={e => setLocation(e.target.value)}
 						value={location}
+						disabled={!session?.user.emailVerified}
 					/>
 				</div>
 				<div className="w-full flex flex-col gap-2 flex-grow">
@@ -192,9 +197,10 @@ const ProfileSettings = () => {
 						name="about"
 						id="about"
 						placeholder="Enter About Me"
-						className="bg-transparent w-full py-2 px-4 flex-grow text-sm border rounded-[8px] border-border resize-none overflow-auto"
+						className="bg-transparent w-full py-2 px-4 flex-grow text-sm border rounded-[8px] border-border resize-none overflow-auto disabled:cursor-not-allowed"
 						onChange={e => setAboutMe(e.target.value)}
 						value={aboutMe}
+						disabled={!session?.user.emailVerified}
 					/>
 				</div>
 				{(name !== "" ||

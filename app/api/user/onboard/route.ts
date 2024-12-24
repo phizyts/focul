@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 	try {
-		const { imageUrl, courses } = await req.json();
+		const { courses } = await req.json();
 		const user = await getUser();
 
 		if (!user) {
@@ -19,11 +19,11 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		await onBoardUser(imageUrl);
+		await onBoardUser(user.id);
 
 		await Promise.all(
 			courses.map((course: { name: string; type: CourseType }) =>
-				createCourse(course.name, course.type),
+				createCourse(course.name, course.type, user.id),
 			),
 		);
 

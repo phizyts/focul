@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 import { Loading } from "@/components/ui/Loading";
 import { useFormStep } from "@/hooks/useFormStep";
 import BeginOnboardForm from "@/components/ui/onboarding/BeginOnboardForm";
-import PrimaryButton from "@/components/ui/PrimaryButton";
+import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import ProfilePictureForm from "@/components/ui/onboarding/ProfilePictureForm";
 import AddCoursesForm from "@/components/ui/onboarding/AddCoursesForm";
 import { useRouter } from "next/navigation";
 import { Courses } from "@prisma/client";
+import { authClient } from "@/lib/auth-client";
 
 interface onboardData {
 	file: File | null;
@@ -43,64 +44,70 @@ export default function OnBoarding() {
 		<AddCoursesForm data={data} updateData={updateData} />,
 	]);
 
+	const uploadImage = async () => {
+		if (!data.file) return;
+
+		try {
+			const formData = new FormData();
+			formData.append("file", data.file);
+
+			const response = await fetch("/api/upload", {
+				method: "POST",
+				body: formData,
+			});
+
+			if (!response.ok) {
+				throw new Error(`Upload failed with status: ${response.status}`);
+			}
+
+			const result = await response.json();
+			if (!result.secure_url) {
+				throw new Error("No secure URL received from upload");
+			}
+
+			await authClient.updateUser({
+				image: result.secure_url,
+			});
+
+			return result.secure_url;
+		} catch (err) {
+			console.error("Error uploading image:", err);
+			throw err;
+		}
+	};
+
 	const completeOnBoard = async () => {
 		setIsLoading(true);
 		try {
-			let imageUrl = data.url;
-			let file = data.file as File;
-			if (data.file) {
-				try {
-					if (typeof file === "string") {
-						if (!file || file === "/uploadpfp.png") {
-							imageUrl = "/uploadpfp.png";
-						}
-						imageUrl = file;
-					}
-
-					const formData = new FormData();
-					formData.append("file", file);
-
-					const response = await fetch("/api/upload", {
-						method: "POST",
-						body: formData,
-					});
-
-					if (!response.ok) {
-						console.error(`Upload failed with status: ${response.status}`);
-						return null;
-					}
-
-					const data = await response.json();
-					imageUrl = data.secure_url;
-				} catch (err) {
-					console.error("Error uploading image:", err);
-					return null;
-				}
-			}
 			await fetch("/api/user/onboard", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					imageUrl,
 					courses: data.courses.map(course => ({
 						name: course.name,
 						type: course.type,
 					})),
 				}),
 			});
+
+			if (data.file) {
+				await uploadImage();
+			}
+
 			await fetch("/api/user/fetchaccounts", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 			});
+
 			router.push("/dashboard");
-			setIsLoading(false);
 		} catch (error) {
-			setIsLoading(false);
 			console.error("Error during onboarding:", error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 

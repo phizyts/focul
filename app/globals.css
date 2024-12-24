@@ -7,8 +7,17 @@ body {
 }
 
 ::-webkit-scrollbar {
-	width: 0;
-	background: transparent;
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: rgb(255, 255, 255);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #c4c4c4;
+	@apply rounded-md;
 }
 
 @layer utilities {
@@ -17,22 +26,6 @@ body {
 	}
 	.hoverActive:hover {
 		@apply bg-[#ECECEC] w-full;
-	}
-	.hide-scrollbar::-webkit-scrollbar {
-		display: none;
-	}
-
-	.hide-scrollbar {
-		-ms-overflow-style: none;
-		scrollbar-width: none;
-	}
-
-	.hide-scrollbar::-webkit-scrollbar {
-		display: none;
-	}
-
-	.hide-scrollbar:hover {
-		scrollbar-width: none !important;
 	}
 
 	.tooltip-container {

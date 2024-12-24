@@ -7,9 +7,8 @@ import { SidebarNavigationTop } from "../sidebar/SidebarNavigation";
 import Searchbar from "../Searchbar";
 import { useSidebar } from "@/hooks/useSidebar";
 import { useModal } from "@/hooks/useModal";
-import ProfileSettings from "../modal/modals/pages/ProfileSettings";
-import SecuritySettings from "../modal/modals/pages/SecuritySettings";
-import { useRouter } from "next/navigation";
+import ProfileSettings from "../settings/ProfileSettings";
+import SecuritySettings from "../settings/SecuritySettings";
 
 const Navbar = ({
 	session,
@@ -18,7 +17,6 @@ const Navbar = ({
 	session: any;
 	isPending: boolean;
 }) => {
-	const router = useRouter();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -68,7 +66,7 @@ const Navbar = ({
 
 	return (
 		<>
-			<div className="flex items-center justify-between w-full h-[75px] gap-5 px-4 xss:px-5 sm:px-7 border-b border-border">
+			<div className="flex items-center justify-between w-full min-h-[75px] gap-5 px-4 xss:px-5 sm:px-7 border-b border-border">
 				<div className="flex items-center md:w-full xl:w-full h-[36px]">
 					<div className="flex items-center gap-4">
 						<i
@@ -162,7 +160,7 @@ const Navbar = ({
 								}}
 							>
 								<Image
-									src={session?.user?.image as string}
+									src={session.user.image as string}
 									alt="Profile"
 									width={36}
 									height={36}

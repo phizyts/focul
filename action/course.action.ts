@@ -2,24 +2,72 @@ import { CourseType, User } from "@prisma/client";
 import { getUser } from "./user.action";
 import { prisma } from "@/prisma";
 
-export async function createCourse(name: string, type: CourseType) {
+export async function createCourse(
+	name: string,
+	type: CourseType,
+	userId: string,
+) {
 	await prisma.courses.create({
 		data: {
 			name,
 			type,
-			userId: (await getUser())?.id as string,
+			userId: userId,
 		},
 	});
 	return;
 }
 
-export async function getCourses(user: User) {
-	return await prisma.courses.findMany({
+export const getAllCourses = async (user: User, type?: string | null) => {
+	try {
+		const courses = await prisma.courses.findMany({
+			where: {
+				userId: user.id,
+				...(type && { type: type as CourseType }),
+			},
+			include: {
+				assignments: true,
+			},
+			orderBy: {
+				createdAt: "desc",
+			},
+		});
+		return courses;
+	} catch (error) {
+		console.error("Error fetching courses:", error);
+		return [];
+	}
+};
+
+export async function getCourse(courseId: string) {
+	return await prisma.courses.findUnique({
 		where: {
-			userId: user?.id,
+			id: courseId,
 		},
-		include: {
-			assignments: true
-		}
 	});
+}
+
+export async function updateCourse(
+	name: string,
+	type: CourseType,
+	courseId: string,
+) {
+	await prisma.courses.update({
+		where: {
+			id: courseId,
+		},
+		data: {
+			name,
+			type,
+		},
+	});
+	return;
+}
+
+export async function deleteCourse(courseId: string) {
+	await prisma.courses.delete({
+		where: {
+			id: courseId,
+		},
+	});
+	return;
 }

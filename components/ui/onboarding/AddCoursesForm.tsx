@@ -1,10 +1,9 @@
-import SecondaryButton from "@/components/SecondaryButton";
-import dynamic from "next/dynamic";
+import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import { useState } from "react";
-
-const CourseModal = dynamic(() =>
-	import("@/components/ui/modal/modals/CourseModal").then(mod => mod.default),
-);
+import PrimaryButton from "../buttons/PrimaryButton";
+import { CreateCourse } from "@/components/ui/modals/CreateCourse";
+import { EditCourse } from "@/components/ui/modals/EditCourse";
+import { Courses } from "@prisma/client";
 
 interface Course {
 	name: string;
@@ -18,15 +17,47 @@ const AddCoursesForm = ({
 	data: any;
 	updateData: any;
 }) => {
+	const [isLoading, setIsLoading] = useState(false);
+	const [courseName, setCourseName] = useState(data.selectedCourse?.name || "");
+	const [courseType, setCourseType] = useState(
+		data.selectedCourse?.type || "Regular",
+	);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isEditMode, setIsEditMode] = useState(false);
+
 	const closeModal = () => {
 		updateData({ selectedCourse: undefined });
 		setIsModalOpen(false);
+		setIsEditMode(false);
+		setCourseName("");
+		setCourseType("Regular");
 	};
+
 	const handleCourseClick = (course: Course) => {
+		setCourseName(course.name);
+		setCourseType(course.type);
 		updateData({ selectedCourse: course });
+		setIsEditMode(true);
 		setIsModalOpen(true);
 	};
+
+	const handleUpdateCourse = (updatedCourse: Course | null) => {
+		if (!data.selectedCourse) return;
+
+		if (updatedCourse === null) {
+			const updatedCourses = data.courses.filter(
+				(course: Course) => course.name !== data.selectedCourse.name,
+			);
+			updateData({ courses: updatedCourses });
+		} else {
+			const updatedCourses = data.courses.map((course: Course) =>
+				course.name === data.selectedCourse.name ? updatedCourse : course,
+			);
+			updateData({ courses: updatedCourses });
+		}
+		closeModal();
+	};
+
 	return (
 		<>
 			<div className="mt-5">
@@ -64,6 +95,7 @@ const AddCoursesForm = ({
 								extraClasses="text-md flex gap-2 items-center justify-center mt-0"
 								onClick={() => {
 									setIsModalOpen(true);
+									setIsEditMode(false);
 									updateData({ selectedCourse: undefined });
 								}}
 							/>
@@ -71,38 +103,83 @@ const AddCoursesForm = ({
 					</div>
 				</div>
 			</div>
-			<CourseModal
-				key={
-					data.selectedCourse
-						? `${data.selectedCourse.name}-${data.selectedCourse.type}`
-						: "new"
-				}
-				isOpen={isModalOpen}
-				onClose={closeModal}
-				course={data.selectedCourse}
-				onSubmit={course => {
-					if (data.selectedCourse === undefined) {
-						updateData({
-							courses: [...data.courses, course],
-						});
-					} else {
-						if (course) {
-							updateData({
-								courses: data.courses.map((c: Course) =>
-									c.name === data.selectedCourse?.name ? course : c,
-								),
-							});
-						} else {
-							updateData({
-								courses: data.courses.filter(
-									(c: Course) => c.name !== data.selectedCourse?.name,
-								),
-							});
-						}
-					}
-				}}
-			/>
+			{isModalOpen && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-background rounded-lg p-6 w-full max-w-md">
+						<div className="flex justify-between items-center mb-4">
+							<h2 className="text-xl font-medium">
+								{isEditMode ? "Edit Course" : "Add Course"}
+							</h2>
+							<button
+								onClick={closeModal}
+								className="text-muted hover:text-primary"
+							>
+								<i className="ri-close-line text-xl"></i>
+							</button>
+						</div>
+						{isEditMode ? (
+							<div>
+								<EditCourse
+									course={data.selectedCourse as Courses}
+									courseName={courseName}
+									setCourseName={setCourseName}
+									courseType={courseType}
+									setCourseType={setCourseType}
+								/>
+								<div className="flex justify-between gap-3 mt-4">
+									<PrimaryButton
+										text={isLoading ? "Saving..." : "Save"}
+										onClick={() =>
+											handleUpdateCourse({
+												name: courseName,
+												type: courseType,
+											})
+										}
+										extraClasses="!w-fit"
+									/>
+									<div className="flex gap-3">
+										<PrimaryButton
+											text="Delete"
+											extraClasses="!w-fit !bg-[#b80404]"
+											onClick={() => handleUpdateCourse(null)}
+										/>
+										<SecondaryButton text="Cancel" onClick={closeModal} />
+									</div>
+								</div>
+							</div>
+						) : (
+							<div>
+								<CreateCourse
+									courseName={courseName}
+									setCourseName={setCourseName}
+									courseType={courseType}
+									setCourseType={setCourseType}
+								/>
+								<div className="flex justify-between gap-3 mt-4">
+									<PrimaryButton
+										text={isLoading ? "Saving..." : "Add Course"}
+										onClick={() => {
+											if (courseName && courseType) {
+												updateData({
+													courses: [
+														...data.courses,
+														{ name: courseName, type: courseType },
+													],
+												});
+												closeModal();
+											}
+										}}
+										extraClasses="!w-fit"
+									/>
+									<SecondaryButton text="Cancel" onClick={closeModal} />
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+			)}
 		</>
 	);
 };
+
 export default AddCoursesForm;

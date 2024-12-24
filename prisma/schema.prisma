@@ -8,20 +8,21 @@ generator client {
 }
 
 enum Role {
-  user
-  admin
+  User
+  Admin
 }
 
-enum Status {
-  pending
-  completed
-  overdue
+enum AssignmentStatus {
+  Pending
+  Completed
+  Overdue
+  Graded
 }
 
-enum AssignmentType {
-  classwork
-  homework
-  assessment
+enum TodoStatus {
+  Pending
+  Completed
+  Overdue
 }
 
 enum CourseType {
@@ -38,10 +39,10 @@ enum linkedAccounts {
 }
 
 enum Lang {
-  english
-  chinese
-  spanish
-  french
+  English
+  Chinese
+  Spanish
+  French
 }
 
 model User {
@@ -51,10 +52,10 @@ model User {
   emailVerified    Boolean
   passwordSet      Boolean          @default(false)
   twoFactorEnabled Boolean          @default(false)
-  role             Role             @default(user)
+  role             Role             @default(User)
   image            String?
   onboarded        Boolean          @default(false)
-  language         Lang             @default(english)
+  language         Lang             @default(English)
   location         String           @default("Location Not Set")
   createdAt        DateTime
   updatedAt        DateTime
@@ -62,7 +63,7 @@ model User {
   linkedAccounts   linkedAccounts[]
   Session          Session[]
   Account          Account[]
-  Todos            Reminder[]
+  Todos            Todos[]
   Notes            Notes[]
   Courses          Courses[]
   Notification     Notification[]
@@ -121,9 +122,9 @@ model Verification {
 }
 
 model Courses {
-  id          String        @id @default(cuid())
+  id          String        @id @default(uuid())
   name        String
-  grade       String?
+  grade       Float?        @default(-1)
   type        CourseType    @default(Regular)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -135,36 +136,36 @@ model Courses {
 }
 
 model Assignments {
-  id        String         @id @default(cuid())
+  id        String           @id @default(uuid())
   name      String
   courseId  String
   course    Courses        @relation(fields: [courseId], references: [id], onDelete: Cascade)
   grade     Float
   maxGrade  Float
   dueDate   DateTime
-  status    Status         @default(pending)
-  type      AssignmentType
+  status    AssignmentStatus @default(Pending)
+  type      String
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 
   @@map("assignments")
 }
 
-model Reminder {
-  id         String   @id @default(cuid())
+model Todos {
+  id         String   @id @default(uuid())
   title      String
   desciption String?
-  status     Status   @default(pending)
+  status     TodoStatus   @default(Pending)
   userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@map("reminder")
+  @@map("todos")
 }
 
 model Notes {
-  id         String   @id @default(cuid())
+  id         String   @id @default(uuid())
   title      String
   desciption String?
   note       String
@@ -177,7 +178,7 @@ model Notes {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   title     String   @default("Title Not Set")
   message   String   @default("Message Not Set")
   userId    String
@@ -190,7 +191,7 @@ model Notification {
 }
 
 model TwoFactor {
-  id          String @id @default(cuid())
+  id          String @id @default(uuid())
   secret      String
   backupCodes String
   userId      String

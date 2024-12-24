@@ -43,12 +43,11 @@ export const getNotifications = async (user: any) => {
 	}
 };
 
-export const onBoardUser = async (image: string) => {
-	const user = await getUser();
+export const onBoardUser = async (userId: string) => {
+	if (!userId) return;
 	await prisma.user.update({
-		where: { id: user?.id },
+		where: { id: userId },
 		data: {
-			image,
 			onboarded: true,
 		},
 	});

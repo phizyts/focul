@@ -1,4 +1,3 @@
-import SecondaryButton from "@/components/SecondaryButton";
 import Image from "next/image";
 
 const ProfilePictureForm = ({
@@ -11,9 +10,11 @@ const ProfilePictureForm = ({
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target?.files?.[0];
 		if (file) {
-			updateData(file);
 			const objectUrl = URL.createObjectURL(file);
-			updateData({ url: objectUrl });
+			updateData({
+				file: file,
+				url: objectUrl,
+			});
 		}
 	};
 	return (
@@ -30,8 +31,13 @@ const ProfilePictureForm = ({
 				/>
 				<div>
 					<span className="text-muted">PNG, JPG under 15MB</span>
-					<label className="h-[35px] flex gap-2 py-2 px-4 rounded-[8px] w-fit duration-200 text-primary border hover:bg-[#F5F5F5] border-border text-sm mt-2">
-						<input type="file" className="hidden" onChange={handleChange} />
+					<label className="h-[35px] flex gap-2 py-2 px-4 rounded-[8px] w-fit duration-200 text-primary border hover:bg-[#F5F5F5] border-border text-sm mt-2 cursor-pointer">
+						<input
+							type="file"
+							className="hidden"
+							onChange={handleChange}
+							accept="image/png,image/jpeg,image/jpg"
+						/>
 						<i className="ri-upload-2-fill"></i>
 						Upload
 					</label>
