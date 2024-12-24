@@ -7,13 +7,11 @@ import Link from "next/link";
 import CourseDetailsActions from "@/components/ui/courses/CourseDetailsActions";
 import { getCourseGrade } from "@/utils/course.utils";
 
-interface CoursePageProps {
-	params: {
-		courseId: string;
-	};
-}
-
-export default async function CoursePage({ params }: CoursePageProps) {
+export default async function CoursePage({
+	params,
+}: {
+	params: Promise<{ courseId: string }>;
+}) {
 	const { courseId } = await params;
 	const course = await getCourse(courseId);
 	const assignments = await getAssignments(course as Courses);

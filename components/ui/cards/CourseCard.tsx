@@ -13,7 +13,7 @@ export default function CourseCard({ courses }: CourseCardProps) {
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl2:grid-cols-4 gap-6">
 			{courses.map((course: Courses & { assignments: Assignments[] }) => (
-				<Link
+				<a
 					href={`/courses/my/${course.id}`}
 					key={course.id}
 					className="overflow-hidden border border-border rounded-lg p-5 flex flex-col gap-3 relative cursor-pointer duration-200 hover:bg-[#f5f5f5]"
@@ -34,7 +34,7 @@ export default function CourseCard({ courses }: CourseCardProps) {
 						</div>
 						<div className="text-muted text-sm">{course.type}</div>
 					</div>
-				</Link>
+				</a>
 			))}
 		</div>
 	);

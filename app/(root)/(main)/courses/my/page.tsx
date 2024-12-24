@@ -4,12 +4,11 @@ import CourseCard from "@/components/ui/cards/CourseCard";
 import CourseActions from "@/components/ui/courses/CourseActions";
 import { User } from "@prisma/client";
 import "remixicon/fonts/remixicon.css";
-
-interface PageProps {
-	searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
 	const params = await searchParams;
 	const type = params?.type as string | undefined;
 

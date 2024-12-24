@@ -104,4 +104,8 @@ export const auth = betterAuth({
 	session: {
 		freshAge: 0,
 	},
+	rateLimit: {
+		window: 5,
+		max: 500,
+	},
 });
