@@ -1,5 +1,4 @@
 import { CourseType, User } from "@prisma/client";
-import { getUser } from "./user.action";
 import { prisma } from "@/prisma";
 
 export async function createCourse(

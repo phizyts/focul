@@ -88,6 +88,11 @@ export const auth = betterAuth({
 				required: false,
 				input: false,
 			},
+			agpId: {
+				type: "string",
+				required: false,
+				input: false,
+			},
 		},
 	},
 	emailVerification: {

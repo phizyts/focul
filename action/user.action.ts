@@ -1,6 +1,5 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/prisma";
-import { Lang } from "@prisma/client";
 import { headers } from "next/headers";
 
 export const getUser = async () => {

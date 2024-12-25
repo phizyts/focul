@@ -1,10 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id               String           @id
+  name             String
+  email            String           @unique
+  emailVerified    Boolean
+  role             Role             @default(User)
+  image            String?          @default("/uploadpfp.png")
+  onboarded        Boolean          @default(false)
+  createdAt        DateTime
+  updatedAt        DateTime
+  linkedAccounts   linkedAccounts[]
+  language         Lang             @default(English)
+  location         String           @default("Location Not Set")
+  twoFactorEnabled Boolean          @default(false)
+  passwordSet      Boolean          @default(false)
+  agpId            String?
+  Account          Account[]
+  Courses          Courses[]
+  gradingPolicy    GradingPolicy[]
+  Notes            Notes[]
+  Notification     Notification[]
+  Session          Session[]
+  Todos            Todos[]
+  twoFactor        TwoFactor[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  createdAt DateTime
+  token     String   @unique
+  updatedAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  expiresAt             DateTime?
+  password              String?
+  accessTokenExpiresAt  DateTime?
+  createdAt             DateTime
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  updatedAt             DateTime
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model Courses {
+  id          String        @id @default(uuid())
+  name        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  userId      String
+  type        CourseType    @default(Regular)
+  grade       Float?        @default(-1)
+  assignments Assignments[]
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("courses")
+}
+
+model Assignments {
+  id               String           @id @default(uuid())
+  name             String
+  courseId         String
+  assignmentTypeId String
+  description      String?
+  grade            Float?
+  maxGrade         Float
+  dueDate          DateTime
+  status           AssignmentStatus @default(Pending)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  assignmentType   AssignmentType   @relation(fields: [assignmentTypeId], references: [id])
+  course           Courses          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("assignment")
+}
+
+model AssignmentType {
+  id              String        @id @default(uuid())
+  name            String
+  description     String?
+  weight          Float
+  gradingPolicyId String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  assignments     Assignments[]
+  GradingPolicy   GradingPolicy @relation(fields: [gradingPolicyId], references: [id], onDelete: Cascade)
+
+  @@map("assignmentType")
+}
+
+model GradingPolicy {
+  id              String           @id @default(uuid())
+  name            String
+  userId          String
+  scale           Json
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  assignmentTypes AssignmentType[]
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("gradingPolicy")
+}
+
+model Todos {
+  id         String     @id @default(uuid())
+  title      String
+  desciption String?
+  status     TodoStatus @default(Pending)
+  userId     String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("todos")
+}
+
+model Notes {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  note        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notes")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  message   String   @default("Message Not Set")
+  userId    String
+  senderId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @default("Title Not Set")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification")
+}
+
+model TwoFactor {
+  id          String @id @default(uuid())
+  secret      String
+  backupCodes String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("twoFactor")
 }
 
 enum Role {
@@ -43,159 +224,4 @@ enum Lang {
   Chinese
   Spanish
   French
-}
-
-model User {
-  id               String           @id
-  name             String
-  email            String
-  emailVerified    Boolean
-  passwordSet      Boolean          @default(false)
-  twoFactorEnabled Boolean          @default(false)
-  role             Role             @default(User)
-  image            String?
-  onboarded        Boolean          @default(false)
-  language         Lang             @default(English)
-  location         String           @default("Location Not Set")
-  createdAt        DateTime
-  updatedAt        DateTime
-  twoFactor        TwoFactor[]
-  linkedAccounts   linkedAccounts[]
-  Session          Session[]
-  Account          Account[]
-  Todos            Todos[]
-  Notes            Notes[]
-  Courses          Courses[]
-  Notification     Notification[]
-
-  @@unique([email])
-  @@map("user")
-}
-
-model Session {
-  id        String   @id
-  expiresAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-
-  @@unique([token])
-  @@map("session")
-}
-
-model Account {
-  id           String    @id
-  accountId    String
-  providerId   String
-  userId       String
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken  String?
-  refreshToken String?
-  idToken      String?
-  expiresAt    DateTime?
-  password     String?
-
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  createdAt             DateTime
-  updatedAt             DateTime
-
-  @@map("account")
-}
-
-model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-
-  createdAt DateTime?
-  updatedAt DateTime?
-
-  @@map("verification")
-}
-
-model Courses {
-  id          String        @id @default(uuid())
-  name        String
-  grade       Float?        @default(-1)
-  type        CourseType    @default(Regular)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  assignments Assignments[]
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-
-  @@map("courses")
-}
-
-model Assignments {
-  id        String           @id @default(uuid())
-  name      String
-  courseId  String
-  course    Courses        @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  grade     Float
-  maxGrade  Float
-  dueDate   DateTime
-  status    AssignmentStatus @default(Pending)
-  type      String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-
-  @@map("assignments")
-}
-
-model Todos {
-  id         String   @id @default(uuid())
-  title      String
-  desciption String?
-  status     TodoStatus   @default(Pending)
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@map("todos")
-}
-
-model Notes {
-  id         String   @id @default(uuid())
-  title      String
-  desciption String?
-  note       String
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@map("notes")
-}
-
-model Notification {
-  id        String   @id @default(uuid())
-  title     String   @default("Title Not Set")
-  message   String   @default("Message Not Set")
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  senderId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("notification")
-}
-
-model TwoFactor {
-  id          String @id @default(uuid())
-  secret      String
-  backupCodes String
-  userId      String
-  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("twoFactor")
 }

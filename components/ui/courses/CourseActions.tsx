@@ -3,7 +3,7 @@ import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import { Courses } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { CreateCourse } from "../modals/CreateCourse";
+import { CreateCourse } from "../forms/CreateCourse";
 import { useModal } from "@/hooks/useModal";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { CourseFilterDropdown } from "./CourseFilterDropdown";

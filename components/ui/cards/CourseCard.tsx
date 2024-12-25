@@ -1,7 +1,6 @@
 "use client";
 
 import { Assignments, Courses } from "@prisma/client";
-import Link from "next/link";
 import "remixicon/fonts/remixicon.css";
 import { getAssignmentCount, getCourseGrade } from "@/utils/course.utils";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
-import { EditCourse } from "@/components/ui/modals/EditCourse";
+import { EditCourse } from "@/components/ui/forms/EditCourse";
 import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import { useModal } from "@/hooks/useModal";
 import { Courses } from "@prisma/client";

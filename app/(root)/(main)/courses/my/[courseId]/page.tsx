@@ -1,33 +1,28 @@
-import { getAssignments } from "@/action/assignment.action";
+import { getAssignments, getAssignmentTypes } from "@/action/assignment.action";
 import { getCourse } from "@/action/course.action";
 import InfoCard from "@/components/ui/cards/InfoCard";
 import AssignmentsTable from "@/components/ui/tables/AssignmentsTable";
-import { Courses } from "@prisma/client";
+import { AssignmentType, Courses, User } from "@prisma/client";
 import Link from "next/link";
 import CourseDetailsActions from "@/components/ui/courses/CourseDetailsActions";
-import { getCourseGrade } from "@/utils/course.utils";
+import {
+	getCourseGrade,
+	getOverdueAssignments,
+	getPendingAssignments,
+} from "@/utils/course.utils";
+import { getUser } from "@/action/user.action";
 
 export default async function CoursePage({
 	params,
 }: {
 	params: Promise<{ courseId: string }>;
 }) {
+	const user = await getUser();
 	const { courseId } = await params;
 	const course = await getCourse(courseId);
 	const assignments = await getAssignments(course as Courses);
+	const assignmentTypes = await getAssignmentTypes(user as User);
 	const assignmentsCount = assignments.length;
-	const getPendingAssignments = (assignments: any) => {
-		const pendingAssignments = assignments.filter((assignment: any) => {
-			return assignment.status === "Pending";
-		});
-		return pendingAssignments.length;
-	};
-	const getOverdueAssignments = (assignments: any) => {
-		const overdueAssignments = assignments.filter((assignment: any) => {
-			return assignment.status === "Overdue";
-		});
-		return overdueAssignments.length;
-	};
 
 	return (
 		<>
@@ -66,13 +61,11 @@ export default async function CoursePage({
 					/>
 				</div>
 				<div className="grid xl2:grid-cols-5 xl3:grid-cols-3 gap-6">
-					<div className="border border-border rounded-[10px] mt-6 w-full xl3:col-span-2 xl2:col-span-3 overflow-x-auto">
-						<div className="flex items-center mb-4 gap-2 px-5 pt-5">
-							<i className="ri-book-open-fill text-muted"></i>
-							<h2 className="text-muted">Assignments</h2>
-						</div>
-						<AssignmentsTable assignments={assignments} />
-					</div>
+					<AssignmentsTable
+						assignments={assignments}
+						assignmentTypes={assignmentTypes as AssignmentType[]}
+						courseId={courseId}
+					/>
 					<div className="border border-border rounded-[10px] xl2:mt-6 w-full xl2:col-span-2 xl3:col-span-1">
 						<div className="flex items-center mb-4 gap-2 px-5 pt-5">
 							<i className="ri-book-open-fill text-muted"></i>
