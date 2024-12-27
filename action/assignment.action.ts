@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma";
-import { Assignments, Courses, User } from "@prisma/client";
+import { Courses, User } from "@prisma/client";
 
 export const getAssignments = async (course: Courses) => {
 	try {

@@ -110,7 +110,7 @@ const AssignmentsTable = ({
 								className="hover:bg-[#F5F5F5] cursor-pointer"
 								key={assignment.id}
 								onClick={() => {
-									window.location.href = `/assignments/${assignment.id}`;
+									window.location.href = `/courses/assignments/${assignment.id}`;
 								}}
 							>
 								<td className="py-3 pl-5 truncate max-w-[130px]">

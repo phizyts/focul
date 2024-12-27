@@ -1,33 +1,109 @@
 "use client";
 import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
-import { Courses } from "@prisma/client";
+import {
+	AssignmentType,
+	Courses,
+	GradingPolicy as GradingPolicyType,
+} from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { CreateCourse } from "../forms/CreateCourse";
 import { useModal } from "@/hooks/useModal";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { CourseFilterDropdown } from "./CourseFilterDropdown";
+import { GradingPolicy as GradingPolicyForm } from "../forms/GradingPolicy";
 
-const CourseActions = () => {
+const CourseActions = ({
+	gradingPoliciesWithAGPId,
+}: {
+	gradingPoliciesWithAGPId: {
+		gradingPolicy: (GradingPolicyType & {
+			assignmentTypes: AssignmentType[];
+		})[];
+		agpId: string;
+	};
+}) => {
+	type ExtendedGradingPolicy = GradingPolicyType & {
+		assignmentTypes: AssignmentType[];
+	};
+
+	const initialAGP = gradingPoliciesWithAGPId.gradingPolicy.find(
+		(policy: ExtendedGradingPolicy) =>
+			policy.id === gradingPoliciesWithAGPId.agpId,
+	);
+	const [activeGradingPolicy, setActiveGradingPolicy] =
+		useState<ExtendedGradingPolicy | null>(initialAGP || null);
+	const [assignmentTypes, setAssignmentTypes] = useState(
+		initialAGP?.assignmentTypes || [],
+	);
+	const [isCustom, setIsCustom] = useState(
+		activeGradingPolicy?.name !== "HSTAT",
+	);
+
+	const hasUnsavedChanges = () => {
+		if ((initialAGP?.name !== "HSTAT") !== isCustom) return true;
+		if (activeGradingPolicy?.id !== initialAGP?.id) return true;
+
+		const validAssignmentTypes = assignmentTypes.filter(
+			type => type.name.trim() !== "",
+		);
+		const validInitialTypes = initialAGP?.assignmentTypes || [];
+
+		if (validAssignmentTypes.length !== validInitialTypes.length) return true;
+
+		return validAssignmentTypes.some((type, index) => {
+			if (type.id.includes("new-")) return true;
+			const initialType = validInitialTypes.find(t => t.id === type.id);
+			if (!initialType) return true;
+			return (
+				type.name !== initialType.name || type.weight !== initialType.weight
+			);
+		});
+	};
+
+	const handleCloseGradingModal = () => {
+		setActiveGradingPolicy(initialAGP || null);
+		setAssignmentTypes(initialAGP?.assignmentTypes || []);
+		setIsCustom(initialAGP?.name !== "HSTAT");
+		closeModal();
+	};
+
 	const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const router = useRouter();
-	const [isCreating, setIsCreating] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
 	const [courseName, setCourseName] = useState("");
 	const [courseType, setCourseType] = useState("Regular" as Courses["type"]);
-	const { isOpen, openModal, closeModal, page } = useModal([
-		<CreateCourse
-			courseName={courseName}
-			setCourseName={setCourseName}
-			courseType={courseType}
-			setCourseType={setCourseType}
-		/>,
-	]);
+	const { isOpen, openModal, closeModal, page, currentPage, changePage } =
+		useModal([
+			<CreateCourse
+				courseName={courseName}
+				setCourseName={setCourseName}
+				courseType={courseType}
+				setCourseType={setCourseType}
+			/>,
+			<GradingPolicyForm
+				gradingPoliciesWithAGPId={
+					gradingPoliciesWithAGPId as {
+						gradingPolicy: (GradingPolicyType & {
+							assignmentTypes: AssignmentType[];
+						})[];
+						agpId: string;
+					}
+				}
+				activeGradingPolicy={activeGradingPolicy}
+				setActiveGradingPolicy={setActiveGradingPolicy}
+				assignmentTypes={assignmentTypes}
+				setAssignmentTypes={setAssignmentTypes}
+				isCustom={isCustom}
+				setIsCustom={setIsCustom}
+			/>,
+		]);
 	const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
 	const filterRef = useRef<HTMLDivElement>(null);
 
-	const handleSave = async () => {
-		setIsCreating(true);
+	const handleCreateCourse = async () => {
+		setIsSaving(true);
 		if (courseName !== "") {
 			await fetch(`/api/courses`, {
 				method: "POST",
@@ -39,11 +115,47 @@ const CourseActions = () => {
 					type: courseType,
 				}),
 			});
-			setIsCreating(false);
+			setIsSaving(false);
 			closeModal();
 			router.refresh();
 		} else {
-			setIsCreating(false);
+			setIsSaving(false);
+			closeModal();
+		}
+	};
+
+	const handleSaveGradingPolicy = async () => {
+		setIsSaving(true);
+		if (hasUnsavedChanges()) {
+			try {
+				const validAssignmentTypes = assignmentTypes
+					.filter(type => type.name.trim() !== "")
+					.map(type => ({
+						id: type.id,
+						name: type.name,
+						weight: type.weight,
+					}));
+
+				await fetch(`/api/grading-policies`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						policyId: activeGradingPolicy?.id,
+						isCustom,
+						assignmentTypes: validAssignmentTypes,
+					}),
+				});
+				router.refresh();
+				closeModal();
+			} catch (error) {
+				console.error("Failed to save grading policy:", error);
+			} finally {
+				setIsSaving(false);
+			}
+		} else {
+			setIsSaving(false);
 			closeModal();
 		}
 	};
@@ -86,15 +198,22 @@ const CourseActions = () => {
 					</div>
 				</div>
 				<SecondaryButton
-					text="Import"
-					icon="ri-upload-cloud-line"
+					text="Grading"
+					icon="ri-bar-chart-2-line"
 					extraClasses="flex gap-1 items-center !mt-0"
+					onClick={() => {
+						changePage(2);
+						openModal();
+					}}
 				/>
 				<SecondaryButton
 					text="Add Course"
 					icon="ri-add-line"
 					extraClasses="flex gap-1 items-center !mt-0"
-					onClick={openModal}
+					onClick={() => {
+						changePage(1);
+						openModal();
+					}}
 				/>
 			</div>
 			<div className="relative xs:hidden" ref={dropdownRef}>
@@ -116,8 +235,8 @@ const CourseActions = () => {
 								Filter
 							</button>
 							<button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-								<i className="ri-upload-cloud-line mr-2" />
-								Import
+								<i className="ri-bar-chart-2-line mr-2" />
+								Grading
 							</button>
 							<button
 								className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -139,7 +258,7 @@ const CourseActions = () => {
 					/>
 				</div>
 			</div>
-			{isOpen && (
+			{isOpen && currentPage === 1 && (
 				<div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
 					<div className="w-full h-full flex items-center justify-center py-4">
 						<div
@@ -166,9 +285,9 @@ const CourseActions = () => {
 											text="Create"
 											extraClasses="flex !w-fit"
 											type="submit"
-											onClick={handleSave}
-											isLoading={isCreating}
-											extrattributes={{ disabled: isCreating }}
+											onClick={handleCreateCourse}
+											isLoading={isSaving}
+											extrattributes={{ disabled: isSaving }}
 										/>
 										<SecondaryButton
 											text="Cancel"
@@ -180,6 +299,51 @@ const CourseActions = () => {
 											type="button"
 										/>
 									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
+			{isOpen && currentPage === 2 && (
+				<div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+					<div className="w-full h-full flex items-center justify-center py-4">
+						<div
+							className="bg-background max-w-[500px] max-h-[570px] border border-border rounded-lg w-full mx-4 shadow-sm overflow-y-auto sm:overflow-visible"
+							onClick={e => e.stopPropagation()}
+						>
+							<div className="flex h-full flex-col sm:flex-row">
+								<div className="flex flex-col w-full pb-8">
+									<div className="pt-6 pb-5 px-6">
+										<div className="w-full justify-between items-center flex relative">
+											<h3 className="flex gap-2 items-center text-xl font-medium">
+												<i className="ri-bar-chart-fill"></i>
+												Manage Grading
+											</h3>
+											<button
+												onClick={handleCloseGradingModal}
+												className="text-muted h-[24px] hover:text-primary duration-200"
+											>
+												<i className="ri-close-line ri-lg"></i>
+											</button>
+											{hasUnsavedChanges() && (
+												<PrimaryButton
+													text="Save"
+													type="submit"
+													extraClasses="absolute !w-fit -top-1 right-8 !m-0"
+													extrattributes={{
+														disabled: isSaving,
+													}}
+													isLoading={isSaving}
+													onClick={handleSaveGradingPolicy}
+												/>
+											)}
+										</div>
+										<p className="text-sm text-muted mt-1">
+											Configure grading policy and assignment types
+										</p>
+									</div>
+									<div className="px-6 h-full overflow-y-auto">{page}</div>
 								</div>
 							</div>
 						</div>

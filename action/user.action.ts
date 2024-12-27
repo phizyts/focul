@@ -52,3 +52,81 @@ export const onBoardUser = async (userId: string) => {
 	});
 	return;
 };
+
+export const getAllGradingPolicy = async (
+	userId: string,
+	withAGPId = false,
+) => {
+	if (!userId) return;
+	const foundPolicies = await prisma.user.findUnique({
+		where: { id: userId },
+		select: {
+			agpId: withAGPId,
+			gradingPolicy: {
+				include: {
+					assignmentTypes: true,
+				},
+			},
+		},
+	});
+	if (foundPolicies?.gradingPolicy.length === 0) return null;
+	return foundPolicies;
+};
+
+export const initializeGradingPolicy = async (userId: string) => {
+	if (!userId) return;
+	const [hstatGradingPolicy, customGradingPolicy] = await Promise.all([
+		prisma.gradingPolicy.create({
+			data: {
+				userId,
+				name: "HSTAT",
+				scale: {
+					A: { max: 100, min: 90 },
+					B: { max: 89, min: 80 },
+					C: { max: 79, min: 70 },
+					D: { max: 69, min: 60 },
+					F: { max: 59, min: 0 },
+				},
+			},
+		}),
+		prisma.gradingPolicy.create({
+			data: {
+				userId,
+				name: "Custom",
+				scale: {
+					A: { max: 100, min: 90 },
+					B: { max: 89, min: 80 },
+					C: { max: 79, min: 70 },
+					D: { max: 69, min: 60 },
+					F: { max: 59, min: 0 },
+				},
+			},
+		}),
+	]);
+	await prisma.assignmentType.createMany({
+		data: [
+			{
+				name: "Homework",
+				gradingPolicyId: hstatGradingPolicy.id,
+				weight: 20,
+			},
+			{
+				name: "Classwork",
+				gradingPolicyId: hstatGradingPolicy.id,
+				weight: 30,
+			},
+			{
+				name: "Summative Assessment",
+				gradingPolicyId: hstatGradingPolicy.id,
+				weight: 50,
+			},
+		],
+	});
+	await prisma.user.update({
+		where: { id: userId },
+		data: {
+			agpId: customGradingPolicy.id,
+		},
+	});
+	return;
+};

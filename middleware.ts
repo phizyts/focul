@@ -20,10 +20,10 @@ async function getSession(request: NextRequest) {
 	}
 }
 
-async function updateUserLocation(request: NextRequest) {
+async function initializeGradingPolicies(request: NextRequest) {
 	try {
 		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/fetchlocation`,
+			`${process.env.NEXT_PUBLIC_BASE_URL}/api/grading-policies/initialize`,
 			{
 				method: "POST",
 				headers: {
@@ -34,7 +34,6 @@ async function updateUserLocation(request: NextRequest) {
 		);
 		return response.ok;
 	} catch (error) {
-		console.error("Location update error:", error);
 		return false;
 	}
 }
@@ -62,8 +61,8 @@ export default async function middleware(request: NextRequest) {
 				return NextResponse.redirect(new URL("/dashboard", request.url));
 			}
 
-			if (session.user.location === "Location Not Set") {
-				await updateUserLocation(request);
+			if (session.user.agpId === null) {
+				await initializeGradingPolicies(request);
 			}
 		} else {
 			if (!isAuthRoute) {

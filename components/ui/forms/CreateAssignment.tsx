@@ -98,6 +98,7 @@ const CreateAssignment = ({
 						<DatePicker
 							selected={dueDate}
 							onChange={date => setDueDate(date as Date)}
+							timeIntervals={5}
 							showTimeSelect
 							dateFormat="Pp"
 							className="w-full text-sm px-4 h-[35px] border border-border rounded-lg text-primary bg-transparent"

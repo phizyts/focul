@@ -12,7 +12,7 @@ export const useModal = (pages: ReactElement[]) => {
 	};
 
 	const changePage = (page: number) => {
-		if (page >= 1 && page <= pages.length) {
+		if ((page >= 1 && page <= pages.length) || page !== currentPage) {
 			setCurrentPage(page);
 		}
 	};

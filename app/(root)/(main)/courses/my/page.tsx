@@ -1,8 +1,8 @@
 import { getAllCourses } from "@/action/course.action";
-import { getUser } from "@/action/user.action";
+import { getAllGradingPolicy, getUser } from "@/action/user.action";
 import CourseCard from "@/components/ui/cards/CourseCard";
 import CourseActions from "@/components/ui/courses/CourseActions";
-import { User } from "@prisma/client";
+import { AssignmentType, GradingPolicy, User } from "@prisma/client";
 import "remixicon/fonts/remixicon.css";
 export default async function Page({
 	searchParams,
@@ -11,9 +11,12 @@ export default async function Page({
 }) {
 	const params = await searchParams;
 	const type = params?.type as string | undefined;
-
 	const user = await getUser();
 	const courses = await getAllCourses(user as User, type);
+	const gradingPoliciesWithAGPId = await getAllGradingPolicy(
+		user?.id as string,
+		true,
+	);
 
 	return (
 		<>
@@ -26,7 +29,16 @@ export default async function Page({
 						</span>
 					)}
 				</h1>
-				<CourseActions />
+				<CourseActions
+					gradingPoliciesWithAGPId={
+						gradingPoliciesWithAGPId as {
+							gradingPolicy: (GradingPolicy & {
+								assignmentTypes: AssignmentType[];
+							})[];
+							agpId: string;
+						}
+					}
+				/>
 			</div>
 			{courses.length > 0 ? (
 				<CourseCard courses={courses} />
