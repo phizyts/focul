@@ -212,7 +212,7 @@ const ProfileSettings = () => {
 						text="Save"
 						type="submit"
 						extraClasses="absolute !w-fit top-0 right-0 !m-0"
-						extrattributes={{
+						extraAttributes={{
 							disabled: isLoading,
 						}}
 						isLoading={isLoading}
