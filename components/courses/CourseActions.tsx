@@ -41,34 +41,6 @@ const CourseActions = ({
 		activeGradingPolicy?.name !== "HSTAT",
 	);
 
-	const hasUnsavedChanges = () => {
-		if ((initialAGP?.name !== "HSTAT") !== isCustom) return true;
-		if (activeGradingPolicy?.id !== initialAGP?.id) return true;
-
-		const validAssignmentTypes = assignmentTypes.filter(
-			type => type.name.trim() !== "",
-		);
-		const validInitialTypes = initialAGP?.assignmentTypes || [];
-
-		if (validAssignmentTypes.length !== validInitialTypes.length) return true;
-
-		return validAssignmentTypes.some((type, index) => {
-			if (type.id.includes("new-")) return true;
-			const initialType = validInitialTypes.find(t => t.id === type.id);
-			if (!initialType) return true;
-			return (
-				type.name !== initialType.name || type.weight !== initialType.weight
-			);
-		});
-	};
-
-	const handleCloseGradingModal = () => {
-		setActiveGradingPolicy(initialAGP || null);
-		setAssignmentTypes(initialAGP?.assignmentTypes || []);
-		setIsCustom(initialAGP?.name !== "HSTAT");
-		closeModal();
-	};
-
 	const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const router = useRouter();
@@ -102,6 +74,34 @@ const CourseActions = ({
 		]);
 	const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
 	const filterRef = useRef<HTMLDivElement>(null);
+
+	const hasUnsavedChanges = () => {
+		if ((initialAGP?.name !== "HSTAT") !== isCustom) return true;
+		if (activeGradingPolicy?.id !== initialAGP?.id) return true;
+
+		const validAssignmentTypes = assignmentTypes.filter(
+			type => type.name.trim() !== "",
+		);
+		const validInitialTypes = initialAGP?.assignmentTypes || [];
+
+		if (validAssignmentTypes.length !== validInitialTypes.length) return true;
+
+		return validAssignmentTypes.some((type, index) => {
+			if (type.id.includes("new-")) return true;
+			const initialType = validInitialTypes.find(t => t.id === type.id);
+			if (!initialType) return true;
+			return (
+				type.name !== initialType.name || type.weight !== initialType.weight
+			);
+		});
+	};
+
+	const handleCloseGradingModal = () => {
+		setActiveGradingPolicy(initialAGP || null);
+		setAssignmentTypes(initialAGP?.assignmentTypes || []);
+		setIsCustom(initialAGP?.name !== "HSTAT");
+		closeModal();
+	};
 
 	const handleCreateCourse = async () => {
 		setIsSaving(true);
@@ -137,7 +137,7 @@ const CourseActions = ({
 						weight: type.weight,
 					}));
 
-				await fetch(`/api/grading-policies`, {
+				const response = await fetch(`/api/grading-policies`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -148,6 +148,14 @@ const CourseActions = ({
 						assignmentTypes: validAssignmentTypes,
 					}),
 				});
+
+				if (response.ok) {
+					const updatedPolicy = await response.json();
+					setActiveGradingPolicy(updatedPolicy);
+					setAssignmentTypes(updatedPolicy.assignmentTypes || []);
+					setIsCustom(updatedPolicy.name !== "HSTAT");
+				}
+
 				router.refresh();
 				closeModal();
 			} catch (error) {
@@ -160,6 +168,12 @@ const CourseActions = ({
 			closeModal();
 		}
 	};
+
+	useEffect(() => {
+		setActiveGradingPolicy(initialAGP || null);
+		setAssignmentTypes(initialAGP?.assignmentTypes || []);
+		setIsCustom(initialAGP?.name !== "HSTAT");
+	}, [gradingPoliciesWithAGPId]);
 
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
