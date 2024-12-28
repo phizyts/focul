@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma";
-import { AssignmentStatus, Courses, User } from "@prisma/client";
+import { Assignments, AssignmentStatus, Courses, User } from "@prisma/client";
 
 export const getAssignment = async (id: string) => {
 	try {
@@ -125,27 +125,74 @@ export async function updateStatus(
 	assignmentId: string,
 	status: AssignmentStatus,
 ) {
-	if (!assignmentId || !status) return;
-	await prisma.assignments.update({
-		where: {
-			id: assignmentId,
-		},
-		data: {
-			status: status,
-		},
-	});
-	return;
+	try {
+		if (!assignmentId || !status) return;
+		await prisma.assignments.update({
+			where: {
+				id: assignmentId,
+			},
+			data: {
+				status: status,
+			},
+		});
+		return;
+	} catch (error) {
+		console.error("Prisma error:", error);
+	}
 }
 
 export async function updateGrade(assignmentId: string, grade: number) {
 	if (!assignmentId || grade === null) return;
-	await prisma.assignments.update({
-		where: {
-			id: assignmentId,
-		},
-		data: {
-			grade: grade,
-		},
-	});
-	return;
+	try {
+		await prisma.assignments.update({
+			where: {
+				id: assignmentId,
+			},
+			data: {
+				grade: grade,
+			},
+		});
+		return;
+	} catch (error) {
+		console.error("Prisma error:", error);
+	}
 }
+
+export const checkOverdueAssignments = async () => {
+	try {
+		const assignments = await prisma.assignments.findMany({
+			where: {
+				AND: [
+					{
+						dueDate: {
+							lte: new Date(),
+						},
+					},
+					{
+						status: "Pending",
+					},
+				],
+			},
+		});
+
+		return assignments;
+	} catch (error) {
+		console.error("Prisma error:", error);
+	}
+};
+
+export const updateAssignmentStatus = async (
+	assignments: Assignments[],
+	status: AssignmentStatus,
+) => {
+	try {
+		for (const assignment of assignments) {
+			await prisma.assignments.update({
+				where: { id: assignment.id },
+				data: { status },
+			});
+		}
+	} catch (error) {
+		console.error("Prisma error:", error);
+	}
+};
