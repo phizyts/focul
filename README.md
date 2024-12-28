@@ -1,106 +1,104 @@
-# Focul - All-in-One Student Dashboard
+<br />
+<div align="center">
+  <a href="https://github.com/phizyts/focul">
+    <img src="https://res.cloudinary.com/dyu7ogoqc/image/upload/f_auto,q_auto/Focul" alt="Logo" width="80" height="80">
+  </a>
 
-![Focul App Image](https://i.postimg.cc/DyNLfHXH/Desktop-1.png)
+<h3 align="center">Focul</h3>
 
-**Focul** is a comprehensive student dashboard web application designed to help
-students stay organized, track their progress, and improve productivity
-throughout their academic journey.
+  <p align="center">
+    Streamline academics with tools for managing courses, tracking assignments, and organizing schedules.
+    <br />
+    <a href="https://focul.org/"><strong>Learn More »</strong></a>
+    <br />
+    <br />
+    <a href="https://focul.org/">View Demo</a>
+    ·
+    <a href="https://github.com/phizyts/focul/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    ·
+    <a href="https://github.com/phizyts/focul/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
+
+## About The Project
+
+[![Product Name Screen Shot](https://res.cloudinary.com/dyu7ogoqc/image/upload/f_auto,q_auto/Focul_Landing)](https://res.cloudinary.com/dyu7ogoqc/image/upload/f_auto,q_auto/Focul_Landing)
+
+**Focul** is a comprehensive student dashboard web application built by a high
+school student designed to help students stay organized, track their progress,
+and improve productivity throughout their academic journey.
 
 With a clean and user-friendly interface, Focul integrates multiple tools to
 streamline academic tasks into one platform. Whether it's managing courses,
 tracking assignments, communicating with peers, calculating grades, or
 scheduling events with the integrated calendar, **Focul** has it all.
 
----
+### Tech Stack
 
-## Key Features
+- NextJS
+- TypeScript
+- PostgreSQL
+- Prisma
+- TailwindCSS
 
-- **Course Management**  
-  Organize your courses, track assignments, and access course materials all in
-  one place. Keep your academic life organized and efficient.
+## Getting Started
 
-- **Assignments & To-Do Tracker**  
-  Stay on top of your deadlines with an easy-to-use task tracker. Get notified
-  about upcoming assignments, and manage all your to-dos effectively.
+To get a local copy up and running follow these simple example steps.
 
-- **Write/Save Notes**  
-  Write, save, and organize your study notes with the ability to edit, delete,
-  and revisit them as needed.
+### Installation
 
-- **Flashcards**  
-  Create custom flashcards to help reinforce what you've learned. Ideal for exam
-  preparation or subject mastery.
+1. Clone the repo
+   ```sh
+   git clone https://github.com/phizyts/Focul.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Enter API Keys in `.env`
+   ```js
+   API_KEYs = "ENTER YOUR API";
+   ```
+4. Change git remote url to avoid accidental pushes to base project
+   ```sh
+   git remote set-url origin phizyts/Focul
+   git remote -v # confirm the changes
+   ```
 
-- **Communicate with Friends**  
-  Seamlessly chat with classmates and friends in real-time, making group work
-  and collaboration easy.
+## Roadmap
 
-- **Grade Calculator**  
-  Track your academic performance by calculating grades and keeping a close
-  watch on your GPA.
+- [x] Courses/Assignments Management
+- [ ] Tasks (Todo List)
+- [ ] Calendar/Event Scheduling
+- [ ] Community Page (Friends/Study Groups)
+- [ ] Notes Page
+- [ ] Flashcards
+- [ ] Promodoro Timer
 
-- **Calendar**  
-  Integrated calendar feature to help you manage your events, track deadlines,
-  and stay on top of your schedule, similar to Google Calendar.
+## Contributing
 
----
+Contributions are what make the open source community such an amazing place to
+learn, inspire, and create. Any contributions you make are **greatly
+appreciated**.
 
-## Tech Stack
+If you have a suggestion that would make this better, please fork the repo and
+create a pull request. You can also simply open an issue with the tag
+"enhancement". Don't forget to give the project a star! Thanks again!
 
-Focul is built with a modern tech stack that ensures scalability, performance,
-and maintainability:
-
-- **Next.js**  
-  A powerful React framework used for building the app. It provides server-side
-  rendering and static site generation, making Focul fast and SEO-friendly.
-
-- **TypeScript**  
-  Type checking for cleaner and more maintainable code. TypeScript helps catch
-  errors early during development.
-
-- **PostgreSQL**  
-  A reliable and scalable relational database that stores user data, course
-  information, assignments, notes, and more.
-
-- **Prisma**  
-  An ORM (Object-Relational Mapper) that interacts with the PostgreSQL database.
-  It provides an easy-to-use and type-safe way of handling database queries.
-
-- **Cloudinary**  
-  Image storage and management for user profile pictures, course material
-  uploads, and other media.
-
-- **Socket.IO**  
-  Real-time communication to enable live chat between users, making group work
-  and collaboration seamless.
-
-- **TailwindCSS**  
-  A utility-first CSS framework used for styling the app. It allows rapid,
-  responsive, and customizable design development.
-
-- **Resend**  
-  Simplifies email delivery for user account verification, password resets, and
-  other communications.
-
-- **Better-Auth**  
-  A secure and modern authentication framework offering features like
-  multi-factor authentication, single sign-on, and passwordless login for
-  enhanced user security.
-
----
-
-## Attribution
-
-Focul uses the following icon libraries:
-
-- **[RemixIcon](https://remixicon.com/)**: For various icons used throughout the
-  app.
-
----
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## Contact
 
-If you have any questions, suggestions, or feedback, feel free to reach out to
-us directly.
+Phizy - email@phizy.dev
 
-Thank you for exploring Focul! Wishing you academic success! ✨
+Project Link:
+[https://github.com/phizyts/Focul](https://github.com/phizyts/Focul)
+
+## Attribution
+
+- **[RemixIcon](https://remixicon.com/)**: For various icons used throughout the
+  app.
