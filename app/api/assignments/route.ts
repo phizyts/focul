@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 	try {
 		const user = await getUser();
 		if (!user) {
-			return new Response("Unauthorized", { status: 401 });
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
 		const {
@@ -32,14 +32,20 @@ export async function POST(req: NextRequest) {
 			!courseId ||
 			!assignmentTypes
 		) {
-			return new Response("Missing required fields", { status: 400 });
+			return NextResponse.json(
+				{ error: "Missing required fields" },
+				{ status: 400 },
+			);
 		}
 
 		const foundType = assignmentTypes.find(
 			(assignmentType: AssignmentType) => assignmentType.name === type,
 		);
 		if (!foundType) {
-			return new Response("Invalid assignment type", { status: 400 });
+			return NextResponse.json(
+				{ error: "Invalid assignment type" },
+				{ status: 400 },
+			);
 		}
 		const assignmentType = foundType.id;
 
@@ -68,7 +74,7 @@ export async function PUT(req: NextRequest) {
 	try {
 		const user = await getUser();
 		if (!user) {
-			return new Response("Unauthorized", { status: 401 });
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
 		const {
@@ -91,14 +97,20 @@ export async function PUT(req: NextRequest) {
 			!assignmentId ||
 			!courseId
 		) {
-			return new Response("Missing required fields", { status: 400 });
+			return NextResponse.json(
+				{ error: "Missing required fields" },
+				{ status: 400 },
+			);
 		}
 
 		const foundType = assignmentTypes.find(
 			(assignmentType: AssignmentType) => assignmentType.name === type,
 		);
 		if (!foundType) {
-			return new Response("Invalid assignment type", { status: 400 });
+			return NextResponse.json(
+				{ error: "Invalid assignment type" },
+				{ status: 400 },
+			);
 		}
 		const assignmentType = foundType.id;
 
@@ -128,13 +140,16 @@ export async function DELETE(req: NextRequest) {
 	try {
 		const user = await getUser();
 		if (!user) {
-			return new Response("Unauthorized", { status: 401 });
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
 		const { assignmentId } = await req.json();
 
 		if (!assignmentId) {
-			return new Response("Missing required fields", { status: 400 });
+			return NextResponse.json(
+				{ error: "Missing required fields" },
+				{ status: 400 },
+			);
 		}
 
 		await deleteAssignment(assignmentId);

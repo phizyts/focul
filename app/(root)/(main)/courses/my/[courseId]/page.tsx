@@ -23,7 +23,7 @@ export default async function CoursePage({
 	const user = await getUser();
 	const { courseId } = await params;
 	const course = await getCourse(courseId);
-	const assignments = await getAllAssignments(course as Courses);
+	const assignments = await getAllAssignments(course?.id as string);
 	const assignmentTypes = await getAssignmentTypes(user as User);
 	const assignmentsCount = assignments.length;
 

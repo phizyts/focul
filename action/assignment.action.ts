@@ -18,11 +18,11 @@ export const getAssignment = async (id: string) => {
 	}
 };
 
-export const getAllAssignments = async (course: Courses) => {
+export const getAllAssignments = async (courseId: string) => {
 	try {
 		const assignments = await prisma.assignments.findMany({
 			where: {
-				courseId: course.id,
+				courseId: courseId,
 			},
 			include: {
 				assignmentType: true,

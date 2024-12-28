@@ -89,6 +89,15 @@ const AssignmentDetailsAction = ({
 			closeModal();
 			router.refresh();
 			setIsSaving(false);
+			await fetch(`/api/courses/calculate-average`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					courseId: assignment.courseId,
+				}),
+			});
 		} else {
 			setIsSaving(false);
 			closeModal();
@@ -145,6 +154,7 @@ const AssignmentDetailsAction = ({
 					assignmentId: assignment.id,
 					status: "Graded",
 					grade: grade !== null ? grade : 0,
+					courseId: assignment.courseId,
 				}),
 			});
 			window.location.reload();
@@ -166,6 +176,15 @@ const AssignmentDetailsAction = ({
 		});
 		setIsDeleting(false);
 		closeModal();
+		await fetch(`/api/courses/calculate-average`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				courseId: assignment.courseId,
+			}),
+		});
 		router.push(`/courses/my/${assignment.courseId}`);
 	};
 

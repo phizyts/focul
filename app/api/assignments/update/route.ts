@@ -1,32 +1,46 @@
-import { updateGrade, updateStatus } from "@/action/assignment.action";
+import {
+	getAllAssignments,
+	updateGrade,
+	updateStatus,
+} from "@/action/assignment.action";
+import { updateCourseAverage } from "@/action/course.action";
 import { getUser } from "@/action/user.action";
-import { NextRequest } from "next/server";
+import { calculateCourseAverage } from "@/utils/course.utils";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 	try {
 		const user = await getUser();
 		if (!user) {
-			return new Response("Unauthorized", { status: 401 });
+			return NextResponse.json({ error: "User not found" }, { status: 401 });
 		}
 
-		const { assignmentId, status, grade } = await req.json();
+		const { assignmentId, status, grade, courseId } = await req.json();
 
 		if (!assignmentId || !status) {
-			return new Response("Missing required fields", { status: 400 });
+			return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 		}
 
 		await updateStatus(assignmentId, status);
 		if (status === "Graded" && grade !== null) {
 			await updateGrade(assignmentId, grade);
+			const calculatedAverage = calculateCourseAverage(
+				await getAllAssignments(courseId as string),
+			);
+			await updateCourseAverage(courseId, calculatedAverage);
 		}
 		if (status === "Pending") {
 			await updateGrade(assignmentId, -1);
 		}
-		return new Response("Assignment status updated successfully", {
-			status: 200,
-		});
+		return NextResponse.json(
+			{ message: "Assignment updated successfully" },
+			{ status: 200 },
+		);
 	} catch (error) {
 		console.error(error);
-		return new Response("Internal Server Error", { status: 500 });
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500 },
+		);
 	}
 }

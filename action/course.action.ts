@@ -70,3 +70,11 @@ export async function deleteCourse(courseId: string) {
 	});
 	return;
 }
+
+export const updateCourseAverage = async (courseId: string, grade: number) => {
+	await prisma.courses.update({
+		where: { id: courseId },
+		data: { grade },
+	});
+	return;
+};
