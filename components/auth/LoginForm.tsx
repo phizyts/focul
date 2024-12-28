@@ -1,6 +1,6 @@
 "use client";
 import { Loading } from "@/components/ui/Loading";
-import { OTPForm } from "@/components/ui/auth/OTPForm";
+import { OTPForm } from "@/components/auth/OTPForm";
 import {
 	authClient,
 	signInWithGithub,

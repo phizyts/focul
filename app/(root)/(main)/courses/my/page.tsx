@@ -1,7 +1,7 @@
 import { getAllCourses } from "@/action/course.action";
 import { getAllGradingPolicy, getUser } from "@/action/user.action";
 import CourseCard from "@/components/ui/cards/CourseCard";
-import CourseActions from "@/components/ui/courses/CourseActions";
+import CourseActions from "@/components/courses/CourseActions";
 import { AssignmentType, GradingPolicy, User } from "@prisma/client";
 import "remixicon/fonts/remixicon.css";
 export default async function Page({

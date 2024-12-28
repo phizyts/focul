@@ -1,16 +1,19 @@
-import { getAssignments, getAssignmentTypes } from "@/action/assignment.action";
+import {
+	getAllAssignments,
+	getAssignmentTypes,
+} from "@/action/assignment.action";
 import { getCourse } from "@/action/course.action";
 import InfoCard from "@/components/ui/cards/InfoCard";
-import AssignmentsTable from "@/components/ui/tables/AssignmentsTable";
+import AssignmentsTable from "@/components/tables/AssignmentsTable";
 import { AssignmentType, Courses, User } from "@prisma/client";
 import Link from "next/link";
-import CourseDetailsActions from "@/components/ui/courses/CourseDetailsActions";
+import CourseDetailsActions from "@/components/courses/details/CourseDetailsActions";
 import {
-	getCourseGrade,
 	getOverdueAssignments,
 	getPendingAssignments,
 } from "@/utils/course.utils";
 import { getUser } from "@/action/user.action";
+import { formatGrade } from "@/utils/formatGrade";
 
 export default async function CoursePage({
 	params,
@@ -20,7 +23,7 @@ export default async function CoursePage({
 	const user = await getUser();
 	const { courseId } = await params;
 	const course = await getCourse(courseId);
-	const assignments = await getAssignments(course as Courses);
+	const assignments = await getAllAssignments(course as Courses);
 	const assignmentTypes = await getAssignmentTypes(user as User);
 	const assignmentsCount = assignments.length;
 
@@ -41,7 +44,7 @@ export default async function CoursePage({
 				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl2:grid-cols-4 gap-6">
 					<InfoCard
 						title="Grade Average"
-						value={`${getCourseGrade(course)}%`}
+						value={`${formatGrade(course?.grade as Number)}%`}
 						icon="ri-bar-chart-fill"
 					/>
 					<InfoCard

@@ -8,7 +8,10 @@ export const formatDueDate = (dueDate: Date) => {
 	const formattedDueDate = dueDate.toLocaleDateString();
 
 	if (formattedDueDate === formattedToday) {
-		return "Today";
+		return dueDate.toLocaleTimeString([], {
+			hour: "2-digit",
+			minute: "2-digit",
+		});
 	} else if (formattedDueDate === formattedTomorrow) {
 		return "Tomorrow";
 	} else {

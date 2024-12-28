@@ -1,4 +1,4 @@
-import MyCoursesSkeleton from "@/components/ui/skeletons/courses/MyCoursesSkeleton";
+import MyCoursesSkeleton from "@/components/skeletons/courses/MyCoursesSkeleton";
 
 export default function Loading() {
 	return <MyCoursesSkeleton />;

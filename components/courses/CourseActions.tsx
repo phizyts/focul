@@ -7,11 +7,12 @@ import {
 } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { CreateCourse } from "../forms/CreateCourse";
+import { CreateCourse } from "./CreateCourse";
 import { useModal } from "@/hooks/useModal";
-import PrimaryButton from "../buttons/PrimaryButton";
 import { CourseFilterDropdown } from "./CourseFilterDropdown";
-import { GradingPolicy as GradingPolicyForm } from "../forms/GradingPolicy";
+import { ManageGrading } from "./ManageGrading";
+import Modal from "@/components/Modal";
+import PrimaryButton from "../ui/buttons/PrimaryButton";
 
 const CourseActions = ({
 	gradingPoliciesWithAGPId,
@@ -82,7 +83,7 @@ const CourseActions = ({
 				courseType={courseType}
 				setCourseType={setCourseType}
 			/>,
-			<GradingPolicyForm
+			<ManageGrading
 				gradingPoliciesWithAGPId={
 					gradingPoliciesWithAGPId as {
 						gradingPolicy: (GradingPolicyType & {
@@ -234,7 +235,14 @@ const CourseActions = ({
 								<i className="ri-filter-2-line mr-2" />
 								Filter
 							</button>
-							<button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+							<button
+								className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+								onClick={() => {
+									setDropdownIsOpen(false);
+									changePage(2);
+									openModal();
+								}}
+							>
 								<i className="ri-bar-chart-2-line mr-2" />
 								Grading
 							</button>
@@ -242,6 +250,7 @@ const CourseActions = ({
 								className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
 								onClick={() => {
 									setDropdownIsOpen(false);
+									changePage(1);
 									openModal();
 								}}
 							>
@@ -259,96 +268,78 @@ const CourseActions = ({
 				</div>
 			</div>
 			{isOpen && currentPage === 1 && (
-				<div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
-					<div className="w-full h-full flex items-center justify-center py-4">
-						<div
-							className="bg-background max-w-[500px] border border-border rounded-lg w-full mx-4 shadow-sm overflow-y-auto sm:overflow-visible"
-							onClick={e => e.stopPropagation()}
-						>
-							<div className="flex h-full flex-col sm:flex-row">
-								<div className="flex flex-col w-full">
-									<div className="w-full justify-between items-center p-6 h-full min-h-[77px] max-h-[77px] flex">
-										<h3 className="flex gap-2 items-center text-xl font-medium">
-											<i className="ri-pencil-fill"></i>
-											Create Course
-										</h3>
-										<button
-											onClick={() => closeModal()}
-											className="text-muted h-[24px] hover:text-primary duration-200"
-										>
-											<i className="ri-close-line ri-lg"></i>
-										</button>
-									</div>
-									<div className="px-6 h-full overflow-y-auto">{page}</div>
-									<div className="flex justify-between gap-3 mt-5 px-6 pb-6">
-										<PrimaryButton
-											text="Create"
-											extraClasses="flex !w-fit"
-											type="submit"
-											onClick={handleCreateCourse}
-											isLoading={isSaving}
-											extrattributes={{ disabled: isSaving }}
-										/>
-										<SecondaryButton
-											text="Cancel"
-											onClick={() => {
-												setCourseName("");
-												setCourseType("Regular");
-												closeModal();
-											}}
-											type="button"
-										/>
-									</div>
-								</div>
-							</div>
+				<Modal extraClasses="max-w-[500px]">
+					<div className="flex flex-col w-full">
+						<div className="w-full justify-between items-center p-6 h-full min-h-[77px] max-h-[77px] flex">
+							<h3 className="flex gap-2 items-center text-xl font-medium">
+								<i className="ri-pencil-fill"></i>
+								Create Course
+							</h3>
+							<button
+								onClick={() => closeModal()}
+								className="text-muted h-[24px] hover:text-primary duration-200"
+							>
+								<i className="ri-close-line ri-lg"></i>
+							</button>
+						</div>
+						<div className="px-6 h-full overflow-y-auto">{page}</div>
+						<div className="flex justify-between gap-3 mt-5 px-6 pb-6">
+							<PrimaryButton
+								text="Create"
+								extraClasses="flex !w-fit"
+								type="submit"
+								onClick={handleCreateCourse}
+								isLoading={isSaving}
+								extraAttributes={{ disabled: isSaving }}
+							/>
+							<SecondaryButton
+								text="Cancel"
+								onClick={() => {
+									setCourseName("");
+									setCourseType("Regular");
+									closeModal();
+								}}
+								type="button"
+							/>
 						</div>
 					</div>
-				</div>
+				</Modal>
 			)}
 			{isOpen && currentPage === 2 && (
-				<div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
-					<div className="w-full h-full flex items-center justify-center py-4">
-						<div
-							className="bg-background max-w-[500px] max-h-[570px] border border-border rounded-lg w-full mx-4 shadow-sm overflow-y-auto sm:overflow-visible"
-							onClick={e => e.stopPropagation()}
-						>
-							<div className="flex h-full flex-col sm:flex-row">
-								<div className="flex flex-col w-full pb-8">
-									<div className="pt-6 pb-5 px-6">
-										<div className="w-full justify-between items-center flex relative">
-											<h3 className="flex gap-2 items-center text-xl font-medium">
-												<i className="ri-bar-chart-fill"></i>
-												Manage Grading
-											</h3>
-											<button
-												onClick={handleCloseGradingModal}
-												className="text-muted h-[24px] hover:text-primary duration-200"
-											>
-												<i className="ri-close-line ri-lg"></i>
-											</button>
-											{hasUnsavedChanges() && (
-												<PrimaryButton
-													text="Save"
-													type="submit"
-													extraClasses="absolute !w-fit -top-1 right-8 !m-0"
-													extrattributes={{
-														disabled: isSaving,
-													}}
-													isLoading={isSaving}
-													onClick={handleSaveGradingPolicy}
-												/>
-											)}
-										</div>
-										<p className="text-sm text-muted mt-1">
-											Configure grading policy and assignment types
-										</p>
-									</div>
-									<div className="px-6 h-full overflow-y-auto">{page}</div>
-								</div>
+				<Modal extraClasses="max-w-[500px] max-h-[570px]">
+					<div className="flex flex-col w-full pb-8">
+						<div className="pt-6 pb-5 px-6">
+							<div className="w-full justify-between items-center flex relative">
+								<h3 className="flex gap-2 items-center text-xl font-medium">
+									<i className="ri-bar-chart-fill"></i>
+									Manage Grading
+								</h3>
+								<button
+									onClick={handleCloseGradingModal}
+									className="text-muted h-[24px] hover:text-primary duration-200"
+								>
+									<i className="ri-close-line ri-lg"></i>
+								</button>
+								{hasUnsavedChanges() && (
+									<PrimaryButton
+										text="Save"
+										type="submit"
+										extraClasses="absolute !w-fit -top-1 right-8 !m-0"
+										extraAttributes={{
+											disabled: isSaving,
+										}}
+										isLoading={isSaving}
+										onClick={handleSaveGradingPolicy}
+									/>
+								)}
 							</div>
+							<p className="text-sm text-muted mt-1">
+								Configure grading policy and assignment types
+							</p>
 						</div>
+						<div className="px-6 h-full overflow-y-auto">{page}</div>
 					</div>
-				</div>
+				</Modal>
 			)}
 		</>
 	);

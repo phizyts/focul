@@ -1,12 +1,13 @@
 "use client";
 
 import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
-import { EditCourse } from "@/components/ui/forms/EditCourse";
+import { EditCourse } from "@/components/courses/EditCourse";
 import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import { useModal } from "@/hooks/useModal";
 import { Courses } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
+import Modal from "@/components/Modal";
 
 const CourseDetailsActions = ({ course }: { course: Courses }) => {
 	const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
@@ -121,67 +122,58 @@ const CourseDetailsActions = ({ course }: { course: Courses }) => {
 				)}
 			</div>
 			{isOpen && (
-				<div className="fixed inset-0 bg-black/10 flex items-center justify-center z-100">
-					<div className="w-full h-full flex items-center justify-center py-4">
-						<div
-							className="bg-background max-w-[500px] border border-border rounded-lg w-full mx-4 shadow-sm overflow-y-auto sm:overflow-visible"
-							onClick={e => e.stopPropagation()}
-						>
-							<div className="flex h-full flex-col sm:flex-row">
-								<div className="flex flex-col w-full">
-									<div className="w-full justify-between items-center p-6 h-full min-h-[77px] max-h-[77px] flex">
-										<h3 className="flex gap-2 items-center text-xl font-medium">
-											<i className="ri-pencil-fill"></i>
-											Edit Course
-										</h3>
-										<button
-											onClick={() => closeModal()}
-											className="text-muted h-[24px] hover:text-primary duration-200"
-										>
-											<i className="ri-close-line ri-lg"></i>
-										</button>
-									</div>
-									<div className="px-6 h-full overflow-y-auto">{page}</div>
-									<div className="flex justify-between gap-3 mt-5 px-6 pb-6">
-										<PrimaryButton
-											text="Save"
-											extraClasses="flex !w-fit"
-											type="submit"
-											onClick={handleSave}
-											isLoading={isSaving}
-											extrattributes={{
-												disabled: isSaving || isDeleting,
-											}}
-										/>
-										<div className="flex gap-3">
-											{course && (
-												<PrimaryButton
-													text="Delete"
-													extraClasses="flex !w-fit !bg-[#b80404]"
-													type="button"
-													onClick={handleDelete}
-													isLoading={isDeleting}
-													extrattributes={{
-														disabled: isDeleting || isSaving,
-													}}
-												/>
-											)}
-											<SecondaryButton
-												text="Cancel"
-												onClick={() => {
-													setCourseName(course?.name || "");
-													setCourseType(course?.type || "Regular");
-													closeModal();
-												}}
-												type="button"
-											/>
-										</div>
-									</div>
-								</div>
+				<Modal extraClasses="max-w-[500px]">
+					<div className="flex flex-col w-full">
+						<div className="w-full justify-between items-center p-6 h-full min-h-[77px] max-h-[77px] flex">
+							<h3 className="flex gap-2 items-center text-xl font-medium">
+								<i className="ri-pencil-fill"></i>
+								Edit Course
+							</h3>
+							<button
+								onClick={() => closeModal()}
+								className="text-muted h-[24px] hover:text-primary duration-200"
+							>
+								<i className="ri-close-line ri-lg"></i>
+							</button>
+						</div>
+						<div className="px-6 h-full overflow-y-auto">{page}</div>
+						<div className="flex justify-between gap-3 mt-5 px-6 pb-6">
+							<PrimaryButton
+								text="Save"
+								extraClasses="flex !w-fit"
+								type="submit"
+								onClick={handleSave}
+								isLoading={isSaving}
+								extraAttributes={{
+									disabled: isSaving || isDeleting,
+								}}
+							/>
+							<div className="flex gap-3">
+								{course && (
+									<PrimaryButton
+										text="Delete"
+										extraClasses="flex !w-fit !bg-[#b80404]"
+										type="button"
+										onClick={handleDelete}
+										isLoading={isDeleting}
+										extraAttributes={{
+											disabled: isDeleting || isSaving,
+										}}
+									/>
+								)}
+								<SecondaryButton
+									text="Cancel"
+									onClick={() => {
+										setCourseName(course?.name || "");
+										setCourseType(course?.type || "Regular");
+										closeModal();
+									}}
+									type="button"
+								/>
 							</div>
 						</div>
 					</div>
-				</div>
+				</Modal>
 			)}
 		</>
 	);

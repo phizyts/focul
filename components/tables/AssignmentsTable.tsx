@@ -1,13 +1,14 @@
 "use client";
 import { formatDueDate } from "@/utils/formatDueDate";
-import PrimaryButton from "../buttons/PrimaryButton";
-import SecondaryButton from "../buttons/SecondaryButton";
-import SecondaryDropdownButton from "../buttons/SecondaryDropdownButton";
 import { AssignmentType, Prisma } from "@prisma/client";
-import CreateAssignment from "../forms/CreateAssignment";
 import { useModal } from "@/hooks/useModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import SecondaryDropdownButton from "../ui/buttons/SecondaryDropdownButton";
+import CreateAssignment from "../assignments/CreateAssignment";
+import PrimaryButton from "../ui/buttons/PrimaryButton";
+import SecondaryButton from "../ui/buttons/SecondaryButton";
+import { formatGrade } from "@/utils/formatGrade";
 
 const AssignmentsTable = ({
 	courseId,
@@ -118,9 +119,7 @@ const AssignmentsTable = ({
 								</td>
 								<td className="py-3">{assignment.assignmentType?.name}</td>
 								<td className="py-3">
-									{assignment.status === "Pending"
-										? `--/${assignment.maxGrade}`
-										: `assignment.grade/${assignment.maxGrade}`}
+									{`${formatGrade(assignment?.grade as Number)}/${assignment.maxGrade}`}
 								</td>
 								<td className="py-3 flex gap-1 items-center">
 									<i className="ri-calendar-schedule-fill"></i>
@@ -167,10 +166,12 @@ const AssignmentsTable = ({
 									<div className="flex justify-between gap-3 mt-5 px-6 pb-6">
 										<PrimaryButton
 											text="Create"
-											extraClasses="flex !w-fit"
+											extraClasses={`flex !w-fit ${assignmentTypes.length === 0 && "cursor-not-allowed !bg-muted"}`}
 											type="submit"
 											isLoading={isCreating}
-											extrattributes={{ disabled: isCreating }}
+											extraAttributes={{
+												disabled: isCreating || assignmentTypes.length === 0,
+											}}
 											onClick={handleCreate}
 										/>
 										<SecondaryButton

@@ -1,6 +1,6 @@
 "use client";
-import Navbar from "@/components/ui/navbar/Navbar";
-import Sidebar from "@/components/ui/sidebar/Sidebar";
+import Navbar from "@/components/navbar/Navbar";
+import Sidebar from "@/components/sidebar/Sidebar";
 import { useSidebar } from "@/hooks/useSidebar";
 import { authClient } from "@/lib/auth-client";
 import { useEffect } from "react";

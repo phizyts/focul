@@ -2,7 +2,8 @@
 
 import { Assignments, Courses } from "@prisma/client";
 import "remixicon/fonts/remixicon.css";
-import { getAssignmentCount, getCourseGrade } from "@/utils/course.utils";
+import { getAssignmentCount } from "@/utils/course.utils";
+import { formatGrade } from "@/utils/formatGrade";
 
 interface CourseCardProps {
 	courses: (Courses & { assignments: Assignments[] })[];
@@ -26,7 +27,7 @@ export default function CourseCard({ courses }: CourseCardProps) {
 							<i className="ri-more-2-fill"></i>
 						</button>
 					</div>
-					<div className="text-4xl font-medium">{`${getCourseGrade(course)}%`}</div>
+					<div className="text-4xl font-medium">{`${formatGrade(course.grade as Number)}%`}</div>
 					<div className="flex justify-between items-center">
 						<div className="text-muted text-sm">
 							{getAssignmentCount(course)} Assignments

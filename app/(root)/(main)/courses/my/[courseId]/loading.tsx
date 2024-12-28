@@ -1,4 +1,4 @@
-import CourseDetailSkeleton from "@/components/ui/skeletons/courses/CourseDetailSkeleton";
+import CourseDetailSkeleton from "@/components/skeletons/courses/details/CourseDetailSkeleton";
 
 export default function Loading() {
 	return <CourseDetailSkeleton />;

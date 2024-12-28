@@ -4,11 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { SidebarNavigationTop } from "../sidebar/SidebarNavigation";
-import Searchbar from "../Searchbar";
 import { useSidebar } from "@/hooks/useSidebar";
 import { useModal } from "@/hooks/useModal";
 import ProfileSettings from "../settings/ProfileSettings";
 import SecuritySettings from "../settings/SecuritySettings";
+import Searchbar from "../ui/Searchbar";
 
 const Navbar = ({
 	session,

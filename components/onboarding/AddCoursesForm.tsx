@@ -1,9 +1,9 @@
 import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import { useState } from "react";
-import PrimaryButton from "../buttons/PrimaryButton";
-import { CreateCourse } from "@/components/ui/forms/CreateCourse";
-import { EditCourse } from "@/components/ui/forms/EditCourse";
+import { CreateCourse } from "@/components/courses/CreateCourse";
+import { EditCourse } from "@/components/courses/EditCourse";
 import { Courses } from "@prisma/client";
+import PrimaryButton from "../ui/buttons/PrimaryButton";
 
 interface Course {
 	name: string;

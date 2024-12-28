@@ -1,4 +1,4 @@
-import InfoCardSkeleton from "../InfoCardSkeleton";
+import InfoCardSkeleton from "../../InfoCardSkeleton";
 
 const CourseDetailSkeleton = () => {
 	return (

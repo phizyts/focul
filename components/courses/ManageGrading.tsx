@@ -1,16 +1,13 @@
 "use client";
 
-import {
-	AssignmentType,
-	GradingPolicy as GradingPolicyType,
-} from "@prisma/client";
-import PrimaryButton from "../buttons/PrimaryButton";
+import { AssignmentType, GradingPolicy } from "@prisma/client";
+import PrimaryButton from "../ui/buttons/PrimaryButton";
 
-type ExtendedGradingPolicy = GradingPolicyType & {
+type ExtendedGradingPolicy = GradingPolicy & {
 	assignmentTypes: AssignmentType[];
 };
 
-export const GradingPolicy = ({
+export const ManageGrading = ({
 	gradingPoliciesWithAGPId,
 	activeGradingPolicy,
 	setActiveGradingPolicy,
@@ -20,7 +17,7 @@ export const GradingPolicy = ({
 	setIsCustom,
 }: {
 	gradingPoliciesWithAGPId: {
-		gradingPolicy: (GradingPolicyType & {
+		gradingPolicy: (GradingPolicy & {
 			assignmentTypes: AssignmentType[];
 		})[];
 		agpId: string;
@@ -62,7 +59,7 @@ export const GradingPolicy = ({
 	};
 
 	return (
-		<form className="flex flex-col gap-4">
+		<div className="flex flex-col gap-4">
 			<div className="flex flex-col gap-2">
 				<label className="text-primary">
 					{isCustom ? "Custom Policy" : "Predefined Policy"}
@@ -188,6 +185,6 @@ export const GradingPolicy = ({
 					/>
 				)}
 			</div>
-		</form>
+		</div>
 	);
 };

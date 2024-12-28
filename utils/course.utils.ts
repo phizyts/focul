@@ -18,12 +18,3 @@ export const getOverdueAssignments = (assignments: any) => {
 	});
 	return overdueAssignments.length;
 };
-
-export const getCourseGrade = (
-	course: (Courses & { assignments?: Assignments[] }) | null,
-) => {
-	if (!course || course.grade === -1) {
-		return "--";
-	}
-	return course.grade;
-};
