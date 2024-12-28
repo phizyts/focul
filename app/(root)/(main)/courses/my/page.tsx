@@ -4,6 +4,7 @@ import CourseCard from "@/components/ui/cards/CourseCard";
 import CourseActions from "@/components/courses/CourseActions";
 import { AssignmentType, GradingPolicy, User } from "@prisma/client";
 import "remixicon/fonts/remixicon.css";
+import { GradingPoliciesWithAGPId } from "@/types/course.types";
 export default async function Page({
 	searchParams,
 }: {
@@ -31,12 +32,7 @@ export default async function Page({
 				</h1>
 				<CourseActions
 					gradingPoliciesWithAGPId={
-						gradingPoliciesWithAGPId as {
-							gradingPolicy: (GradingPolicy & {
-								assignmentTypes: AssignmentType[];
-							})[];
-							agpId: string;
-						}
+						gradingPoliciesWithAGPId as GradingPoliciesWithAGPId
 					}
 				/>
 			</div>

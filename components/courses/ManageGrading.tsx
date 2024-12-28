@@ -2,10 +2,7 @@
 
 import { AssignmentType, GradingPolicy } from "@prisma/client";
 import PrimaryButton from "../ui/buttons/PrimaryButton";
-
-type ExtendedGradingPolicy = GradingPolicy & {
-	assignmentTypes: AssignmentType[];
-};
+import { ExtendedGradingPolicy } from "@/types/course.types";
 
 export const ManageGrading = ({
 	gradingPoliciesWithAGPId,

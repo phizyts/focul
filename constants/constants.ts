@@ -1,13 +1,8 @@
-interface NavRoute {
-	name: string;
-	href: string;
-	icon: string;
-}
-
-interface NavCategory {
-	name?: string;
-	routes: NavRoute[];
-}
+import {
+	NavCategory,
+	LanguageOption,
+	CourseTypeOption,
+} from "@/types/constants.types";
 
 export const sidebarRoutes: NavCategory[] = [
 	{
@@ -99,7 +94,7 @@ export const bottomRoutes: NavCategory[] = [
 	},
 ];
 
-export const languages = [
+export const languages: LanguageOption[] = [
 	{
 		display: "English",
 		value: "English",
@@ -118,7 +113,7 @@ export const languages = [
 	},
 ];
 
-export const courseTypes = [
+export const courseTypes: CourseTypeOption[] = [
 	{
 		display: "Regular Course",
 		value: "Regular",

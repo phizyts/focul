@@ -1,10 +1,6 @@
 import { courseTypes } from "@/constants/constants";
 import { useRouter, useSearchParams } from "next/navigation";
-
-interface CourseFilterDropdownProps {
-	isOpen: boolean;
-	onClose: () => void;
-}
+import { CourseFilterDropdownProps } from "@/types/course.types";
 
 export const CourseFilterDropdown = ({
 	isOpen,

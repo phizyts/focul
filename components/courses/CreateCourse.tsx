@@ -1,10 +1,6 @@
 "use client";
 import { courseTypes } from "@/constants/constants";
-
-interface Course {
-	name: string;
-	type: "AP" | "IB" | "Honors" | "Regular";
-}
+import { Course } from "@/types/course.types";
 
 export const CreateCourse = ({
 	courseName,

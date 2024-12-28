@@ -13,21 +13,16 @@ import { CourseFilterDropdown } from "./CourseFilterDropdown";
 import { ManageGrading } from "./ManageGrading";
 import Modal from "@/components/Modal";
 import PrimaryButton from "../ui/buttons/PrimaryButton";
+import {
+	ExtendedGradingPolicy,
+	GradingPoliciesWithAGPId,
+} from "@/types/course.types";
 
 const CourseActions = ({
 	gradingPoliciesWithAGPId,
 }: {
-	gradingPoliciesWithAGPId: {
-		gradingPolicy: (GradingPolicyType & {
-			assignmentTypes: AssignmentType[];
-		})[];
-		agpId: string;
-	};
+	gradingPoliciesWithAGPId: GradingPoliciesWithAGPId;
 }) => {
-	type ExtendedGradingPolicy = GradingPolicyType & {
-		assignmentTypes: AssignmentType[];
-	};
-
 	const initialAGP = gradingPoliciesWithAGPId.gradingPolicy.find(
 		(policy: ExtendedGradingPolicy) =>
 			policy.id === gradingPoliciesWithAGPId.agpId,

@@ -1,11 +1,7 @@
 "use client";
 import { courseTypes } from "@/constants/constants";
 import { Courses } from "@prisma/client";
-
-interface Course {
-	name: string;
-	type: "AP" | "IB" | "Honors" | "Regular";
-}
+import { Course } from "@/types/course.types";
 
 export const EditCourse = ({
 	courseName,
