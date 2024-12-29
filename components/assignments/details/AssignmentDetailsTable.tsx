@@ -4,13 +4,13 @@ import { AssignmentType, Prisma } from "@prisma/client";
 import { useModal } from "@/hooks/useModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import SecondaryDropdownButton from "../ui/buttons/SecondaryDropdownButton";
-import CreateAssignment from "../assignments/CreateAssignment";
-import PrimaryButton from "../ui/buttons/PrimaryButton";
-import SecondaryButton from "../ui/buttons/SecondaryButton";
+import SecondaryDropdownButton from "../../ui/buttons/SecondaryDropdownButton";
+import CreateAssignment from "../CreateAssignment";
+import PrimaryButton from "../../ui/buttons/PrimaryButton";
+import SecondaryButton from "../../ui/buttons/SecondaryButton";
 import { formatGrade } from "@/utils/formatGrade";
 
-const AssignmentsTable = ({
+const AssignmentDetailsTable = ({
 	courseId,
 	assignments,
 	assignmentTypes,
@@ -197,4 +197,4 @@ const AssignmentsTable = ({
 		</>
 	);
 };
-export default AssignmentsTable;
+export default AssignmentDetailsTable;

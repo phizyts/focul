@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 
-const Searchbar = () => {
+const NavSearchbar = () => {
 	const [isSearchFocused, setIsSearchFocused] = useState(false);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,4 +39,4 @@ const Searchbar = () => {
 	);
 };
 
-export default Searchbar;
+export default NavSearchbar;

@@ -1,4 +1,4 @@
-import { getAllAssignments } from "@/action/assignment.action";
+import { getAssignmentsByCourseId } from "@/action/assignment.action";
 import { getCourse, updateCourseAverage } from "@/action/course.action";
 import { calculateCourseAverage } from "@/utils/course.utils";
 import { NextRequest, NextResponse } from "next/server";
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 		}
 
 		const calculatedAverage = calculateCourseAverage(
-			await getAllAssignments(courseId as string),
+			await getAssignmentsByCourseId(courseId as string),
 		);
 		await updateCourseAverage(courseId, calculatedAverage);
 

@@ -18,7 +18,10 @@ export const getAssignment = async (id: string) => {
 	}
 };
 
-export const getAllAssignments = async (courseId: string) => {
+export const getAssignmentsByCourseId = async (
+	courseId: string,
+	orderBy: "asc" | "desc" = "asc",
+) => {
 	try {
 		const assignments = await prisma.assignments.findMany({
 			where: {
@@ -28,7 +31,7 @@ export const getAllAssignments = async (courseId: string) => {
 				assignmentType: true,
 			},
 			orderBy: {
-				createdAt: "desc",
+				createdAt: orderBy,
 			},
 		});
 		return assignments;
@@ -194,5 +197,35 @@ export const updateAssignmentStatus = async (
 		}
 	} catch (error) {
 		console.error("Prisma error:", error);
+	}
+};
+
+export const getAssignmentsWithFilters = async (
+	userId: string,
+	courseFilter?: string,
+	statusFilter?: AssignmentStatus,
+	orderBy: "asc" | "desc" = "desc",
+) => {
+	try {
+		const assignments = await prisma.assignments.findMany({
+			where: {
+				course: {
+					userId: userId,
+				},
+				...(courseFilter && { courseId: courseFilter }),
+				...(statusFilter && { status: statusFilter }),
+			},
+			orderBy: {
+				dueDate: orderBy,
+			},
+			include: {
+				assignmentType: true,
+				course: true,
+			},
+		});
+		return assignments;
+	} catch (error) {
+		console.error("Error fetching user assignments:", error);
+		return [];
 	}
 };

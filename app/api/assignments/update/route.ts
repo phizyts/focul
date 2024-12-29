@@ -1,5 +1,5 @@
 import {
-	getAllAssignments,
+	getAssignmentsByCourseId,
 	updateGrade,
 	updateStatus,
 } from "@/action/assignment.action";
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 		if (status === "Graded" && grade !== null) {
 			await updateGrade(assignmentId, grade);
 			const calculatedAverage = calculateCourseAverage(
-				await getAllAssignments(courseId as string),
+				await getAssignmentsByCourseId(courseId as string),
 			);
 			await updateCourseAverage(courseId, calculatedAverage);
 		}

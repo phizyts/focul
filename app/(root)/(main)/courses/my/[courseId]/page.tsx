@@ -1,10 +1,5 @@
-import {
-	getAllAssignments,
-	getAssignmentTypes,
-} from "@/action/assignment.action";
 import { getCourse } from "@/action/course.action";
 import InfoCard from "@/components/ui/cards/InfoCard";
-import AssignmentsTable from "@/components/tables/AssignmentsTable";
 import { AssignmentType, Courses, User } from "@prisma/client";
 import Link from "next/link";
 import CourseDetailsActions from "@/components/courses/details/CourseDetailsActions";
@@ -14,6 +9,11 @@ import {
 } from "@/utils/course.utils";
 import { getUser } from "@/action/user.action";
 import { formatGrade } from "@/utils/formatGrade";
+import {
+	getAssignmentsWithFilters,
+	getAssignmentTypes,
+} from "@/action/assignment.action";
+import AssignmentDetailsTable from "@/components/assignments/details/AssignmentDetailsTable";
 
 export default async function CoursePage({
 	params,
@@ -23,7 +23,10 @@ export default async function CoursePage({
 	const user = await getUser();
 	const { courseId } = await params;
 	const course = await getCourse(courseId);
-	const assignments = await getAllAssignments(course?.id as string);
+	const assignments = await getAssignmentsWithFilters(
+		user?.id as string,
+		course?.id as string,
+	);
 	const assignmentTypes = await getAssignmentTypes(user as User);
 	const assignmentsCount = assignments.length;
 
@@ -64,7 +67,7 @@ export default async function CoursePage({
 					/>
 				</div>
 				<div className="grid xl2:grid-cols-5 xl3:grid-cols-3 gap-6">
-					<AssignmentsTable
+					<AssignmentDetailsTable
 						assignments={assignments}
 						assignmentTypes={assignmentTypes as AssignmentType[]}
 						courseId={courseId}

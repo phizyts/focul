@@ -8,7 +8,7 @@ import { useSidebar } from "@/hooks/useSidebar";
 import { useModal } from "@/hooks/useModal";
 import ProfileSettings from "../settings/ProfileSettings";
 import SecuritySettings from "../settings/SecuritySettings";
-import Searchbar from "../ui/Searchbar";
+import NavSearchbar from "./NavSearchbar";
 
 const Navbar = ({
 	session,
@@ -75,7 +75,7 @@ const Navbar = ({
 						></i>
 						<i className="ri-search-line text-muted ri-lg block md:hidden cursor-pointer hover:text-white duration-200"></i>
 					</div>
-					<Searchbar />
+					<NavSearchbar />
 				</div>
 				<div className="flex gap-2 items-center xl:w-fit xl:justify-end min-w-max">
 					<i className="ri-group-line text-muted cursor-pointer hover:bg-[#F5F5F5] p-5 rounded-[6px] ri-xl w-7 h-7 flex items-center justify-center duration-200"></i>

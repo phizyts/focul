@@ -6,14 +6,19 @@ export async function createCourse(
 	type: CourseType,
 	userId: string,
 ) {
-	await prisma.courses.create({
-		data: {
-			name,
-			type,
-			userId: userId,
-		},
-	});
-	return;
+	try {
+		await prisma.courses.create({
+			data: {
+				name,
+				type,
+				userId: userId,
+			},
+		});
+		return;
+	} catch (error) {
+		console.error("Error creating course:", error);
+		return;
+	}
 }
 
 export const getAllCourses = async (user: User, type?: string | null) => {
@@ -38,43 +43,80 @@ export const getAllCourses = async (user: User, type?: string | null) => {
 };
 
 export async function getCourse(courseId: string) {
-	return await prisma.courses.findUnique({
-		where: {
-			id: courseId,
-		},
-	});
+	try {
+		return await prisma.courses.findUnique({
+			where: {
+				id: courseId,
+			},
+		});
+	} catch (error) {
+		console.error("Error fetching course:", error);
+		return null;
+	}
 }
+
+export const getCoursesByUserId = async (userId: string) => {
+	try {
+		const courses = await prisma.courses.findMany({
+			where: {
+				userId: userId,
+			},
+			orderBy: {
+				name: "asc",
+			},
+		});
+		return courses;
+	} catch (error) {
+		console.error("Error fetching user courses:", error);
+		return [];
+	}
+};
 
 export async function updateCourse(
 	name: string,
 	type: CourseType,
 	courseId: string,
 ) {
-	await prisma.courses.update({
-		where: {
-			id: courseId,
-		},
-		data: {
-			name,
-			type,
-		},
-	});
-	return;
+	try {
+		await prisma.courses.update({
+			where: {
+				id: courseId,
+			},
+			data: {
+				name,
+				type,
+			},
+		});
+		return;
+	} catch (error) {
+		console.error("Error updating course:", error);
+		return;
+	}
 }
 
 export async function deleteCourse(courseId: string) {
-	await prisma.courses.delete({
-		where: {
-			id: courseId,
-		},
-	});
-	return;
+	try {
+		await prisma.courses.delete({
+			where: {
+				id: courseId,
+			},
+		});
+		return;
+	} catch (error) {
+		console.error("Error deleting course:", error);
+		return;
+	}
 }
 
 export const updateCourseAverage = async (courseId: string, grade: number) => {
-	await prisma.courses.update({
-		where: { id: courseId },
-		data: { grade },
-	});
-	return;
+	try {
+		await prisma.courses.update({
+			where: { id: courseId },
+			data: { grade },
+		});
+		return;
+	} catch (error) {
+		console.error("Error updating course average:", error);
+		return;
+	}
 };
