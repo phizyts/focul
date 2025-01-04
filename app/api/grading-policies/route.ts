@@ -21,6 +21,21 @@ export async function POST(req: NextRequest) {
 		}
 
 		if (user.agpId !== policyId) {
+			const userCourses = await prisma.courses.findMany({
+				where: { userId: user.id },
+				select: { id: true },
+			});
+
+			if (userCourses.length > 0) {
+				await prisma.assignments.deleteMany({
+					where: {
+						courseId: {
+							in: userCourses.map(course => course.id),
+						},
+					},
+				});
+			}
+
 			await prisma.user.update({
 				where: { id: user.id },
 				data: { agpId: policyId },

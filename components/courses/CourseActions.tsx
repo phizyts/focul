@@ -17,6 +17,7 @@ import {
 	ExtendedGradingPolicy,
 	GradingPoliciesWithAGPId,
 } from "@/types/course.types";
+import { ConfirmPolicyChange } from "./ConfirmPolicyChange";
 
 const CourseActions = ({
 	gradingPoliciesWithAGPId,
@@ -42,6 +43,12 @@ const CourseActions = ({
 	const [isSaving, setIsSaving] = useState(false);
 	const [courseName, setCourseName] = useState("");
 	const [courseType, setCourseType] = useState("Regular" as Courses["type"]);
+	const [pendingGradingChanges, setPendingGradingChanges] = useState<{
+		policyId: string | undefined;
+		isCustom: boolean;
+		assignmentTypes: any[];
+	} | null>(null);
+
 	const { isOpen, openModal, closeModal, page, currentPage, changePage } =
 		useModal([
 			<CreateCourse
@@ -65,6 +72,20 @@ const CourseActions = ({
 				setAssignmentTypes={setAssignmentTypes}
 				isCustom={isCustom}
 				setIsCustom={setIsCustom}
+			/>,
+			<ConfirmPolicyChange
+				onConfirm={async () => {
+					if (pendingGradingChanges) {
+						await saveGradingPolicy(pendingGradingChanges.assignmentTypes);
+						setPendingGradingChanges(null);
+					}
+					changePage(2);
+				}}
+				onCancel={() => {
+					setPendingGradingChanges(null);
+					changePage(2);
+				}}
+				isLoading={isSaving}
 			/>,
 		]);
 	const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
@@ -121,46 +142,60 @@ const CourseActions = ({
 	};
 
 	const handleSaveGradingPolicy = async () => {
-		setIsSaving(true);
 		if (hasUnsavedChanges()) {
-			try {
-				const validAssignmentTypes = assignmentTypes
-					.filter(type => type.name.trim() !== "")
-					.map(type => ({
-						id: type.id,
-						name: type.name,
-						weight: type.weight,
-					}));
+			const validAssignmentTypes = assignmentTypes
+				.filter(type => type.name.trim() !== "")
+				.map(type => ({
+					id: type.id,
+					name: type.name,
+					weight: type.weight,
+				}));
 
-				const response = await fetch(`/api/grading-policies`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						policyId: activeGradingPolicy?.id,
-						isCustom,
-						assignmentTypes: validAssignmentTypes,
-					}),
+			if (activeGradingPolicy?.id !== initialAGP?.id) {
+				setPendingGradingChanges({
+					policyId: activeGradingPolicy?.id,
+					isCustom,
+					assignmentTypes: validAssignmentTypes,
 				});
-
-				if (response.ok) {
-					const updatedPolicy = await response.json();
-					setActiveGradingPolicy(updatedPolicy);
-					setAssignmentTypes(updatedPolicy.assignmentTypes || []);
-					setIsCustom(updatedPolicy.name !== "HSTAT");
-				}
-
-				router.refresh();
-				closeModal();
-			} catch (error) {
-				console.error("Failed to save grading policy:", error);
-			} finally {
-				setIsSaving(false);
+				changePage(3);
+				return;
 			}
+
+			await saveGradingPolicy(validAssignmentTypes);
 		} else {
 			setIsSaving(false);
 			closeModal();
+		}
+	};
+
+	const saveGradingPolicy = async (validAssignmentTypes: any[]) => {
+		setIsSaving(true);
+		try {
+			const response = await fetch(`/api/grading-policies`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					policyId: activeGradingPolicy?.id,
+					isCustom,
+					assignmentTypes: validAssignmentTypes,
+				}),
+			});
+
+			if (response.ok) {
+				const updatedPolicy = await response.json();
+				setActiveGradingPolicy(updatedPolicy);
+				setAssignmentTypes(updatedPolicy.assignmentTypes || []);
+				setIsCustom(updatedPolicy.name !== "HSTAT");
+			}
+
+			router.refresh();
+			closeModal();
+		} catch (error) {
+			console.error("Failed to save grading policy:", error);
+		} finally {
+			setIsSaving(false);
 		}
 	};
 
@@ -347,6 +382,25 @@ const CourseActions = ({
 							</p>
 						</div>
 						<div className="px-6 h-full overflow-y-auto">{page}</div>
+					</div>
+				</Modal>
+			)}
+			{isOpen && currentPage === 3 && (
+				<Modal extraClasses="max-w-[500px]">
+					<div className="flex flex-col w-full">
+						<div className="w-full justify-between items-center p-6 h-full min-h-[77px] max-h-[77px] flex">
+							<h3 className="flex gap-2 items-center text-xl font-medium">
+								<i className="ri-alert-fill text-[#b80404]"></i>
+								Confirm Policy Change
+							</h3>
+							<button
+								onClick={() => changePage(2)}
+								className="text-muted h-[24px] hover:text-primary duration-200"
+							>
+								<i className="ri-close-line ri-lg"></i>
+							</button>
+						</div>
+						<div className="px-6 pb-6">{page}</div>
 					</div>
 				</Modal>
 			)}
