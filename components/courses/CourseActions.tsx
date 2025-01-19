@@ -119,6 +119,11 @@ const CourseActions = ({
 		closeModal();
 	};
 
+	const reset = () => {
+		setCourseName("");
+		setCourseType("Regular");
+	};
+
 	const handleCreateCourse = async () => {
 		setIsSaving(true);
 		if (courseName !== "") {
@@ -134,9 +139,11 @@ const CourseActions = ({
 			});
 			setIsSaving(false);
 			closeModal();
+			reset();
 			router.refresh();
 		} else {
 			setIsSaving(false);
+			reset();
 			closeModal();
 		}
 	};

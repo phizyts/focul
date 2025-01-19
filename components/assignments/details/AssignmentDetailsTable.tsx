@@ -49,6 +49,14 @@ const AssignmentDetailsTable = ({
 		/>,
 	]);
 
+	const reset = () => {
+		setName("");
+		setType(initialType);
+		setDescription("");
+		setMaxGrade(100);
+		setDueDate(new Date(Date.now() + 24 * 60 * 60 * 1000));
+	};
+
 	const handleCreate = async () => {
 		setIsCreating(true);
 		if (name !== "") {
@@ -69,9 +77,11 @@ const AssignmentDetailsTable = ({
 			});
 			setIsCreating(false);
 			closeModal();
+			reset();
 			router.refresh();
 		} else {
 			setIsCreating(false);
+			reset();
 			closeModal();
 		}
 	};
