@@ -22,13 +22,13 @@
 		"better-fetch": "^1.1.2",
 		"cloudinary": "^2.5.1",
 		"lineicons-react": "^2.0.0",
-		"next": "^15.0.3",
+		"next": "^15.1.5",
 		"next-auth": "^5.0.0-beta.25",
 		"node-cache": "^5.1.2",
 		"prettier": "^3.3.3",
-		"react": "19.0.0-rc-66855b96-20241106",
+		"react": "^19.0.0",
 		"react-datepicker": "^7.5.0",
-		"react-dom": "19.0.0-rc-66855b96-20241106",
+		"react-dom": "^19.0.0",
 		"remixicon": "^4.5.0",
 		"resend": "^4.0.1",
 		"socket.io": "^4.8.1",
@@ -39,14 +39,10 @@
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
 		"eslint": "^8",
-		"eslint-config-next": "^15.0.3",
+		"eslint-config-next": "^15.1.5",
 		"postcss": "^8",
 		"prisma": "^6.0.0",
 		"tailwindcss": "^3.4.1",
 		"typescript": "^5"
-	},
-	"overrides": {
-		"react": "19.0.0-rc-66855b96-20241106",
-		"react-dom": "19.0.0-rc-66855b96-20241106"
 	}
 }
