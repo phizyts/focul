@@ -30,18 +30,32 @@ export default function AssignmentsTable({
 				<table className="w-full min-w-[650px]">
 					<thead className="border-b border-border w-full">
 						<tr className="text-left text-muted">
-							<th className="py-2 pl-5 font-normal">Assignment</th>
-							<th className="py-2 font-normal">Course</th>
-							<th className="py-2 font-normal">Grade</th>
-							<th className="py-2 font-normal">Due Date</th>
-							<th className="py-2 font-normal">Status</th>
+							<th className="py-2 pl-5 font-normal">
+								<i className="ri-hashtag"></i> Name
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-menu-search-line"></i> Category
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-percent-line"></i> Grade
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-time-line"></i> Due Date
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-loader-line"></i> Status
+							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{currentAssignments.map(assignment => (
+						{currentAssignments.map((assignment, index) => (
 							<tr
 								key={assignment.id}
-								className="hover:bg-[#F5F5F5] cursor-pointer"
+								className={`hover:bg-[#F5F5F5] cursor-pointer ${
+									index < currentAssignments.length - 1
+										? "border-b border-border"
+										: ""
+								}`}
 								onClick={() => {
 									window.location.href = `/courses/assignments/${assignment.id}`;
 								}}

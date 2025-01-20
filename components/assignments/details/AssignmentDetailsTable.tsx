@@ -108,17 +108,29 @@ const AssignmentDetailsTable = ({
 						className={`border-t ${assignments.length > 0 ? "border-b" : ""} border-border w-full`}
 					>
 						<tr className="text-left text-muted">
-							<th className="py-2 pl-5 font-normal">Name</th>
-							<th className="py-2 font-normal">Category</th>
-							<th className="py-2 font-normal">Grade</th>
-							<th className="py-2 font-normal">Due Date</th>
-							<th className="py-2 font-normal">Status</th>
+							<th className="py-2 pl-5 font-normal">
+								<i className="ri-hashtag"></i> Name
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-menu-search-line"></i> Category
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-percent-line"></i> Grade
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-time-line"></i> Due Date
+							</th>
+							<th className="py-2 font-normal">
+								<i className="ri-loader-line"></i> Status
+							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{assignments.map(assignment => (
+						{assignments.map((assignment, index) => (
 							<tr
-								className="hover:bg-[#F5F5F5] cursor-pointer"
+								className={`hover:bg-[#F5F5F5] cursor-pointer ${
+									index < assignments.length - 1 ? "border-b border-border" : ""
+								}`}
 								key={assignment.id}
 								onClick={() => {
 									window.location.href = `/courses/assignments/${assignment.id}`;

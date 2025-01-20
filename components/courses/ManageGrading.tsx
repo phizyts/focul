@@ -72,7 +72,7 @@ export const ManageGrading = ({
 							setAssignmentTypes(selectedPolicy.assignmentTypes);
 						}
 					}}
-					className="w-full text-sm px-4 h-[35px] rounded-lg border border-border duration-200 cursor-pointer"
+					className="w-full text-sm px-4 h-[35px] rounded-lg border border-border bg-background duration-200 cursor-pointer"
 					style={{
 						backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
 						backgroundRepeat: "no-repeat",

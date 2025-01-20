@@ -17,6 +17,7 @@ const CourseCardSkeleton = () => {
 					<div className="bg-gray-200 h-4 w-16 rounded"></div>
 				</div>
 			</div>
+			<div className="w-full h-2 rounded-full bg-gray-200"></div>
 		</div>
 	);
 };

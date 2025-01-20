@@ -34,6 +34,17 @@ export default function CourseCard({ courses }: CourseCardProps) {
 						</div>
 						<div className="text-muted text-sm">{course.type}</div>
 					</div>
+					<div className="w-full h-2 rounded-full bg-[#ededed]">
+						<div
+							style={{
+								width:
+									formatGrade(course.grade as Number) === "--"
+										? "0%"
+										: `${formatGrade(course.grade as Number)}%`,
+							}}
+							className="h-2 rounded-full bg-primary"
+						></div>
+					</div>
 				</a>
 			))}
 		</div>
