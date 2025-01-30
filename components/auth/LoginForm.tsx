@@ -10,6 +10,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import Form from "next/form";
+import { LoginSchema } from "@/helpers/zod/auth-schema";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +20,17 @@ const LoginForm = () => {
 	const signInWithEmail = async (formData: FormData) => {
 		const email = formData.get("email") as string;
 		const password = formData.get("password") as string;
+
+		const result = LoginSchema.safeParse({
+			email,
+			password,
+		});
+		if (!result.success) {
+			toast.error(result.error.issues[0].message);
+			setIsLoading(false);
+			return;
+		}
+
 		try {
 			await authClient.signIn.email(
 				{
@@ -58,7 +71,7 @@ const LoginForm = () => {
 				<div className="w-full flex flex-col gap-2">
 					<label htmlFor="email">Email</label>
 					<input
-						type="email"
+						type="text"
 						name="email"
 						id="email"
 						placeholder="john.doe@example.com"

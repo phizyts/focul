@@ -29,6 +29,7 @@
 		"react": "^19.0.0",
 		"react-datepicker": "^7.5.0",
 		"react-dom": "^19.0.0",
+		"react-hot-toast": "^2.5.1",
 		"remixicon": "^4.5.0",
 		"resend": "^4.0.1",
 		"socket.io": "^4.8.1",

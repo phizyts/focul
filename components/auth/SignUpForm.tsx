@@ -9,6 +9,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Form from "next/form";
+import { SignUpSchema } from "@/helpers/zod/auth-schema";
+import toast from "react-hot-toast";
 
 const SignUpForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +33,17 @@ const SignUpForm = () => {
 		const name = formData.get("name") as string;
 		const email = formData.get("email") as string;
 		const password = formData.get("password") as string;
+
+		const result = SignUpSchema.safeParse({
+			name,
+			email,
+			password,
+		});
+		if (!result.success) {
+			toast.error(result.error.issues[0].message);
+			setIsLoading(false);
+			return;
+		}
 		try {
 			const location = await getUserLocation();
 			const { data, error } = await authClient.signUp.email({
@@ -71,7 +84,7 @@ const SignUpForm = () => {
 				<div className="w-full flex flex-col gap-2">
 					<label htmlFor="email">Email</label>
 					<input
-						type="email"
+						type="text"
 						name="email"
 						id="email"
 						placeholder="john.doe@example.com"
