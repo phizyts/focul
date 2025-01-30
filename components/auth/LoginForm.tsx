@@ -32,27 +32,28 @@ const LoginForm = () => {
 		}
 
 		try {
-			await authClient.signIn.email(
-				{
-					email,
-					password,
-					callbackURL: "/dashboard",
-				},
-				{
-					async onSuccess(ctx) {
+			await authClient.signIn.email({
+				email,
+				password,
+				callbackURL: "/dashboard",
+				fetchOptions: {
+					onSuccess: async ctx => {
 						if (ctx.data.twoFactorRedirect) {
 							const { data } = await authClient.twoFactor.sendOtp();
 							if (data) {
 								setShowOTP(true);
 							}
 						}
+						setIsLoading(false);
+					},
+					onError: async ctx => {
+						toast.error(ctx.error.message);
+						setIsLoading(false);
 					},
 				},
-			);
+			});
 		} catch (error) {
-			console.error("Sign-in error", error);
-		} finally {
-			setIsLoading(false);
+			console.error("Sign-up error", error);
 		}
 	};
 

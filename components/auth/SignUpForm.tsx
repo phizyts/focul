@@ -46,20 +46,25 @@ const SignUpForm = () => {
 		}
 		try {
 			const location = await getUserLocation();
-			const { data, error } = await authClient.signUp.email({
+			await authClient.signUp.email({
 				email,
 				password,
 				name,
 				location,
 				passwordSet: true,
+				fetchOptions: {
+					onSuccess: ctx => {
+						setIsLoading(false);
+						router.push("/onboarding");
+					},
+					onError: ctx => {
+						toast.error(ctx.error.message);
+						setIsLoading(false);
+					},
+				},
 			});
-			console.log(data);
-			console.log(error);
 		} catch (error) {
 			console.error("Sign-up error", error);
-		} finally {
-			setIsLoading(false);
-			router.push("/onboarding");
 		}
 	};
 
