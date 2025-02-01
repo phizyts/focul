@@ -14,6 +14,7 @@ model User {
   emailVerified    Boolean
   role             Role             @default(User)
   image            String?          @default("/uploadpfp.png")
+  aboutMe          String?
   onboarded        Boolean          @default(false)
   createdAt        DateTime
   updatedAt        DateTime

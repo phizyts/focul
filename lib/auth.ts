@@ -77,6 +77,11 @@ export const auth = betterAuth({
 				defaultValue: "Location Not Set",
 				input: true,
 			},
+			aboutMe: {
+				type: "string",
+				required: false,
+				input: true,
+			},
 			passwordSet: {
 				type: "boolean",
 				required: false,

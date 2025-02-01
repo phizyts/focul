@@ -205,7 +205,7 @@ const ProfileSettings = () => {
 					<textarea
 						name="about"
 						id="about"
-						placeholder="Enter About Me"
+						placeholder={session?.user?.aboutMe || "Enter About Me"}
 						className="bg-transparent w-full py-2 px-4 flex-grow text-sm border rounded-[8px] border-border resize-none overflow-auto disabled:cursor-not-allowed"
 						onChange={e => setAboutMe(e.target.value)}
 						value={aboutMe}
