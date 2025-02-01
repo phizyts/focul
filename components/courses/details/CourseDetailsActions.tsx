@@ -8,6 +8,7 @@ import { Courses } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Modal from "@/components/Modal";
+import toast from "react-hot-toast";
 
 const CourseDetailsActions = ({ course }: { course: Courses }) => {
 	const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
@@ -44,6 +45,7 @@ const CourseDetailsActions = ({ course }: { course: Courses }) => {
 			setIsSaving(false);
 			closeModal();
 			router.refresh();
+			toast.success("Course updated successfully");
 		} else {
 			setIsSaving(false);
 			closeModal();
@@ -64,6 +66,7 @@ const CourseDetailsActions = ({ course }: { course: Courses }) => {
 		setIsDeleting(false);
 		closeModal();
 		router.push("/courses/my");
+		toast.success("Course deleted successfully");
 	};
 
 	useEffect(() => {

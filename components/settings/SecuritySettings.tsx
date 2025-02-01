@@ -2,6 +2,7 @@ import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const SecuritySettings = () => {
 	const { data: session } = authClient.useSession();
@@ -20,9 +21,10 @@ const SecuritySettings = () => {
 				await authClient.sendVerificationEmail({
 					email: session?.user?.email,
 				});
+				toast.success("Verification email sent successfully!");
 			}
 		} catch (error) {
-			console.error("Error sending verification email:", error);
+			toast.error("Error sending verification email");
 		} finally {
 			setIsLoading(false);
 		}
@@ -45,6 +47,7 @@ const SecuritySettings = () => {
 					currentPassword,
 					revokeOtherSessions: true,
 				});
+				toast.success("Password changed successfully!");
 			} else {
 				const response = await fetch("/api/user/setpassword", {
 					method: "POST",
@@ -53,7 +56,7 @@ const SecuritySettings = () => {
 					},
 					body: JSON.stringify({ newPassword }),
 				});
-
+				toast.success("Password set successfully!");
 				if (!response.ok) {
 					const error = await response.json();
 					throw new Error(error.error || "Failed to set password");
@@ -64,7 +67,7 @@ const SecuritySettings = () => {
 			setNewPassword("");
 			setConfirmPassword("");
 		} catch (error) {
-			console.error("Failed to change password:", error);
+			toast.error("Error changing password");
 		} finally {
 			setIsLoading(false);
 		}
@@ -81,15 +84,17 @@ const SecuritySettings = () => {
 				await authClient.twoFactor.disable({
 					password: password2FA,
 				});
+				toast.success("2FA disabled successfully!");
 			} else {
 				await authClient.twoFactor.enable({
 					password: password2FA,
 				});
+				toast.success("2FA enabled successfully!");
 			}
 			setShow2FAPasswordForm(false);
 			setPassword2FA("");
 		} catch (error) {
-			console.error("Error toggling 2FA:", error);
+			toast.error("Error changing 2FA status");
 		} finally {
 			setIsLoading(false);
 		}

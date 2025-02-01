@@ -18,6 +18,7 @@ import {
 	GradingPoliciesWithAGPId,
 } from "@/types/course.types";
 import { ConfirmPolicyChange } from "./ConfirmPolicyChange";
+import toast from "react-hot-toast";
 
 const CourseActions = ({
 	gradingPoliciesWithAGPId,
@@ -141,6 +142,7 @@ const CourseActions = ({
 			closeModal();
 			reset();
 			router.refresh();
+			toast.success("Course created successfully");
 		} else {
 			setIsSaving(false);
 			reset();
@@ -200,9 +202,10 @@ const CourseActions = ({
 			router.refresh();
 			closeModal();
 		} catch (error) {
-			console.error("Failed to save grading policy:", error);
+			toast.error("Error saving grading policy");
 		} finally {
 			setIsSaving(false);
+			toast.success("Grading policy saved successfully");
 		}
 	};
 

@@ -2,6 +2,7 @@ import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 
 const ProfileSettings = () => {
 	const { data: session } = authClient.useSession();
@@ -10,10 +11,11 @@ const ProfileSettings = () => {
 	);
 	const [imageFile, setimageFile] = useState<File | null>(null);
 	const [name, setName] = useState<string>("");
-	const [email, setEmail] = useState<string>("");
 	const [location, setLocation] = useState<string>("");
 	const [aboutMe, setAboutMe] = useState<string>("");
 	const [isLoading, setIsLoading] = useState(false);
+	const MAX_FILE_SIZE = 10 * 1024 * 1024;
+	const acceptedTypes = ["image/jpeg", "image/png"];
 
 	const uploadImage = async () => {
 		let file = imageFile as File;
@@ -28,7 +30,7 @@ const ProfileSettings = () => {
 				});
 
 				if (!response.ok) {
-					console.error(`Upload failed with status: ${response.status}`);
+					toast.error("Image failed to upload");
 					return null;
 				}
 
@@ -37,7 +39,7 @@ const ProfileSettings = () => {
 					image: data.secure_url,
 				});
 			} catch (err) {
-				console.error("Error uploading image:", err);
+				toast.error("Image failed to upload");
 				return null;
 			}
 		}
@@ -47,33 +49,30 @@ const ProfileSettings = () => {
 		e.preventDefault();
 		try {
 			if (!session?.user?.emailVerified) {
+				toast.error("Email not verified");
 				return;
 			}
 			setIsLoading(true);
-			if (name !== "" || location !== "") {
-				if (name !== "" && location !== "") {
-					await authClient.updateUser({
-						name,
-						location,
-					});
-				}
-				if (name !== "") {
-					await authClient.updateUser({
-						name,
-					});
-				}
-				if (location !== "") {
-					await authClient.updateUser({
-						location,
-					});
-				}
+			const updates: {
+				name?: string;
+				location?: string;
+				imageFile?: File;
+				aboutMe?: string;
+			} = {
+				...(name && { name }),
+				...(location && { location }),
+				...(imageFile && { imageFile }),
+				...(aboutMe && { aboutMe }),
+			};
+			if (Object.keys(updates).length > 0) {
+				await authClient.updateUser(updates);
+				imageFile && (await uploadImage());
+				toast.success("User updated successfully!");
 			}
-			await uploadImage();
 		} catch (error) {
-			console.error("Error updating user:", error);
+			toast.error("Error updating user");
 		} finally {
 			setName("");
-			setEmail("");
 			setLocation("");
 			setAboutMe("");
 			setimageFile(null);
@@ -84,6 +83,15 @@ const ProfileSettings = () => {
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target?.files?.[0];
 		if (file) {
+			if (file.size > MAX_FILE_SIZE) {
+				toast.error("File size must be less than 5MB");
+				e.target.value = "";
+				return;
+			}
+			if (!acceptedTypes.includes(file.type)) {
+				toast.error("Only JPG and PNG files are allowed");
+				return;
+			}
 			setimageFile(file);
 			const objectUrl = URL.createObjectURL(file);
 			setUrl(objectUrl);
@@ -124,7 +132,7 @@ const ProfileSettings = () => {
 						</label>
 						<div className="flex flex-col items-center xss:items-start gap-1">
 							<h3 className="font-medium">Profile Picture</h3>
-							<p className="text-muted text-xs">PNG, JPG under 15MB</p>
+							<p className="text-muted text-xs">PNG, JEPG under 10MB</p>
 						</div>
 					</div>
 				)}
@@ -167,12 +175,13 @@ const ProfileSettings = () => {
 						type="text"
 						name="email"
 						id="email"
-						value={email}
 						placeholder={session?.user?.email || "Enter Email"}
-						className="bg-transparent w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border disabled:cursor-not-allowed"
-						onChange={e => setEmail(e.target.value)}
-						disabled={!session?.user.emailVerified}
+						className="bg-[#F5F5F5] w-full py-2 px-4 h-[35px] text-sm border rounded-[8px] border-border disabled:cursor-not-allowed"
+						disabled={true}
 					/>
+					<p className="text-muted text-xs font-light">
+						Email cannot be changed
+					</p>
 				</div>
 				<div className="w-full flex flex-col gap-2">
 					<label htmlFor="location" className="w-fit">
@@ -203,11 +212,7 @@ const ProfileSettings = () => {
 						disabled={!session?.user.emailVerified}
 					/>
 				</div>
-				{(name !== "" ||
-					email !== "" ||
-					location !== "" ||
-					aboutMe !== "" ||
-					imageFile) && (
+				{(name !== "" || location !== "" || aboutMe !== "" || imageFile) && (
 					<PrimaryButton
 						text="Save"
 						type="submit"

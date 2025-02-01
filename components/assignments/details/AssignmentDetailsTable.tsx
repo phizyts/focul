@@ -9,6 +9,7 @@ import CreateAssignment from "../CreateAssignment";
 import PrimaryButton from "../../ui/buttons/PrimaryButton";
 import SecondaryButton from "../../ui/buttons/SecondaryButton";
 import { formatGrade } from "@/utils/formatGrade";
+import toast from "react-hot-toast";
 
 const AssignmentDetailsTable = ({
 	courseId,
@@ -79,6 +80,7 @@ const AssignmentDetailsTable = ({
 			closeModal();
 			reset();
 			router.refresh();
+			toast.success("Assignment created successfully");
 		} else {
 			setIsCreating(false);
 			reset();

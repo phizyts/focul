@@ -34,6 +34,14 @@ export async function POST(req: NextRequest) {
 						},
 					},
 				});
+				await prisma.courses.updateMany({
+					where: {
+						userId: user.id,
+					},
+					data: {
+						grade: null,
+					},
+				});
 			}
 
 			await prisma.user.update({

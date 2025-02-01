@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import EditAssignment from "../EditAssignment";
 import SetGrade from "../SetGrade";
+import toast from "react-hot-toast";
 
 const AssignmentDetailsAction = ({
 	assignment,
@@ -59,12 +60,7 @@ const AssignmentDetailsAction = ({
 				setMaxGrade={setMaxGrade}
 				assignmentTypes={assignmentTypes as AssignmentType[]}
 			/>,
-			<SetGrade
-				maxGrade={maxGrade}
-				currentGrade={assignment.grade}
-				grade={grade}
-				setGrade={setGrade}
-			/>,
+			<SetGrade maxGrade={maxGrade} grade={grade} setGrade={setGrade} />,
 		]);
 
 	const handleSave = async () => {
@@ -98,6 +94,7 @@ const AssignmentDetailsAction = ({
 					courseId: assignment.courseId,
 				}),
 			});
+			toast.success("Assignment updated successfully");
 		} else {
 			setIsSaving(false);
 			closeModal();
@@ -118,6 +115,7 @@ const AssignmentDetailsAction = ({
 				}),
 			});
 			window.location.reload();
+			toast.success("Assignment has marked as done");
 		} catch (error) {
 			setIsSaving(false);
 		}
@@ -137,6 +135,7 @@ const AssignmentDetailsAction = ({
 				}),
 			});
 			window.location.reload();
+			toast.success("Assignment has marked as pending");
 		} catch (error) {
 			setIsSaving(false);
 		}
@@ -158,6 +157,7 @@ const AssignmentDetailsAction = ({
 				}),
 			});
 			window.location.reload();
+			toast.success("Assignment has marked as graded");
 		} catch (error) {
 			setIsSaving(false);
 		}
@@ -186,6 +186,7 @@ const AssignmentDetailsAction = ({
 			}),
 		});
 		router.push(`/courses/my/${assignment.courseId}`);
+		toast.success("Assignment deleted successfully");
 	};
 
 	return (
