@@ -47,11 +47,6 @@ export const sidebarRoutes: NavCategory[] = [
 				href: "/courses/assignments",
 				icon: "ri-book-open-fill",
 			},
-			{
-				name: "Grades",
-				href: "/courses/grades",
-				icon: "ri-numbers-fill",
-			},
 		],
 	},
 	{

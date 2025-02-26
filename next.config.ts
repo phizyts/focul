@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
 				destination: "/courses/my",
 				permanent: true,
 			},
+			{
+				source: "/tasks",
+				destination: "/tasks/upcoming",
+				permanent: true,
+			},
 		];
 	},
 	images: {

@@ -30,7 +30,7 @@ model User {
   Notes            Notes[]
   Notification     Notification[]
   Session          Session[]
-  Todos            Todos[]
+  Todos            Tasks[]
   twoFactor        TwoFactor[]
 
   @@map("user")
@@ -140,17 +140,18 @@ model GradingPolicy {
   @@map("gradingPolicy")
 }
 
-model Todos {
+model Tasks {
   id         String     @id @default(uuid())
   title      String
-  desciption String?
-  status     TodoStatus @default(Pending)
+  description String?
+  status     TaskStatus @default(Pending)
   userId     String
+  dueDate    DateTime
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("todos")
+  @@map("tasks")
 }
 
 model Notes {
@@ -201,7 +202,7 @@ enum AssignmentStatus {
   Graded
 }
 
-enum TodoStatus {
+enum TaskStatus {
   Pending
   Completed
   Overdue

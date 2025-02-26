@@ -28,6 +28,33 @@ body {
 		@apply bg-[#ECECEC] w-full;
 	}
 
+	.pageActive {
+		@apply text-primary;
+	}
+
+	.pageHoverActive:hover {
+		@apply text-primary;
+	}
+
+	.pageActive::after {
+		@apply content-[""] bg-primary h-[2px] w-[70%] absolute left-1/2 -bottom-[9.3px] duration-300 ease-in-out transform -translate-x-1/2;
+		transform-origin: center;
+	}
+
+	.pageInactive::after {
+		@apply content-[""] bg-primary h-[2px] w-[0%] absolute left-1/2 -bottom-[9.3px] duration-300 ease-in-out transform -translate-x-1/2;
+		transform-origin: center;
+	}
+
+	.pageHoverActive::after {
+		@apply content-[""] bg-primary h-[2px] w-[0%] absolute left-1/2 -bottom-[9.3px] duration-300 ease-in-out transform -translate-x-1/2;
+		transform-origin: center;
+	}
+
+	.pageHoverActive:hover::after {
+		@apply w-[70%];
+	}
+
 	.tooltip-container {
 		@apply relative;
 	}

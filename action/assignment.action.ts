@@ -1,5 +1,11 @@
 import { prisma } from "@/prisma";
-import { Assignments, AssignmentStatus, Courses, User } from "@prisma/client";
+import {
+	Assignments,
+	AssignmentStatus,
+	AssignmentType,
+	Courses,
+	User,
+} from "@prisma/client";
 
 export const getAssignment = async (id: string) => {
 	try {
@@ -184,7 +190,7 @@ export const checkOverdueAssignments = async () => {
 	}
 };
 
-export const updateAssignmentStatus = async (
+export const updateAllAssignmentStatus = async (
 	assignments: Assignments[],
 	status: AssignmentStatus,
 ) => {
@@ -217,6 +223,34 @@ export const getAssignmentsWithFilters = async (
 			},
 			orderBy: {
 				dueDate: orderBy,
+			},
+			include: {
+				assignmentType: true,
+				course: true,
+			},
+		});
+		return assignments;
+	} catch (error) {
+		console.error("Error fetching user assignments:", error);
+		return [];
+	}
+};
+
+export const getAssignmentsByUserId = async (
+	userId: string,
+	status?: AssignmentStatus[],
+) => {
+	try {
+		const assignments = await prisma.assignments.findMany({
+			where: {
+				course: {
+					userId: userId,
+				},
+				status: status
+					? {
+							in: status,
+						}
+					: undefined,
 			},
 			include: {
 				assignmentType: true,

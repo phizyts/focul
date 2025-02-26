@@ -1,0 +1,13 @@
+services:
+  focul:
+    image: focul
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        RESEND_API_KEY: ${RESEND_API_KEY}
+        NODE_ENV: ${NODE_ENV} 
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
