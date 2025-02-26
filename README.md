@@ -68,7 +68,7 @@ To get a local copy up and running follow these simple example steps.
 ## Roadmap
 
 - [x] Courses/Assignments Management
-- [ ] Tasks (Todo List)
+- [x] Tasks (Todo List)
 - [ ] Calendar/Event Scheduling
 - [ ] Community Page (Friends/Study Groups)
 - [ ] Notes Page
