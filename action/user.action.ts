@@ -1,33 +1,75 @@
+"use server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/prisma";
+import { linkedAccounts } from "@prisma/client";
 import { headers } from "next/headers";
 
 export const getUser = async () => {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
-	return session?.user;
+	if (!session) return { success: false, message: "Unauthorized" };
+	return {
+		success: true,
+		message: "User fetched successfully",
+		data: session.user,
+	};
+};
+
+export const setPassword = async (newPassword: string) => {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	if (user.passwordSet)
+		return { success: false, message: "Password already set" };
+	try {
+		await auth.api.setPassword({
+			headers: await headers(),
+			body: { newPassword },
+		});
+
+		await prisma.user.update({
+			where: { id: user.id },
+			data: {
+				passwordSet: true,
+			},
+		});
+
+		return { success: true, message: "Password set successfully" };
+	} catch (error) {
+		console.error("Error setting password:", error);
+		return { success: false, message: "Error setting password" };
+	}
 };
 
 export const getLinkedAccounts = async () => {
+	const { success } = await getUser();
+	if (!success) return { success: false, message: "Unauthorized" };
 	try {
 		const accounts = await auth.api.listUserAccounts({
 			headers: await headers(),
 		});
 
-		if (!accounts) return [];
-		return accounts.map(account => account.provider);
+		if (!accounts)
+			return {
+				success: true,
+				message: "Accounts fetched successfully",
+				data: [],
+			};
+		return {
+			success: true,
+			message: "Accounts fetched successfully",
+			data: accounts.map(account => account.provider),
+		};
 	} catch (error) {
 		console.error("Error fetching linked accounts:", error);
-		return [];
+		return { success: false, message: "Error fetching linked accounts" };
 	}
 };
 
-export const getNotifications = async (user: any) => {
+export const getNotifications = async () => {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
 	try {
-		if (!user) {
-			return [];
-		}
 		const notifications = await prisma.notification.findMany({
 			where: {
 				userId: user.id,
@@ -36,97 +78,101 @@ export const getNotifications = async (user: any) => {
 				createdAt: "desc",
 			},
 		});
-		return notifications;
+		return {
+			success: true,
+			message: "Notifications fetched successfully",
+			data: notifications,
+		};
 	} catch (error) {
-		return [];
+		console.error("Error fetching notifications:", error);
+		return { success: false, message: "Error fetching notifications" };
 	}
 };
 
-export const onBoardUser = async (userId: string) => {
-	if (!userId) return;
-	await prisma.user.update({
-		where: { id: userId },
-		data: {
-			onboarded: true,
-		},
-	});
-	return;
+export const onBoardUser = async () => {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	try {
+		await prisma.user.update({
+			where: { id: user.id },
+			data: {
+				onboarded: true,
+			},
+		});
+		return {
+			success: true,
+			message: "User onboarded successfully",
+		};
+	} catch (error) {
+		console.error("Error onboarding user:", error);
+		return { success: false, message: "Error onboarding user" };
+	}
 };
 
-export const getAllGradingPolicy = async (
-	userId: string,
-	withAGPId = false,
-) => {
-	if (!userId) return;
-	const foundPolicies = await prisma.user.findUnique({
-		where: { id: userId },
-		select: {
-			agpId: withAGPId,
-			gradingPolicy: {
-				include: {
-					assignmentTypes: true,
+export const fetchAndUpdateLinkedAccounts = async () => {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	try {
+		const { data: accounts } = await getLinkedAccounts();
+		const linkedAccounts = accounts
+			?.filter(
+				(account: any) =>
+					account === "google" || account === "github" || account === "discord",
+			)
+			.map(
+				(account: string) => account.charAt(0).toUpperCase() + account.slice(1),
+			);
+
+		await prisma.user.update({
+			where: { id: user.id },
+			data: {
+				linkedAccounts: {
+					set: linkedAccounts as linkedAccounts[],
 				},
 			},
-		},
-	});
-	if (foundPolicies?.gradingPolicy.length === 0) return null;
-	return foundPolicies;
+		});
+
+		return {
+			success: true,
+			message: "Linked accounts fetched and updated successfully",
+		};
+	} catch (error) {
+		console.error("Error fetching and updating linked accounts:", error);
+		return {
+			success: false,
+			message: "Error fetching and updating linked accounts",
+		};
+	}
 };
 
-export const initializeGradingPolicy = async (userId: string) => {
-	if (!userId) return;
-	const [hstatGradingPolicy, customGradingPolicy] = await Promise.all([
-		prisma.gradingPolicy.create({
-			data: {
-				userId,
-				name: "HSTAT",
-				scale: {
-					A: { max: 100, min: 90 },
-					B: { max: 89, min: 80 },
-					C: { max: 79, min: 70 },
-					D: { max: 69, min: 60 },
-					F: { max: 59, min: 0 },
+export const getAllGradingPolicy = async (withAGPId = false) => {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	try {
+		const foundPolicies = await prisma.user.findUnique({
+			where: { id: user.id },
+			select: {
+				agpId: withAGPId,
+				gradingPolicy: {
+					include: {
+						assignmentTypes: true,
+					},
 				},
 			},
-		}),
-		prisma.gradingPolicy.create({
-			data: {
-				userId,
-				name: "Custom",
-				scale: {
-					A: { max: 100, min: 90 },
-					B: { max: 89, min: 80 },
-					C: { max: 79, min: 70 },
-					D: { max: 69, min: 60 },
-					F: { max: 59, min: 0 },
-				},
-			},
-		}),
-	]);
-	await prisma.assignmentType.createMany({
-		data: [
-			{
-				name: "Homework",
-				gradingPolicyId: hstatGradingPolicy.id,
-				weight: 20,
-			},
-			{
-				name: "Classwork",
-				gradingPolicyId: hstatGradingPolicy.id,
-				weight: 30,
-			},
-			{
-				name: "Summative Assessment",
-				gradingPolicyId: hstatGradingPolicy.id,
-				weight: 50,
-			},
-		],
-	});
-	await prisma.user.update({
-		where: { id: userId },
-		data: {
-			agpId: customGradingPolicy.id,
-		},
-	});
-	return;
+		});
+		if (foundPolicies?.gradingPolicy.length === 0)
+			return {
+				success: true,
+				message: "No grading policies found",
+				data: null,
+			};
+		return {
+			success: true,
+			message: "Grading policies fetched successfully",
+			data: foundPolicies,
+		};
+	} catch (error) {
+		console.error("Error fetching grading policies:", error);
+		return { success: false, message: "Error fetching grading policies" };
+	}
 };

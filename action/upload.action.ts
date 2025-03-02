@@ -1,5 +1,7 @@
+"use server";
+
 import { v2 as cloudinary } from "cloudinary";
-import { NextResponse } from "next/server";
+import { getUser } from "./user.action";
 
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -7,18 +9,16 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-export async function POST(request: Request) {
+export const upload = async (file: File) => {
+	const { success } = await getUser();
+	if (!success) return { success: false, message: "Unauthorized" };
+	if (!file) {
+		return {
+			success: false,
+			message: "No file uploaded",
+		};
+	}
 	try {
-		const formData = await request.formData();
-		const file = formData.get("file") as File;
-
-		if (!file) {
-			return NextResponse.json(
-				{ message: "No file uploaded" },
-				{ status: 400 },
-			);
-		}
-
 		const bytes = await file.arrayBuffer();
 		const buffer = Buffer.from(bytes);
 		const base64String = `data:${file.type};base64,${buffer.toString("base64")}`;
@@ -30,12 +30,16 @@ export async function POST(request: Request) {
 			transformation: [{ crop: "fill", gravity: "face" }, { radius: "max" }],
 		});
 
-		return NextResponse.json(result, { status: 200 });
+		return {
+			success: true,
+			message: "Image uploaded successfully",
+			data: result,
+		};
 	} catch (error) {
 		console.error("Failed to upload image:", error);
-		return NextResponse.json(
-			{ message: "Failed to upload image to Cloudinary" },
-			{ status: 500 },
-		);
+		return {
+			success: false,
+			message: "Failed to upload image to Cloudinary",
+		};
 	}
-}
+};

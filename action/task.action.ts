@@ -1,40 +1,57 @@
 "use server";
 import { prisma } from "@/prisma";
 import { Tasks, TaskStatus } from "@prisma/client";
+import { getUser } from "./user.action";
 
-export async function getAllTasks(userId: string, status?: TaskStatus) {
-	if (!userId) return;
+export async function getAllTasks(status?: TaskStatus) {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
 	try {
 		const tasks = await prisma.tasks.findMany({
 			where: {
-				userId,
+				userId: user.id,
 				status,
 			},
 		});
-		return tasks;
+		return {
+			success: true,
+			message: "Tasks fetched successfully",
+			data: tasks,
+		};
 	} catch (error) {
 		console.error("Error fetching tasks:", error);
-		return [];
+		return { success: false, message: "Error fetching tasks" };
 	}
 }
 
 export async function getTask(taskId: string) {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	if (!taskId) return { success: false, message: "Missing required fields" };
 	try {
 		const task = await prisma.tasks.findUnique({
 			where: {
 				id: taskId,
 			},
 		});
-		return task;
+		return {
+			success: true,
+			message: "Task fetched successfully",
+			data: task,
+		};
 	} catch (error) {
 		console.error("Error fetching task:", error);
-		return null;
+		return { success: false, message: "Error fetching task" };
 	}
 }
 
 export async function updateTaskStatus(taskId: string, status: TaskStatus) {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	if (!taskId || !status)
+		return { success: false, message: "Missing required fields" };
 	try {
-		await prisma.tasks.update({
+		const task = await prisma.tasks.update({
 			where: {
 				id: taskId,
 			},
@@ -42,32 +59,43 @@ export async function updateTaskStatus(taskId: string, status: TaskStatus) {
 				status,
 			},
 		});
-		return true;
+		return {
+			success: true,
+			message: "Task status updated successfully",
+			data: task,
+		};
 	} catch (error) {
 		console.error("Error updating task status:", error);
-		return false;
+		return { success: false, message: "Error updating task status" };
 	}
 }
 
 export async function createTask(
 	title: string,
 	dueDate: Date,
-	userId: string,
 	description?: string,
 ) {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	if (!title || !dueDate)
+		return { success: false, message: "Missing required fields" };
 	try {
-		await prisma.tasks.create({
+		const task = await prisma.tasks.create({
 			data: {
 				title,
 				description,
 				dueDate,
-				userId,
+				userId: user.id,
 			},
 		});
-		return true;
+		return {
+			success: true,
+			message: "Task created successfully",
+			data: task,
+		};
 	} catch (error) {
 		console.error("Error creating task:", error);
-		return false;
+		return { success: false, message: "Error creating task" };
 	}
 }
 
@@ -75,11 +103,14 @@ export async function updateTask(
 	taskId: string,
 	title: string,
 	dueDate: Date,
-	userId: string,
 	description?: string,
 ) {
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	if (!taskId || !title || !dueDate)
+		return { success: false, message: "Missing required fields" };
 	try {
-		await prisma.tasks.update({
+		const task = await prisma.tasks.update({
 			where: {
 				id: taskId,
 			},
@@ -87,28 +118,38 @@ export async function updateTask(
 				title,
 				description,
 				dueDate,
-				userId,
+				userId: user.id,
 			},
 		});
-		return true;
+		return {
+			success: true,
+			message: "Task updated successfully",
+			data: task,
+		};
 	} catch (error) {
 		console.error("Error updating task:", error);
-		return false;
+		return { success: false, message: "Error updating task" };
 	}
 }
 
 export const deleteTask = async (taskId: string) => {
-	"use server";
+	const { data: user } = await getUser();
+	if (!user) return { success: false, message: "Unauthorized" };
+	if (!taskId) return { success: false, message: "Missing required fields" };
 	try {
-		await prisma.tasks.delete({
+		const task = await prisma.tasks.delete({
 			where: {
 				id: taskId,
 			},
 		});
-		return true;
+		return {
+			success: true,
+			message: "Task deleted successfully",
+			data: task,
+		};
 	} catch (error) {
 		console.error("Prisma error:", error);
-		return false;
+		return { success: false, message: "Error deleting task" };
 	}
 };
 
@@ -129,10 +170,14 @@ export const checkOverdueTasks = async () => {
 			},
 		});
 
-		return tasks;
+		return {
+			success: true,
+			message: "Tasks fetched successfully",
+			data: tasks,
+		};
 	} catch (error) {
 		console.error("Prisma error:", error);
-		return null;
+		return { success: false, message: "Error fetching tasks" };
 	}
 };
 
@@ -140,6 +185,7 @@ export const updateAllTaskStatus = async (
 	tasks: Tasks[],
 	status: TaskStatus,
 ) => {
+	if (!tasks || !status) return { success: false, message: "Missing fields" };
 	try {
 		for (const task of tasks) {
 			await prisma.tasks.update({
@@ -147,9 +193,12 @@ export const updateAllTaskStatus = async (
 				data: { status },
 			});
 		}
-		return true;
+		return {
+			success: true,
+			message: "Task status updated successfully",
+		};
 	} catch (error) {
 		console.error("Prisma error:", error);
-		return false;
+		return { success: false, message: "Error updating task status" };
 	}
 };

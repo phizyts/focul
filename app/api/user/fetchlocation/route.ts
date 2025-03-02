@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 	try {
-		const user = await getUser();
+		const { data: user } = await getUser();
 		if (!user) {
 			return NextResponse.json({ error: "User not found" }, { status: 401 });
 		}

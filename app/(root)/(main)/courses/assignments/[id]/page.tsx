@@ -1,11 +1,10 @@
 import { getAssignment, getAssignmentTypes } from "@/action/assignment.action";
-import { getUser } from "@/action/user.action";
 import AssignmentDetailsAction from "@/components/assignments/details/AssignmentDetailsAction";
 import ContentCard from "@/components/ui/cards/ContentCard";
 import InfoCard from "@/components/ui/cards/InfoCard";
 import { formatDueDate } from "@/utils/formatDueDate";
 import { formatGrade } from "@/utils/formatGrade";
-import { Prisma, User } from "@prisma/client";
+import { AssignmentType, Prisma, User } from "@prisma/client";
 import Link from "next/link";
 
 export default async function AssignmentDetailsPage({
@@ -13,11 +12,10 @@ export default async function AssignmentDetailsPage({
 }: {
 	params: Promise<{ id: string }>;
 }) {
-	const user = await getUser();
 	const { id } = await params;
-	const assignment = await getAssignment(id);
+	const { data: assignment } = await getAssignment(id);
 	const assignmentType = assignment?.assignmentType;
-	const assignmentTypes = await getAssignmentTypes(user as User);
+	const { data: assignmentTypes } = await getAssignmentTypes();
 	return (
 		<div className="w-full">
 			<div className="flex justify-between items-center mb-4">
@@ -35,7 +33,7 @@ export default async function AssignmentDetailsPage({
 							include: { assignmentType: true };
 						}>
 					}
-					assignmentTypes={assignmentTypes}
+					assignmentTypes={assignmentTypes as AssignmentType[]}
 				/>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl2:grid-cols-4 gap-6 mb-6">

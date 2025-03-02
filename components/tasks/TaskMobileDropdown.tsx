@@ -58,13 +58,8 @@ export default function TaskMobileDropdown() {
 				toast.error("Please fill all fields");
 				return;
 			}
-			const createdTask = await createTask(
-				taskName,
-				taskDueDate,
-				userId as string,
-				taskDesc,
-			);
-			if (createdTask) {
+			const createdTask = await createTask(taskName, taskDueDate, taskDesc);
+			if (createdTask.success) {
 				resetValue();
 				closeModal();
 				router.refresh();

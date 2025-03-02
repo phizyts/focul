@@ -9,6 +9,12 @@ import { useState, useRef, useEffect } from "react";
 import EditAssignment from "../EditAssignment";
 import SetGrade from "../SetGrade";
 import toast from "react-hot-toast";
+import { updateCourseAverage } from "@/action/course.action";
+import {
+	deleteAssignment,
+	updateAssignment,
+	updateStatus,
+} from "@/action/assignment.action";
 
 const AssignmentDetailsAction = ({
 	assignment,
@@ -66,35 +72,28 @@ const AssignmentDetailsAction = ({
 	const handleSave = async () => {
 		setIsSaving(true);
 		if (name !== "") {
-			await fetch(`/api/assignments`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					name,
-					type,
-					description,
-					maxGrade,
-					dueDate: dueDate,
-					assignmentId: assignment.id,
-					assignmentTypes,
-					courseId: assignment.courseId,
-				}),
-			});
-			closeModal();
-			router.refresh();
-			setIsSaving(false);
-			await fetch(`/api/courses/calculate-average`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					courseId: assignment.courseId,
-				}),
-			});
-			toast.success("Assignment updated successfully");
+			const { success: assignmentUpdated } = await updateAssignment(
+				assignment.id,
+				name,
+				type,
+				assignmentTypes,
+				assignment.courseId,
+				maxGrade,
+				dueDate,
+				description as string,
+			);
+			if (assignmentUpdated) {
+				closeModal();
+				router.refresh();
+				setIsSaving(false);
+				toast.success("Assignment updated successfully");
+				const { success } = await updateCourseAverage(assignment.courseId);
+				if (!success) {
+					toast.error("Failed to update course average");
+				}
+			} else {
+				toast.error("Failed to update assignment");
+			}
 		} else {
 			setIsSaving(false);
 			closeModal();
@@ -104,18 +103,13 @@ const AssignmentDetailsAction = ({
 	const handleMarkDone = async () => {
 		setIsSaving(true);
 		try {
-			await fetch(`/api/assignments/update`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					assignmentId: assignment.id,
-					status: "Completed",
-				}),
-			});
-			window.location.reload();
-			toast.success("Assignment has marked as done");
+			const { success } = await updateStatus(assignment.id, "Completed");
+			if (success) {
+				window.location.reload();
+				toast.success("Assignment has marked as done");
+			} else {
+				toast.error("Failed to mark assignment as done");
+			}
 		} catch (error) {
 			setIsSaving(false);
 		}
@@ -124,18 +118,13 @@ const AssignmentDetailsAction = ({
 	const handleMarkPending = async () => {
 		setIsSaving(true);
 		try {
-			await fetch(`/api/assignments/update`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					assignmentId: assignment.id,
-					status: "Pending",
-				}),
-			});
-			window.location.reload();
-			toast.success("Assignment has marked as pending");
+			const { success } = await updateStatus(assignment.id, "Pending");
+			if (success) {
+				window.location.reload();
+				toast.success("Assignment has marked as pending");
+			} else {
+				toast.error("Failed to mark assignment as pending");
+			}
 		} catch (error) {
 			setIsSaving(false);
 		}
@@ -144,20 +133,17 @@ const AssignmentDetailsAction = ({
 	const handleMarkGraded = async () => {
 		setIsSaving(true);
 		try {
-			await fetch(`/api/assignments/update`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					assignmentId: assignment.id,
-					status: "Graded",
-					grade: grade !== null ? grade : 0,
-					courseId: assignment.courseId,
-				}),
-			});
-			window.location.reload();
-			toast.success("Assignment has marked as graded");
+			const { success } = await updateStatus(
+				assignment.id,
+				"Graded",
+				grade !== null ? grade : 0,
+			);
+			if (success) {
+				window.location.reload();
+				toast.success("Assignment has marked as graded");
+			} else {
+				toast.error("Failed to mark assignment as graded");
+			}
 		} catch (error) {
 			setIsSaving(false);
 		}
@@ -165,28 +151,19 @@ const AssignmentDetailsAction = ({
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
-		await fetch(`/api/assignments`, {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				assignmentId: assignment.id,
-			}),
-		});
-		setIsDeleting(false);
-		closeModal();
-		await fetch(`/api/courses/calculate-average`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				courseId: assignment.courseId,
-			}),
-		});
-		router.push(`/courses/my/${assignment.courseId}`);
-		toast.success("Assignment deleted successfully");
+		const { success: deleted } = await deleteAssignment(assignment.id);
+		if (deleted) {
+			setIsDeleting(false);
+			closeModal();
+			router.push(`/courses/my/${assignment.courseId}`);
+			toast.success("Assignment deleted successfully");
+			const { success } = await updateCourseAverage(assignment.courseId);
+			if (!success) {
+				toast.error("Failed to update course average");
+			}
+		} else {
+			toast.error("Failed to delete assignment");
+		}
 	};
 
 	return (

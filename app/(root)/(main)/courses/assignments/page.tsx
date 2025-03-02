@@ -1,26 +1,23 @@
 import AssignmentsTable from "../../../../../components/assignments/AssignmentsTable";
-import { getUser } from "@/action/user.action";
 import AssignmentActions from "@/components/assignments/AssignmentActions";
-import { AssignmentStatus } from "@prisma/client";
+import type { Assignments, AssignmentStatus, Courses } from "@prisma/client";
 import { getAssignmentsWithFilters } from "@/action/assignment.action";
-import { getCoursesByUserId } from "@/action/course.action";
+import { getAllCourses } from "@/action/course.action";
 
 export default async function Assignments({
 	searchParams,
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-	const user = await getUser();
 	const params = await searchParams;
 	const courseFilter = params?.course as string | undefined;
 	const statusFilter = params?.status as AssignmentStatus | undefined;
 
-	const assignments = await getAssignmentsWithFilters(
-		user?.id as string,
+	const { data: assignmentsData } = await getAssignmentsWithFilters(
 		courseFilter,
 		statusFilter,
 	);
-	const courses = await getCoursesByUserId(user?.id as string);
+	const { data: courses } = await getAllCourses();
 
 	return (
 		<div className="">
@@ -30,15 +27,18 @@ export default async function Assignments({
 					{(courseFilter || statusFilter) && (
 						<span className="text-muted text-lg font-normal">
 							•{" "}
-							{courseFilter
+							{courseFilter && courses
 								? courses.find(c => c.id === courseFilter)?.name
 								: statusFilter}
 						</span>
 					)}
 				</h1>
-				<AssignmentActions courses={courses} />
+				<AssignmentActions courses={courses as Courses[]} />
 			</div>
-			<AssignmentsTable initialAssignments={assignments} courses={courses} />
+			<AssignmentsTable
+				initialAssignments={assignmentsData as Assignments[]}
+				courses={courses as Courses[]}
+			/>
 		</div>
 	);
 }

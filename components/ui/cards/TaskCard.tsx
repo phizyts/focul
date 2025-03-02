@@ -77,7 +77,7 @@ export default function TaskCard({ task, assignments, user }: TaskCardProps) {
 			if (!taskId || taskStatus !== "Pending")
 				toast.error("Invalid task or status");
 			const statusUpdated = await updateTaskStatus(taskId, "Completed");
-			if (statusUpdated) {
+			if (statusUpdated.success) {
 				router.refresh();
 				closeModal();
 				resetValue();
@@ -98,7 +98,7 @@ export default function TaskCard({ task, assignments, user }: TaskCardProps) {
 			if (!taskId || taskStatus !== "Completed")
 				toast.error("Invalid task or status");
 			const statusUpdated = await updateTaskStatus(taskId, "Pending");
-			if (statusUpdated) {
+			if (statusUpdated.success) {
 				router.refresh();
 				closeModal();
 				resetValue();
@@ -121,10 +121,9 @@ export default function TaskCard({ task, assignments, user }: TaskCardProps) {
 				taskId,
 				taskName,
 				taskDueDate,
-				userId,
 				taskDesc,
 			);
-			if (updatedTask) {
+			if (updatedTask.success) {
 				router.refresh();
 				closeModal();
 				resetValue();
@@ -143,7 +142,7 @@ export default function TaskCard({ task, assignments, user }: TaskCardProps) {
 		setIsDeleting(true);
 		try {
 			const deleted = await deleteTask(taskId);
-			if (deleted) {
+			if (deleted.success) {
 				router.refresh();
 				toast.success("Task deleted");
 				closeModal();

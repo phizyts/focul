@@ -10,6 +10,7 @@ import PrimaryButton from "../../ui/buttons/PrimaryButton";
 import SecondaryButton from "../../ui/buttons/SecondaryButton";
 import { formatGrade } from "@/utils/formatGrade";
 import toast from "react-hot-toast";
+import { createAssignment } from "@/action/assignment.action";
 
 const AssignmentDetailsTable = ({
 	courseId,
@@ -61,26 +62,27 @@ const AssignmentDetailsTable = ({
 	const handleCreate = async () => {
 		setIsCreating(true);
 		if (name !== "") {
-			await fetch(`/api/assignments`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					name,
-					type,
-					description,
-					maxGrade,
-					dueDate: dueDate,
-					courseId,
-					assignmentTypes,
-				}),
-			});
+			const { success } = await createAssignment(
+				name,
+				type,
+				assignmentTypes,
+				courseId,
+				maxGrade,
+				dueDate,
+				description,
+			);
+			if (success) {
+				closeModal();
+				reset();
+				router.refresh();
+				toast.success("Assignment created successfully");
+			} else {
+				closeModal();
+				reset();
+				router.refresh();
+				toast.error("Failed to create assignment");
+			}
 			setIsCreating(false);
-			closeModal();
-			reset();
-			router.refresh();
-			toast.success("Assignment created successfully");
 		} else {
 			setIsCreating(false);
 			reset();

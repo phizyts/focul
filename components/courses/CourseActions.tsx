@@ -19,6 +19,8 @@ import {
 } from "@/types/course.types";
 import { ConfirmPolicyChange } from "./ConfirmPolicyChange";
 import toast from "react-hot-toast";
+import { updateGradingPolicy } from "@/action/policy.action";
+import { createCourse } from "@/action/course.action";
 
 const CourseActions = ({
 	gradingPoliciesWithAGPId,
@@ -128,21 +130,19 @@ const CourseActions = ({
 	const handleCreateCourse = async () => {
 		setIsSaving(true);
 		if (courseName !== "") {
-			await fetch(`/api/courses`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					name: courseName,
-					type: courseType,
-				}),
-			});
+			const { success } = await createCourse(courseName, courseType);
+			if (success) {
+				closeModal();
+				reset();
+				router.refresh();
+				toast.success("Course created successfully");
+			} else {
+				closeModal();
+				reset();
+				router.refresh();
+				toast.error("Failed to create course");
+			}
 			setIsSaving(false);
-			closeModal();
-			reset();
-			router.refresh();
-			toast.success("Course created successfully");
 		} else {
 			setIsSaving(false);
 			reset();
@@ -180,32 +180,24 @@ const CourseActions = ({
 	const saveGradingPolicy = async (validAssignmentTypes: any[]) => {
 		setIsSaving(true);
 		try {
-			const response = await fetch(`/api/grading-policies`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					policyId: activeGradingPolicy?.id,
-					isCustom,
-					assignmentTypes: validAssignmentTypes,
-				}),
-			});
+			const { success, message } = await updateGradingPolicy(
+				isCustom,
+				validAssignmentTypes,
+				activeGradingPolicy?.id || "",
+			);
 
-			if (response.ok) {
-				const updatedPolicy = await response.json();
-				setActiveGradingPolicy(updatedPolicy);
-				setAssignmentTypes(updatedPolicy.assignmentTypes || []);
-				setIsCustom(updatedPolicy.name !== "HSTAT");
+			if (!success) {
+				toast.error("Error saving grading policy");
+				return;
 			}
 
 			router.refresh();
 			closeModal();
+			toast.success("Grading policy saved successfully");
 		} catch (error) {
 			toast.error("Error saving grading policy");
 		} finally {
 			setIsSaving(false);
-			toast.success("Grading policy saved successfully");
 		}
 	};
 

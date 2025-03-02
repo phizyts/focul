@@ -1,8 +1,7 @@
-import { getNotifications, getUser } from "@/action/user.action";
+import { getNotifications } from "@/action/user.action";
 
 export default async function Inbox() {
-	const user = await getUser();
-	const notifications = user ? await getNotifications(user) : [];
+	const { data: notifications } = await getNotifications();
 
 	return (
 		<div className="flex flex-col gap-6 overflow-y-auto h-full">

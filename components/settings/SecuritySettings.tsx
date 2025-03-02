@@ -1,3 +1,4 @@
+import { setPassword } from "@/action/user.action";
 import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
@@ -49,23 +50,17 @@ const SecuritySettings = () => {
 				});
 				toast.success("Password changed successfully!");
 			} else {
-				const response = await fetch("/api/user/setpassword", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ newPassword }),
-				});
-				toast.success("Password set successfully!");
-				if (!response.ok) {
-					const error = await response.json();
-					throw new Error(error.error || "Failed to set password");
+				const passwordSet = await setPassword(newPassword);
+				if (passwordSet.success) {
+					toast.success("Password set successfully!");
+					setShowPasswordForm(false);
+					setCurrentPassword("");
+					setNewPassword("");
+					setConfirmPassword("");
+				} else {
+					throw new Error(passwordSet.message || "Failed to set password");
 				}
 			}
-			setShowPasswordForm(false);
-			setCurrentPassword("");
-			setNewPassword("");
-			setConfirmPassword("");
 		} catch (error) {
 			toast.error("Error changing password");
 		} finally {

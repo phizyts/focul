@@ -1,17 +1,14 @@
-import { getUser } from "@/action/user.action";
+import { fetchAndUpdateLinkedAccounts, getUser } from "@/action/user.action";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-	const user = await getUser();
+	const { data: user } = await getUser();
+	const callback = request.nextUrl.searchParams.get("callback");
 	if (!user) {
 		return NextResponse.json({ error: "User not found" }, { status: 401 });
 	}
-	await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/fetchaccounts`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			cookie: request.headers.get("cookie") ?? "",
-		},
-	});
+	if (callback) {
+		await fetchAndUpdateLinkedAccounts();
+	}
 	return NextResponse.redirect(new URL("/dashboard", request.url));
 }

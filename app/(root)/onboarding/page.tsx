@@ -11,6 +11,12 @@ import AddCoursesForm from "@/components/onboarding/AddCoursesForm";
 import { useRouter } from "next/navigation";
 import { Courses } from "@prisma/client";
 import { authClient } from "@/lib/auth-client";
+import { createMultiCourses } from "@/action/course.action";
+import {
+	fetchAndUpdateLinkedAccounts,
+	onBoardUser,
+} from "@/action/user.action";
+import { upload } from "@/action/upload.action";
 
 interface onboardData {
 	file: File | null;
@@ -48,65 +54,54 @@ export default function OnBoarding() {
 		if (!data.file) return;
 
 		try {
-			const formData = new FormData();
-			formData.append("file", data.file);
+			const { data: result } = await upload(data.file);
+			if (result) {
+				await authClient.updateUser({
+					image: result.secure_url,
+				});
 
-			const response = await fetch("/api/upload", {
-				method: "POST",
-				body: formData,
-			});
-
-			if (!response.ok) {
-				throw new Error(`Upload failed with status: ${response.status}`);
+				return {
+					success: true,
+					message: "Image uploaded successfully",
+					data: result.secure_url,
+				};
+			} else {
+				return {
+					success: false,
+					message: "Failed to upload image to Cloudinary",
+				};
 			}
-
-			const result = await response.json();
-			if (!result.secure_url) {
-				throw new Error("No secure URL received from upload");
-			}
-
-			await authClient.updateUser({
-				image: result.secure_url,
-			});
-
-			return result.secure_url;
 		} catch (err) {
 			console.error("Error uploading image:", err);
-			throw err;
+			return {
+				success: false,
+				message: "Failed to upload image to Cloudinary",
+			};
 		}
 	};
 
 	const completeOnBoard = async () => {
 		setIsLoading(true);
 		try {
-			await fetch("/api/user/onboard", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					courses: data.courses.map(course => ({
+			const response = await onBoardUser();
+			if (response.success) {
+				await createMultiCourses(
+					data.courses.map(course => ({
 						name: course.name,
 						type: course.type,
 					})),
-				}),
-			});
+				);
 
-			if (data.file) {
-				await uploadImage();
+				if (data.file) {
+					await uploadImage();
+				}
+
+				await fetchAndUpdateLinkedAccounts();
 			}
-
-			await fetch("/api/user/fetchaccounts", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-
-			router.push("/dashboard");
 		} catch (error) {
 			console.error("Error during onboarding:", error);
 		} finally {
+			router.push("/dashboard");
 			setIsLoading(false);
 		}
 	};

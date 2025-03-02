@@ -28,23 +28,6 @@ const Navbar = ({
 		useModal([<ProfileSettings />, <SecuritySettings />]);
 
 	useEffect(() => {
-		const fetchNotifications = async () => {
-			try {
-				const response = await fetch("/api/notifications");
-				const data = await response.json();
-				if (Array.isArray(data.notifications)) {
-					setNotifications(data.notifications);
-				} else {
-					console.error("Expected an array for notifications, received:", data);
-				}
-			} catch (error) {
-				console.error("Error fetching notifications:", error);
-			}
-		};
-		fetchNotifications();
-	}, []);
-
-	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
 				profileDropdownRef.current &&

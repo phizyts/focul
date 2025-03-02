@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Modal from "@/components/Modal";
 import toast from "react-hot-toast";
+import { deleteCourse, updateCourse } from "@/action/course.action";
 
 const CourseDetailsActions = ({ course }: { course: Courses }) => {
 	const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
@@ -31,21 +32,17 @@ const CourseDetailsActions = ({ course }: { course: Courses }) => {
 	const handleSave = async () => {
 		setIsSaving(true);
 		if (courseName !== course?.name || courseType !== course?.type) {
-			await fetch(`/api/courses`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					name: courseName,
-					type: courseType,
-					courseId: course.id,
-				}),
-			});
+			const { success } = await updateCourse(courseName, courseType, course.id);
+			if (success) {
+				closeModal();
+				router.refresh();
+				toast.success("Course updated successfully");
+			} else {
+				closeModal();
+				router.refresh();
+				toast.error("Failed to update course");
+			}
 			setIsSaving(false);
-			closeModal();
-			router.refresh();
-			toast.success("Course updated successfully");
 		} else {
 			setIsSaving(false);
 			closeModal();
@@ -54,19 +51,17 @@ const CourseDetailsActions = ({ course }: { course: Courses }) => {
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
-		await fetch(`/api/courses`, {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				courseId: course.id,
-			}),
-		});
+		const { success } = await deleteCourse(course.id);
+		if (success) {
+			closeModal();
+			router.refresh();
+			toast.success("Course deleted successfully");
+		} else {
+			closeModal();
+			router.refresh();
+			toast.error("Failed to delete course");
+		}
 		setIsDeleting(false);
-		closeModal();
-		router.push("/courses/my");
-		toast.success("Course deleted successfully");
 	};
 
 	useEffect(() => {

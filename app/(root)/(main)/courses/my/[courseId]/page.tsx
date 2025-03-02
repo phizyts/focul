@@ -1,13 +1,12 @@
 import { getCourse } from "@/action/course.action";
 import InfoCard from "@/components/ui/cards/InfoCard";
-import { AssignmentType, Courses, User } from "@prisma/client";
+import { Assignments, AssignmentType, Courses, User } from "@prisma/client";
 import Link from "next/link";
 import CourseDetailsActions from "@/components/courses/details/CourseDetailsActions";
 import {
 	getOverdueAssignments,
 	getPendingAssignments,
 } from "@/utils/course.utils";
-import { getUser } from "@/action/user.action";
 import { formatGrade } from "@/utils/formatGrade";
 import {
 	getAssignmentsWithFilters,
@@ -15,20 +14,28 @@ import {
 } from "@/action/assignment.action";
 import AssignmentDetailsTable from "@/components/assignments/details/AssignmentDetailsTable";
 
+type AssignmentWithType = Assignments & {
+	assignmentType: AssignmentType;
+};
+
 export default async function CoursePage({
 	params,
 }: {
 	params: Promise<{ courseId: string }>;
 }) {
-	const user = await getUser();
 	const { courseId } = await params;
-	const course = await getCourse(courseId);
-	const assignments = await getAssignmentsWithFilters(
-		user?.id as string,
-		course?.id as string,
-	);
-	const assignmentTypes = await getAssignmentTypes(user as User);
-	const assignmentsCount = assignments.length;
+	const { data: course } = await getCourse(courseId);
+	const { data: assignments } = await getAssignmentsWithFilters();
+	const { data: assignmentTypes } = await getAssignmentTypes();
+	const assignmentsCount = assignments && assignments.length;
+
+	const assignmentsWithTypes = assignments?.map(assignment => {
+		const assignmentType = assignmentTypes?.find(type => type.id === assignment.assignmentTypeId);
+		return {
+			...assignment,
+			assignmentType
+		} as AssignmentWithType;
+	});
 
 	return (
 		<>
@@ -68,7 +75,7 @@ export default async function CoursePage({
 				</div>
 				<div className="grid xl2:grid-cols-5 xl3:grid-cols-3 gap-6">
 					<AssignmentDetailsTable
-						assignments={assignments}
+						assignments={assignmentsWithTypes as AssignmentWithType[]}
 						assignmentTypes={assignmentTypes as AssignmentType[]}
 						courseId={courseId}
 					/>

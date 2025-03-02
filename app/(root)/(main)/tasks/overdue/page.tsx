@@ -1,17 +1,15 @@
-import { getAssignmentsByUserId } from "@/action/assignment.action";
+import { getAssignmentsByStatus } from "@/action/assignment.action";
 import { getAllTasks } from "@/action/task.action";
 import { getUser } from "@/action/user.action";
 import TaskCard from "@/components/ui/cards/TaskCard";
 import { User } from "@prisma/client";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default async function Overdue() {
-	const user = await getUser();
-	const tasks = await getAllTasks(user?.id as string, "Overdue");
-	const assignments = await getAssignmentsByUserId(user?.id as string, [
-		"Overdue",
-	]);
+	const { data: user } = await getUser();
+	const { data: tasks } = await getAllTasks("Overdue");
+	const { data: assignments } = await getAssignmentsByStatus(["Overdue"]);
 	return (
 		<div>
 			{(tasks && tasks.length > 0) ||

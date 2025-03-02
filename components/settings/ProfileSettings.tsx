@@ -1,3 +1,4 @@
+import { upload } from "@/action/upload.action";
 import PrimaryButton from "@/components/ui/buttons/PrimaryButton";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
@@ -21,26 +22,31 @@ const ProfileSettings = () => {
 		let file = imageFile as File;
 		if (file) {
 			try {
-				const formData = new FormData();
-				formData.append("file", file);
+				const { data: result } = await upload(file);
+				if (result) {
+					await authClient.updateUser({
+						image: result.secure_url,
+					});
 
-				const response = await fetch("/api/upload", {
-					method: "POST",
-					body: formData,
-				});
-
-				if (!response.ok) {
-					toast.error("Image failed to upload");
-					return null;
+					return {
+						success: true,
+						message: "Image uploaded successfully",
+						data: result.secure_url,
+					};
+				} else {
+					return {
+						success: false,
+						message: "Failed to upload image to Cloudinary",
+					};
 				}
-
-				const data = await response.json();
-				await authClient.updateUser({
-					image: data.secure_url,
-				});
 			} catch (err) {
 				toast.error("Image failed to upload");
-				return null;
+				setUrl("/uploadpfp.png");
+				setimageFile(null);
+				return {
+					success: false,
+					message: "Failed to upload image to Cloudinary",
+				};
 			}
 		}
 	};

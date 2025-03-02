@@ -2,7 +2,6 @@ import { getAllCourses } from "@/action/course.action";
 import { getAllGradingPolicy, getUser } from "@/action/user.action";
 import CourseCard from "@/components/ui/cards/CourseCard";
 import CourseActions from "@/components/courses/CourseActions";
-import { AssignmentType, GradingPolicy, User } from "@prisma/client";
 import "remixicon/fonts/remixicon.css";
 import { GradingPoliciesWithAGPId } from "@/types/course.types";
 export default async function Page({
@@ -12,12 +11,9 @@ export default async function Page({
 }) {
 	const params = await searchParams;
 	const type = params?.type as string | undefined;
-	const user = await getUser();
-	const courses = await getAllCourses(user as User, type);
-	const gradingPoliciesWithAGPId = await getAllGradingPolicy(
-		user?.id as string,
-		true,
-	);
+	const { data: user } = await getUser();
+	const { data: courses } = await getAllCourses(type);
+	const { data: gradingPoliciesWithAGPId } = await getAllGradingPolicy(true);
 
 	return (
 		<>
@@ -36,7 +32,7 @@ export default async function Page({
 					}
 				/>
 			</div>
-			{courses.length > 0 ? (
+			{courses && courses.length > 0 ? (
 				<CourseCard courses={courses} />
 			) : (
 				<div className="flex flex-col items-center justify-center mt-12 text-center rounded-lg">
