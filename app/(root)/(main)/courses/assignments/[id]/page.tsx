@@ -1,5 +1,6 @@
 import { getAssignment, getAssignmentTypes } from "@/action/assignment.action";
 import AssignmentDetailsAction from "@/components/assignments/details/AssignmentDetailsAction";
+import NotFoundComponent from "@/components/NotFoundComponent";
 import ContentCard from "@/components/ui/cards/ContentCard";
 import InfoCard from "@/components/ui/cards/InfoCard";
 import { formatDueDate } from "@/utils/formatDueDate";
@@ -14,6 +15,7 @@ export default async function AssignmentDetailsPage({
 }) {
 	const { id } = await params;
 	const { data: assignment } = await getAssignment(id);
+	if (!assignment) return <NotFoundComponent />;
 	const assignmentType = assignment?.assignmentType;
 	const { data: assignmentTypes } = await getAssignmentTypes();
 	return (

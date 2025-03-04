@@ -13,6 +13,7 @@ import {
 	getAssignmentTypes,
 } from "@/action/assignment.action";
 import AssignmentDetailsTable from "@/components/assignments/details/AssignmentDetailsTable";
+import NotFoundComponent from "@/components/NotFoundComponent";
 
 type AssignmentWithType = Assignments & {
 	assignmentType: AssignmentType;
@@ -25,6 +26,7 @@ export default async function CoursePage({
 }) {
 	const { courseId } = await params;
 	const { data: course } = await getCourse(courseId);
+	if (!course) return <NotFoundComponent />;
 	const { data: assignments } = await getAssignmentsWithFilters(courseId);
 	const { data: assignmentTypes } = await getAssignmentTypes();
 	const assignmentsCount = assignments && assignments.length;
