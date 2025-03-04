@@ -25,15 +25,17 @@ export default async function CoursePage({
 }) {
 	const { courseId } = await params;
 	const { data: course } = await getCourse(courseId);
-	const { data: assignments } = await getAssignmentsWithFilters();
+	const { data: assignments } = await getAssignmentsWithFilters(courseId);
 	const { data: assignmentTypes } = await getAssignmentTypes();
 	const assignmentsCount = assignments && assignments.length;
 
 	const assignmentsWithTypes = assignments?.map(assignment => {
-		const assignmentType = assignmentTypes?.find(type => type.id === assignment.assignmentTypeId);
+		const assignmentType = assignmentTypes?.find(
+			type => type.id === assignment.assignmentTypeId,
+		);
 		return {
 			...assignment,
-			assignmentType
+			assignmentType,
 		} as AssignmentWithType;
 	});
 
