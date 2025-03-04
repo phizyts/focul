@@ -2,6 +2,7 @@ export interface NavRoute {
 	name: string;
 	href: string;
 	icon: string;
+	soon?: boolean;
 }
 
 export interface NavCategory {

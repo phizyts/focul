@@ -60,9 +60,9 @@ export const SidebarNavigationTop = ({ sidebarCollapsed }: NavigationProps) => {
 							{category.routes.map((route, routeIndex) => {
 								const uniqueRouteKey = `${category.name}-${route.href || routeIndex}`;
 								return (
-									<li key={uniqueRouteKey}>
+									<li key={uniqueRouteKey} className="relative">
 										<Link
-											href={route.href}
+											href={route.soon ? "" : route.href}
 											title={sidebarCollapsed ? route.name : undefined}
 											className={`flex gap-1.5 items-center ${sidebarCollapsed ? "justify-center w-fit py-1 px-2 rounded-[6px]" : "px-3 py-1 rounded-[6px]"} ${
 												currentPath.startsWith(route.href) && !isMenuCollapsed
@@ -73,6 +73,13 @@ export const SidebarNavigationTop = ({ sidebarCollapsed }: NavigationProps) => {
 											<i className={`${route.icon} text-[18px]`}></i>
 											{!sidebarCollapsed && (
 												<span className="text-sm">{route.name}</span>
+											)}
+											{route.soon && (
+												<span
+													className={`${sidebarCollapsed ? "hidden" : ""} ml-2 text-xs absolute right-2 top-1/2 -translate-y-1/2 bg-[#f1f1f1] text-[#8e8e8e] px-2 py-0.5 rounded-full`}
+												>
+													Soon
+												</span>
 											)}
 										</Link>
 									</li>
