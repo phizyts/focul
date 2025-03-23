@@ -22,7 +22,7 @@
 		"better-fetch": "^1.1.2",
 		"cloudinary": "^2.5.1",
 		"lineicons-react": "^2.0.0",
-		"next": "^15.2.0",
+		"next": "^15.2.3",
 		"next-auth": "^5.0.0-beta.25",
 		"node-cache": "^5.1.2",
 		"prettier": "^3.3.3",
