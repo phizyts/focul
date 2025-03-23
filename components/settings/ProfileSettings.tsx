@@ -156,7 +156,7 @@ const ProfileSettings = () => {
 					</label>
 				</div>
 				<form
-					className="flex flex-col gap-3 mt-5 flex-grow overflow-hidden"
+					className="flex flex-col gap-3 mt-5 flex-grow"
 					onSubmit={handleSubmit}
 				>
 					<div className="flex flex-col gap-2">
