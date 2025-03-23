@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 
 export const auth = betterAuth({
 	appName: "Focul",
-	baseURL: process.env.BETTER_AUTH_URL,
+	baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 	database: prismaAdapter(prisma, {
 		provider: "postgresql",
 	}),

@@ -1,4 +1,6 @@
-<br />
+**⚠️ This project is currently on hold and not actively maintained. I may
+revisit it in the future. ⚠️** <br />
+
 <div align="center">
   <a href="https://github.com/phizyts/focul">
     <img src="https://res.cloudinary.com/dyu7ogoqc/image/upload/f_auto,q_auto/Focul" alt="Logo" width="80" height="80">
@@ -7,8 +9,6 @@
 <h3 align="center">Focul</h3>
 
   <p align="center">
-  ⚠️ This project is currently on hold and not actively maintained. I may revisit it in the future. ⚠️
-    <br />
     Streamline academics with tools for managing courses, tracking assignments, and organizing schedules.
     <br />
     <a href="https://focul.org/"><strong>Learn More »</strong></a>
@@ -59,7 +59,17 @@ To get a local copy up and running follow these simple example steps.
    ```
 3. Enter API Keys in `.env`
    ```js
-   API_KEYs = "ENTER YOUR API";
+   NEXT_PUBLIC_BASE_URL = "ENTER YOUR BASE URL";
+   DATABASE_URL = "ENTER YOUR POSTGRESQL URL";
+   BETTER_AUTH_SECRET = "ENTER YOUR AUTH SECRET";
+   GOOGLE_CLIENT_ID = "ENTER YOUR GOOGLE CLIENT ID";
+   GOOGLE_CLIENT_SECRET = "ENTER YOUR GOOGLE CLIENT SECRET";
+   GITHUB_CLIENT_ID = "ENTER YOUR GITHUB CLIENT SECRET";
+   GITHUB_CLIENT_SECRET = "ENTER YOUR GITHUB CLIENT SECRET";
+   CLOUDINARY_CLOUD_NAME = "ENTER YOUR CLOUDINARY NAME";
+   CLOUDINARY_API_KEY = "ENTER YOUR CLOUNDINARY API KEY";
+   CLOUDINARY_SECRET = "ENTER YOUR CLOUDINARY SECRET";
+   RESEND_API_KEY = "ENTER YOUR RESEND API ID";
    ```
 4. Change git remote url to avoid accidental pushes to base project
    ```sh
