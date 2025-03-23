@@ -7,6 +7,8 @@
 <h3 align="center">Focul</h3>
 
   <p align="center">
+  ⚠️ This project is currently on hold and not actively maintained. I may revisit it in the future. ⚠️
+    <br />
     Streamline academics with tools for managing courses, tracking assignments, and organizing schedules.
     <br />
     <a href="https://focul.org/"><strong>Learn More »</strong></a>
@@ -69,11 +71,11 @@ To get a local copy up and running follow these simple example steps.
 
 - [x] Courses/Assignments Management
 - [x] Tasks (Todo List)
-- [ ] Calendar/Event Scheduling
-- [ ] Community Page (Friends/Study Groups)
-- [ ] Notes Page
-- [ ] Flashcards
-- [ ] Promodoro Timer
+- [ ] Calendar/Event Scheduling (Planned / Might revisit)
+- [ ] Community Page (Friends/Study Groups) (Planned / Might revisit)
+- [ ] Notes Page (Planned / Might revisit)
+- [ ] Flashcards (Planned / Might revisit)
+- [ ] Promodoro Timer (Planned / Might revisit)
 
 ## Contributing
 
