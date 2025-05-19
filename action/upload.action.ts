@@ -27,7 +27,12 @@ export const upload = async (file: File) => {
 			use_filename: true,
 			unique_filename: true,
 			overwrite: true,
-			transformation: [{ crop: "fill", gravity: "face" }, { radius: "max" }],
+			transformation: [
+				{ width: 500, height: 500, crop: "thumb", gravity: "face" },
+				{ radius: "max" },
+				{ fetch_format: "auto" },
+				{ quality: "auto" },
+			],
 		});
 
 		return {

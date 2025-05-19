@@ -90,7 +90,7 @@ const ProfileSettings = () => {
 		const file = e.target?.files?.[0];
 		if (file) {
 			if (file.size > MAX_FILE_SIZE) {
-				toast.error("File size must be less than 5MB");
+				toast.error("File size must be less than 10MB");
 				e.target.value = "";
 				return;
 			}
